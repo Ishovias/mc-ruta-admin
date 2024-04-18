@@ -9,7 +9,7 @@ coder = codexpy2()
 
 def autenticador(multidic: map, plant_ok: str, plant_no: str) -> map:
   datos = {}
-  if "aut" in multidic:
+  if multidic != None and "aut" in multidic:
     aut = multidic["aut"]
     token = coder.getCurrentToken()
     if aut == token:
@@ -26,7 +26,7 @@ def autenticador(multidic: map, plant_ok: str, plant_no: str) -> map:
 def index() -> redirect:
   multidic = request.args if request.args else None
   datos = autenticador(multidic, "inicio", "login")
-  return redirect(url_for(datos["plantilla"], aut=datos["aut"])
+  return redirect(url_for(datos["plantilla"], aut=datos["aut"]))
   
 @app.route('/inicio')
 def inicio() -> render_template:
@@ -36,11 +36,8 @@ def inicio() -> render_template:
   return redirect(url_for(datos["plantilla"]))
 
 @app.route('/login')
-def login() -> render_template:
-  if request.args:
-    datos = autenticador(request.args)
-    return render_template(datos["plantilla"], datos=datos)  
-  return render_template('autorizador.html', datos=datos)
+def login() -> render_template: 
+  return render_template('autorizador.html')
   
 
 @app.route('/autorizador', methods=['POST'])
@@ -53,8 +50,9 @@ def autorizador() -> redirect:
     resultado = coder.getCurrentToken()
   else:
     resultado = coder.ranToken()
-  return redirect(url_for('login', aut=resultado))
   userbd.cierra_conexion()
+  return redirect(url_for('login', aut=resultado))
+  
 
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:

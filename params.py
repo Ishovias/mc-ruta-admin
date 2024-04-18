@@ -1,6 +1,6 @@
 # hoja de parametros generales
 
-LIBRODATOS = "./bd/RAP.xlsx"
+LIBRODATOS = "./bd/mediclean_bd.xlsx"
 CLIENTES = {
   "nombrehoja":"clientes", 
   "filainicial":2,
@@ -30,6 +30,22 @@ USUARIO = {
 
 RUTA_ACTUAL = {
   "nombrehoja":"ruta_actual", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "id":2,
+    "rut":3,
+    "cliente":4,
+    "direccion":5,
+    "comuna":6,
+    "observaciones":7,
+    "todas":[1,2,3,4,5,6,7]
+  }, 
+  "encabezados":1
+}
+
+RUTAS_BD = {
+  "nombrehoja":"rutas_bd", 
   "filainicial":2,
   "columnas":{
     "fecha":1,
