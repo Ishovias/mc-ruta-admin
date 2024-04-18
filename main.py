@@ -9,24 +9,24 @@ coder = codexpy2()
 
 def autenticador(multidic: map, plant_ok: str, plant_no: str) -> map:
   datos = {}
-  if "aut" in request.args:
-    aut = request.args["aut"]
+  if "aut" in multidic:
+    aut = multidic["aut"]
     token = coder.getCurrentToken()
     if aut == token:
       datos["aut"] = token
       datos["plantilla"] = plant_ok
   else:
       datos["alerta"] = "USUARIO NO AUTORIZADO"
-      datos["plantilla"] = "login"
+      datos["plantilla"] = plant_no
+      datos["aut"] = coder.ranToken()
     
   return datos
 
 @app.route('/')
 def index() -> redirect:
-  if request.args:
-    datos = autenticador(request.args, "inicio", "login")
-    return redirect(url_for(datos["plantilla"], aut=coder.getCurrentToken()))
-  return redirect(url_for(datos["plantilla"]))
+  multidic = request.args if request.args else None
+  datos = autenticador(multidic, "inicio", "login")
+  return redirect(url_for(datos["plantilla"], aut=datos["aut"])
   
 @app.route('/inicio')
 def inicio() -> render_template:

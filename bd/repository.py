@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 import params
 import os
 
-class pysecretario:
+class bdmediclean:
 
     # Variables
     hoja_actual = ""
