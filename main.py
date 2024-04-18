@@ -1,52 +1,47 @@
 from flask import Flask, redirect, url_for, request, render_template
 from conectorbd import conectorbd
 from coder.codexpy2 import codexpy2
-from combletras.combletras import combletras
 import params
 import datetime
 
 app = Flask(__name__)
 coder = codexpy2()
-scrab = combletras()
 
-def autenticador(multidic: map) -> map:
+def autenticador(multidic: map, plant_ok: str, plant_no: str) -> map:
   datos = {}
   if "aut" in request.args:
     aut = request.args["aut"]
     token = coder.getCurrentToken()
     if aut == token:
       datos["aut"] = token
-      datos["plantilla"]:"index.html"
+      datos["plantilla"] = plant_ok
   else:
       datos["alerta"] = "USUARIO NO AUTORIZADO"
+      datos["plantilla"] = "login"
     
   return datos
 
 @app.route('/')
 def index() -> redirect:
   if request.args:
-    if "aut" in request.args:
-      verificacion = verificatoken(request.args)
-      if verificacion:
-        return redirect(url_for("inicio", aut=coder.getCurrentToken()))
-  return redirect(url_for("login"))
+    datos = autenticador(request.args, "inicio", "login")
+    return redirect(url_for(datos["plantilla"], aut=coder.getCurrentToken()))
+  return redirect(url_for(datos["plantilla"]))
   
 @app.route('/inicio')
 def inicio() -> render_template:
   if request.args:
-    if verificatoken(request.args):
-      datos["token"] = coder.getCurrentToken()
-      return render_template("index.html", datos=datos)
-  return redirect(url_for("login"))
+    datos = autenticador(request.args, "index.html", "login")
+    return render_template(datos["plantilla"], datos=datos)
+  return redirect(url_for(datos["plantilla"]))
 
 @app.route('/login')
 def login() -> render_template:
   if request.args:
-    pass
-  else:
-    return render_template('autorizador.html', datos=datos)
-  datos = autenticador(request.args)
-  return render_template(datos["plantilla"], datos=datos)
+    datos = autenticador(request.args)
+    return render_template(datos["plantilla"], datos=datos)  
+  return render_template('autorizador.html', datos=datos)
+  
 
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
