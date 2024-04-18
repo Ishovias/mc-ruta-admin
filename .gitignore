@@ -1,0 +1,7 @@
+venv/
+__pycache__/main.cpython-311.pyc
+bd/__pycache__/repository.cpython-311.pyc
+__pycache__/main.cpython-310.pyc
+bd/__pycache__/repository.cpython-310.pyc
+__pycache__/
+bd/.~lock.RAP.xlsx#
