@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>Mediclean Ruta</h1>
+        <h2>Administrador de ruta</h2>
+{% endblock %}
+
+{% block botonera %}
+  <p class="textosinformativos">Debes iniciar sesion</p>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+    <p class="tituloscentrados">Login</p>
+    <form name="login" class="formularioIngreso" method="post" action="{{ url_for('autorizador') }}">
+      <label for="user"><input name="user" type="text" placeholder="usuario" required="obligatorio"></label>
+      <label for="contrasena"><input name="contrasena" type="password" required="obligatorio"></label>
+      <button name="ingresa" type="submit" value="evalua">Login</button>
+    </form>
+{% endblock %}
+
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}

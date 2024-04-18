@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="shorcut icon" href=""> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficina secretaría PARGUA</title>
+    <div class="encabezado">
+        {% block encabezado %}
+        {% endblock %}
+    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    {% block botonera %}{% endblock %}
+</head>
+<body>
+    <div class="body_a">
+        {% block body_a %}
+        {% endblock %}
+    </div>
+    <div class="body_b">
+        {% block body_b %}
+        {% endblock %}
+    </div>
+    {% if "alerta" in datos %}
+        <script>alerta("{{ datos.alerta }}")</script>
+    {% endif %}
+    {{ datos }} 
+</body>
+</html>

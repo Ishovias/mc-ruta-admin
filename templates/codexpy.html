@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>{{ datos.encabezado }}</h1>
+        <h2>{{ datos.subtitulo }}</h2>
+{% endblock %}
+
+{% block botonera %}
+    <form class="botoneraMenu" method="post" action="{{ url_for('accion') }}">
+        <button class="botonanimado" id="ingresarinforme" name="ingresarinforme" value="ingresarinforme">Ingresar informes</button>
+        <button class="botonanimado" id="informeporhermano" name="informehermano" value="informedehermano">Informe por hermano</button>
+        <button class="botonanimado" id="ingresarasistencia" name="ingresarasistencia" value="ingresarasistencia">Ingresar asistencia</button>
+        <button class="botonanimado" id="registrosasistencias" name="registrosasistencias" value="registrosasistencias">Reg. de asistencia</button>
+        <button class="botonanimado" id="datoshermanos" name="datoshermanos" value="datoshermanos">Herman@s</button>
+    </form>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+    <form class="formularioIngreso" action="{{ url_for('codex') }}">
+      <label for="ingreso">Palabra o frase: <input name="ingreso" onload="focus" type="text"></label><br>
+      <div>
+        <button name="codificar" value="codificar">Codifica!</button>
+        <button name="decodificar" value="decodificar">Decodifica!</button>
+      </div>
+      
+    </form>
+{% endblock %}
+
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+<label class="textosinformativos" for="resultado">Resultado:</label>
+<textarea name="resultado" style="width:100%">{{ datos.resultado }}</textarea>
+{% endblock %}
