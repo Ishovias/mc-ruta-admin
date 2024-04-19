@@ -60,3 +60,14 @@ RUTAS_BD = {
   "encabezados":1
 }
 
+GASTOS_BD = {
+  "nombrehoja":"gastos_bd", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "monto":2,
+    "descripcion":3,
+    "todas":[1,2,3]
+  }, 
+  "encabezados":1
+}

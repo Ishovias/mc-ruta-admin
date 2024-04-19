@@ -36,7 +36,9 @@ def inicio() -> render_template:
   return redirect(url_for(datos["plantilla"]))
 
 @app.route('/login')
-def login() -> render_template: 
+def login() -> render_template:
+  if request.args:
+    verifica = autenticador 
   return render_template('autorizador.html')
   
 

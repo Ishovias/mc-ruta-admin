@@ -4,9 +4,11 @@ import os
 
 class conectorbd:
   
-  hojaDatos = params.CLIENTES
-  hojaActividad = params.RUTA_ACTUAL
-  hojaAsistencia = params.USUARIO
+  hojaClientes = params.CLIENTES
+  hojaRutaActual = params.RUTA_ACTUAL
+  hojaUsuarios = params.USUARIO
+  hojaRutabd = params.RUTAS_BD
+  hojaGastos = params.GASTOS_BD
   
   hojaActual = None
   
@@ -33,12 +35,17 @@ class conectorbd:
   
   def cierra_conexion(self) -> None:
     self.bd.cerrar()
-    
+
+  # ------------ Metodos de trabajo en base de datos ----------------
+  def 
   
+
+
+
   if __name__ == '__main__':
     os.system("clear")
     sheetname = "autorizador"
-    bd = pysecretario(sheetname)
+    bd = bdmediclean(sheetname)
     filadisponible = bd.buscafila(1)
     fila = filadisponible
     datos = ["iberoiza","1234"]
