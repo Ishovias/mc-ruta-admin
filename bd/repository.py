@@ -65,6 +65,24 @@ class bdmediclean:
         else:
             fila = 0
         return fila
+        
+    def buscapartedato(self, filainicio:int, columna: int, dato: str) -> list:
+
+        fila = filainicio
+        
+        filas = []
+        
+        for fila in range(filainicio, params.MAX_FILAS, 1):
+            celda = self.hojabd.cell(row=fila,column=columna)
+            valorcelda = str(celda.value)
+            if dato.lower() in valorcelda.lower():
+                filas.append(fila)
+            elif valorcelda == None:
+               break
+            else:
+                fila += 1
+                
+        return filas
 
     def listar(self, filainicial: int, columnas: list, encabezados: int) -> map:
         """Devuelve todos los datos en una hoja especifica
@@ -133,38 +151,6 @@ class bdmediclean:
             listafechas.append(i)
 
         return listafechas
-
-    def reportehermano(self, hermano: str, listafechas: list) -> map:
-
-        datos = {}
-
-        encabezados = self.extraefila(
-            params.HOJA_ACTIVIDAD["encabezados"],
-            params.HOJA_ACTIVIDAD["columnas"]["todas"]
-            )
-        datos["encabezados"] = encabezados
-        datos["datos"] = []
-
-        for fecha in listafechas:
-            filahallada = 0
-            for fila in range(params.HOJA_ACTIVIDAD["filainicial"],params.MAX_FILAS,1):
-                celda = self.hojabd.cell(row=fila,column=1)
-                if celda.value == hermano:
-                    celdahermano = self.hojabd.cell(row=fila,column=2)
-                    if celdahermano.value == fecha:
-                        filahallada = fila
-                        break
-            if filahallada > 0:
-                dato = self.extraefila(
-                  filahallada,
-                  params.HOJA_ACTIVIDAD["columnas"]["todas"]
-                  )
-                datos["datos"].append(dato)
-        
-        if len(datos["datos"]) == 0:
-            datos["datos"] = 0
-
-        return datos
 
     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
