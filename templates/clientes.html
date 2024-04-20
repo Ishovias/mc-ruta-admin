@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>Mediclean Ruta</h1>
+        <h2>Administrador de ruta</h2>
+{% endblock %}
+
+{% block botonera %}
+    <form class="botoneraMenu" method="post" action="{{ url_for('accion', aut=datos.aut) }}">
+        <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
+        <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
+        <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
+    </form>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+
+{% block body_a %}
+  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut, data=buscacliente}}">
+    <label for="nombre">Indica nombre:</label><br>
+    <input name="nombre" placeholder="Indica nombre o parte de nombre">
+    <button name="buscar" value="buscar">Buscar</button>
+  </form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+{% if "listaclientes" in datos %}
+{% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
+<table class="tbresultados">
+    <thead>
+        {% for dato in datos.listaclientes.encabezados %}
+            <th>{{ dato }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for dato in datos.listaclientes.datos %}
+            <tr>
+            {% for fila in dato %}
+                <td>{{ fila }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif datos.listaclientes.datos == 0 and datos.listaclientes.datos == [] %}
+<p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
+{% endif %}
+{% endif %}
+{% endblock %}
