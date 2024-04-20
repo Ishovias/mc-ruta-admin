@@ -1,6 +1,7 @@
 # hoja de parametros generales
 
 LIBRODATOS = "./bd/mediclean_bd.xlsx"
+MAX_FILAS = 10000
 CLIENTES = {
   "nombrehoja":"clientes", 
   "filainicial":2,
