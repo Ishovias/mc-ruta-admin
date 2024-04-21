@@ -16,7 +16,7 @@
 <!-- ------------------- BODY A ----------------------------- -->
 
 {% block body_a %}
-  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut, data=buscacliente}}">
+  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut, data=buscacliente) }}">
     <label for="nombre">Indica nombre:</label><br>
     <input name="nombre" placeholder="Indica nombre o parte de nombre">
     <button name="buscar" value="buscar">Buscar</button>
@@ -42,7 +42,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% elif datos.listaclientes.datos == 0 and datos.listaclientes.datos == [] %}
+{% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
 <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
 {% endif %}
 {% endif %}
