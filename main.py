@@ -14,21 +14,21 @@ def autenticador(aut: str) -> map:
   if aut != None:
     token = coder.getCurrentToken()
     if aut == token:
-      datos["aut"] = token
+      datos["aut"] = coder.setToken(aut)
       datos["ok"] = True
     
   return datos
 
 @app.route('/')
 def index() -> redirect:
-  aut = request.args["aut"] if request.args["aut"] else None
+  aut = request.args["aut"] if request.args else None
   datos = autenticador(aut)
   ok = datos["ok"]
   return redirect(url_for('inicio' if ok else 'login', aut=datos["aut"]))
   
 @app.route('/inicio')
 def inicio() -> render_template:
-   aut = request.args["aut"] if request.args["aut"] else None
+   aut = request.args["aut"] if request.args else None
    datos = autenticador(aut)
    if datos["ok"]:
     return render_template("index.html", datos=datos)
@@ -38,14 +38,12 @@ def inicio() -> render_template:
 @app.route('/login')
 def login() -> render_template:
    if request.args:
-      print(f" >>>>>>>>> {request.args['aut']}")
       pass
    else:
       return render_template("autorizador.html", aut=coder.ranToken())
-   aut = request.args["aut"] if request.args["aut"] else None
+   aut = request.args["aut"] if request.args else None
    datos = autenticador(aut)
    ok = datos["ok"]
-   print(ok)
    return render_template("index.html" if ok else "autorizador.html", aut=datos["aut"], datos=datos)
   
 @app.route('/autorizador', methods=['POST'])
@@ -79,7 +77,7 @@ def accion() -> render_template:
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:
-   aut = request.args["aut"] if request.args["aut"] else None
+   aut = request.args["aut"] if request.args else None
    verifier = autenticador(aut)
    ok = verifier["ok"]
    if ok:
@@ -88,12 +86,13 @@ def clientes() -> render_template:
    else:
       return redirect(url_for("login", aut=verifier["aut"]))
    
-   clientesbd = conectorbd(conectorbd.hojaClientes["nombrehoja"])
+   clientesbd = conectorbd(conectorbd.hojaClientes)
    
-   if "buscacliente" in request.args:
+   if "buscar" in request.form:
       nombre = request.form["nombre"]
-      resultados = clientesbd.buscacliente(nombre)
+      resultados = clientesbd.busca_cliente(nombre)
       datos["listaclientes"] = resultados
+      print(">>>>>>> {resultados}")
    
    clientesbd.cierra_conexion()
    return render_template('clientes.html', datos=datos)
