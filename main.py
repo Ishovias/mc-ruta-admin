@@ -1,30 +1,17 @@
 from flask import Flask, redirect, url_for, request, render_template
 from conectorbd import conectorbd
 from coder.codexpy2 import codexpy2
+from helpers import verificatoken, empaquetador
 import params
 import datetime
 
 app = Flask(__name__)
 coder = codexpy2()
 
-def autenticador(aut: str) -> map:
-  datos = {}
-  datos["aut"] = coder.ranToken()
-  datos["ok"] = False
-  if aut != None:
-    token = coder.getCurrentToken()
-    if aut == token:
-      datos["aut"] = coder.setToken(aut)
-      datos["ok"] = True
-    
-  return datos
 
 @app.route('/')
 def index() -> redirect:
-  aut = request.args["aut"] if request.args else None
-  datos = autenticador(aut)
-  ok = datos["ok"]
-  return redirect(url_for('inicio' if ok else 'login', aut=datos["aut"]))
+  return redirect(url_for('inicio' if verificatoken(coder, request) else 'login'))
   
 @app.route('/inicio')
 def inicio() -> render_template:
@@ -37,14 +24,8 @@ def inicio() -> render_template:
 
 @app.route('/login')
 def login() -> render_template:
-   if request.args:
-      pass
-   else:
-      return render_template("autorizador.html", aut=coder.ranToken())
-   aut = request.args["aut"] if request.args else None
-   datos = autenticador(aut)
-   ok = datos["ok"]
-   return render_template("index.html" if ok else "autorizador.html", aut=datos["aut"], datos=datos)
+   datos = empaquetador(coder, request, "login")
+   return render_template("autorizador.html" if ok else "autorizador.html", aut=datos["aut"], datos=datos)
   
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
