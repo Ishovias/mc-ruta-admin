@@ -1,13 +1,10 @@
 from flask import Flask, redirect, url_for, request, render_template
 from conectorbd import conectorbd
 from coder.codexpy2 import codexpy2
-from helpers import verificatoken, empaquetador
-import params
-import datetime
+from helpers import verificatoken, empaquetador, comprueba_usuario
 
 app = Flask(__name__)
 coder = codexpy2()
-
 
 @app.route('/')
 def index() -> redirect:
@@ -15,30 +12,21 @@ def index() -> redirect:
   
 @app.route('/inicio')
 def inicio() -> render_template:
-   aut = request.args["aut"] if request.args else None
-   datos = autenticador(aut)
-   if datos["ok"]:
-    return render_template("index.html", datos=datos)
-   else:
-    return redirect(url_for("login"))
+     if not verificatoken(coder, request):
+          return redirect(url_for("login"))
+     datos = empaquetador(coder, request, "inicio")
+     return render_template("index.html", datos=datos)
 
 @app.route('/login')
 def login() -> render_template:
    datos = empaquetador(coder, request, "login")
-   return render_template("autorizador.html" if ok else "autorizador.html", aut=datos["aut"], datos=datos)
-  
+   return render_template("autorizador.html", datos=datos)
+
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
-  userbd = conectorbd(conectorbd.hojaUsuarios)
-  nombre = request.form["user"]
-  contrasena = request.form["contrasena"]
-  result = userbd.comprueba_usuario(nombre,contrasena)
-  if result:
-    resultado = coder.getCurrentToken()
-  else:
-    resultado = coder.ranToken()
-  userbd.cierra_conexion()
-  return redirect(url_for('login', aut=resultado))
+  if comprueba_usuario(request):
+       return redirect(url_for('inicio', aut=coder.getCurrentToken()))
+  return redirect(url_for('login'))
   
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:
