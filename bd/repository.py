@@ -57,11 +57,17 @@ class bdmediclean:
 
         for fila in range(filainicio, params.MAX_FILAS, 1):
             celda = self.hojabd.cell(row=fila,column=columna)
-            valorcelda = str(celda.value)
-            if valorcelda.lower() == dato.lower():
-                return fila
-            else:
-                fila += 1
+            try:
+                 valorcelda = str(celda.value).lower()
+                 datob = dato.lower()
+            except:
+                 valorcelda = str(celda.value)
+                 datob = dato
+            finally:
+                 if datob == valorcelda:
+                     return fila
+                 else:
+                     fila += 1
         else:
             fila = 0
         return fila
