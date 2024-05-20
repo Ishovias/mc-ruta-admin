@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template
 from conectorbd import conectorbd
 from coder.codexpy2 import codexpy2
-from helpers import verificatoken, empaquetador, comprueba_usuario
+from helpers import verificatoken, empaquetador, comprueba_usuario, mensajes
 
 app = Flask(__name__)
 coder = codexpy2()
@@ -14,7 +14,7 @@ def index() -> redirect:
 def inicio() -> render_template:
      if not verificatoken(coder, request):
           return redirect(url_for("login"))
-     datos = empaquetador(coder, request, "inicio")
+     datos = empaquetador(coder, request)
      return render_template("index.html", datos=datos)
 
 @app.route('/login')
@@ -24,47 +24,32 @@ def login() -> render_template:
 
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
-  if comprueba_usuario(request):
+  if comprueba_usuario(coder, request):
        return redirect(url_for('inicio', aut=coder.getCurrentToken()))
-  return redirect(url_for('login'))
+  return redirect(url_for('login',alerta=mensajes.USUARIO_INCORRECTO.value))
   
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:
-    
-    if request.args:
-      pass
-    else:
-      return redirect(url_for('login', aut=coder.ranToken()))
-    
-    habilitador = autenticador(request.args["aut"])
-    
-    if "clientes" in request.form:
-      if habilitador["ok"]:
-        return render_template("clientes.html", aut=habilitador["aut"], datos=habilitador)
-      else:
-        return redirect(url_for("login", aut=habilitador["aut"]))
+     if not verificatoken(coder, request):
+          return redirect(url_for("login"))
+     datos = empaquetador(coder, request, "accionesBotones")
+     return render_template(datos["pagina"], datos=datos)
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:
-   aut = request.args["aut"] if request.args else None
-   verifier = autenticador(aut)
-   ok = verifier["ok"]
-   if ok:
-      datos = {"aut":verifier["aut"]}
-      pass
-   else:
-      return redirect(url_for("login", aut=verifier["aut"]))
-   
-   clientesbd = conectorbd(conectorbd.hojaClientes)
-   
-   if "buscar" in request.form:
-      nombre = request.form["nombre"]
-      resultados = clientesbd.busca_cliente(nombre)
-      datos["listaclientes"] = resultados
-      print(">>>>>>> {resultados}")
-   
-   clientesbd.cierra_conexion()
-   return render_template('clientes.html', datos=datos)
+     if not verificatoken(coder, request):
+          return redirect(url_for("login"))
+     datos = empaquetador(coder,request,"clientes")
+     if "redirect" in datos:
+          return redirect(url_for(datos["redirect"],aut=datos["aut"]))
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/nuevoCliente', methods=['POST','GET'])
+def nuevoCliente() -> render_template:
+     if not verificatoken(coder, request):
+          return redirect(url_for("login"))
+     datos = empaquetador(coder,request,"nuevocliente")
+     return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
