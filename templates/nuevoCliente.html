@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>Mediclean Ruta</h1>
+        <h2>NUEVO CLIENTE</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+
+{% block body_a %}
+  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('nuevoCliente', aut=datos.aut, data=nuevosdatos) }}">
+    <label for="nombre">Nombre:</label><br>
+    <input name="nombre" placeholder="Nombre completo del cliente" required>
+    <label for="rut">RUT:</label><br>
+    <input name="rut" placeholder="12345678-9" required>
+    <label for="direccion">Direccion:</label><br>
+    <input name="direccion" placeholder="Direccion" required>
+    <label for="comuna">Comuna:</label><br>
+    <input name="comuna" placeholder="Comuna" required>
+    <label for="telefono">Telefono:</label><br>
+    <input type="number" name="telefono" placeholder="Telefono">
+    <label for="gps">Coordenadas GPS:</label><br>
+    <input name="gps" placeholder="Coordenadas GPS">
+    <label for="otros">Otros:</label><br>
+    <input name="otros" placeholder="otros...">
+
+    <button name="guarda" value="guarda">Graba cliente</button>
+    
+  </form>
+{% endblock %}
+
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+{% endblock %}

@@ -5,16 +5,6 @@
         <h2>{{ datos.subtitulo }}</h2>
 {% endblock %}
 
-{% block botonera %}
-    <form class="botoneraMenu" method="post" action="{{ url_for('accion') }}">
-        <button class="botonanimado" id="ingresarinforme" name="ingresarinforme" value="ingresarinforme">Ingresar informes</button>
-        <button class="botonanimado" id="informeporhermano" name="informehermano" value="informedehermano">Informe por hermano</button>
-        <button class="botonanimado" id="ingresarasistencia" name="ingresarasistencia" value="ingresarasistencia">Ingresar asistencia</button>
-        <button class="botonanimado" id="registrosasistencias" name="registrosasistencias" value="registrosasistencias">Reg. de asistencia</button>
-        <button class="botonanimado" id="datoshermanos" name="datoshermanos" value="datoshermanos">Herman@s</button>
-    </form>
-{% endblock %}
-
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
     <form class="formularioIngreso" action="{{ url_for('scrabbleletras') }}">

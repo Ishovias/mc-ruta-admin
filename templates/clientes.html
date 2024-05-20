@@ -5,45 +5,73 @@
         <h2>Administrador de ruta</h2>
 {% endblock %}
 
-{% block botonera %}
-    <form class="botoneraMenu" method="post" action="{{ url_for('accion', aut=datos.aut) }}">
-        <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
-        <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
-        <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
-    </form>
-{% endblock %}
-
 <!-- ------------------- BODY A ----------------------------- -->
 
 {% block body_a %}
-  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut, data=buscacliente) }}">
+  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
     <label for="nombre">Indica nombre:</label><br>
-    <input name="nombre" placeholder="Indica nombre o parte de nombre">
-    <button name="buscar" value="buscar">Buscar</button>
+    <input name="nombre" placeholder="Indica nombre o parte de nombre" required>
+    <button name="buscacliente" value="buscacliente">Buscar</button>
+    <button name="nuevocliente" value="nuevocliente">Nuevo cliente</button>
   </form>
 {% endblock %}
+
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if "listaclientes" in datos %}
-{% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
-<table class="tbresultados">
-    <thead>
-        {% for dato in datos.listaclientes.encabezados %}
-            <th>{{ dato }}</th>
-        {% endfor %}
-    </thead>
-    <tbody>
-        {% for dato in datos.listaclientes.datos %}
-            <tr>
-            {% for fila in dato %}
-                <td>{{ fila }}</td>
-            {% endfor %}
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+     {% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
+     <table class="tbresultados">
+         <thead>
+             {% for dato in datos.listaclientes.encabezados %}
+                 <th>{{ dato }}</th>
+             {% endfor %}
+         </thead>
+         <tbody>
+             {% for fila in datos.listaclientes.datos %}
+                 <tr>
+                 {% for data in fila %}
+                     <td>{{ data }}</td>
+                 {% endfor %}
+                 </tr>
+             {% endfor %}
+         </tbody>
+     </table>
 {% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
 <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
 {% endif %}
+     <br><hr><br>
+     <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+          <label for="seleccioncliente">
+               <select name="seleccioncliente" id="seleccioncliente">
+                    <option value="default">--Selecciona--</option>
+                    {% for dato in datos.listaclientes.datos %}
+                    <option value="{{ dato.0 }} >> {{ dato.1 }}">{{ dato.0 }} >> {{ dato.1 }}</option>
+                    {% endfor %}
+               </select>
+          </label>
+          <button type="submit" name="modifica" value="modifica">Modificar datos</button>
+          <button type="submit" name="eliminar" value="eliminarcliente">Eliminar Cliente</button>
+     </form>
+{% endif %}
+
+{% if "modificacion" in datos %}
+     <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+          <label for="nombre">Nombre:</label><br>
+          <input name="nombre" value="{{ datos.modificacion.1 }}" required>
+          <label for="rut">RUT:</label><br>
+          <input name="rut" value="{{ datos.modificacion.0 }}" required>
+          <label for="direccion">Direccion:</label><br>
+          <input name="direccion" value="{{ datos.modificacion.2 }}" required>
+          <label for="comuna">Comuna:</label><br>
+          <input name="comuna" value="{{ datos.modificacion.3 }}" required>
+          <label for="telefono">Telefono:</label><br>
+          <input type="number" name="telefono" value="{{ datos.modificacion.4 }}">
+          <label for="gps">Coordenadas GPS:</label><br>
+          <input name="gps" value="{{ datos.modificacion.5 }}">
+          <label for="otros">Otros:</label><br>
+          <input name="otros" value="{{ datos.modificacion.6 }}">
+          <button type="submit" name="guardamod" value="guardamod">Guardar modificacion</button>
+          <button type="submit" name="cancelar" value="cancelar">Cancelar edicion</button>
+     </form>
 {% endif %}
 {% endblock %}
