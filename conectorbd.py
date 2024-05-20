@@ -28,11 +28,9 @@ class conectorbd:
     try:
       self.bd.guardar()
     except:
-      resultado = "ERROR al intentar guardar, verifica que no este abierto el libro excel"
+      return False
     else:
-      resultado = "Datos guardados exitosamente"
-      
-    return resultado
+      return True
    
    def cierra_conexion(self) -> None:
     self.bd.cerrar()
@@ -47,7 +45,7 @@ class conectorbd:
          resultado = False
       return resultado
 
-   def busca_cliente(self, nombre: str) -> map:
+   def busca_cliente_lista(self, nombre: str) -> map:
       filainicio = self.hojaActual["filainicial"]
       columna = self.hojaActual["columnas"]["cliente"]
       filas = self.bd.buscapartedato(filainicio,columna,nombre)
@@ -60,6 +58,59 @@ class conectorbd:
          resultados["datos"].append(data)
       
       return resultados
+
+   def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
+      ubicacion = self.bd.buscadato(
+           self.hojaActual["filainicial"],
+           self.hojaActual["columnas"][filtro],
+           nombre
+           )
+      if ubicacion == 0:
+           return 0
+      datos = self.bd.extraefila(
+           ubicacion,
+           self.hojaActual["columnas"]["todas"]
+           )
+      return datos
+      
+   def nuevo_cliente(self, data: list) -> bool:
+      existencia = self.busca_datoscliente(data[1])
+      if existencia["datos"] != 0:
+          return False
+      fila = self.bd.buscafila(
+           self.hojaClientes["filainicial"],
+           self.hojaClientes["columnas"]["rut"],
+           )
+      self.bd.ingresador(fila,data,1)
+      return True
+      
+   def busca_ubicacion(self, dato: str, columna: str="cliente") -> int:
+        column = self.hojaActual["columnas"][columna]
+        filainicial = self.hojaActual["filainicial"]
+        if dato == None:
+             fila = self.bd.buscafila(filainicial,column)
+        else:
+             fila = self.bd.buscadato(filainicial,column,dato)
+        return fila
+        
+   def guardar_modificacion(self, rut: str, data: list) -> bool:
+        fila = self.busca_ubicacion(rut,"rut")
+        try:
+             self.bd.ingresador(fila,data,1)
+        except:
+             return False
+        else:
+             return True
+
+   def elimina_cliente(self, rut: str) -> bool:
+        ubicacion = self.busca_ubicacion(rut,"rut")
+        try:
+             self.bd.eliminar(ubicacion)
+        except:
+             return False
+        else:
+             return True
+        
 
 if __name__ == '__main__':
      def limpiapantalla(): 
