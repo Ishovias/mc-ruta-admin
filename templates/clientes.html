@@ -20,25 +20,31 @@
 {% block body_b %}
 {% if "listaclientes" in datos %}
      {% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
-     <table class="tbresultados">
-         <thead>
-             {% for dato in datos.listaclientes.encabezados %}
-                 <th>{{ dato }}</th>
-             {% endfor %}
-         </thead>
-         <tbody>
-             {% for fila in datos.listaclientes.datos %}
-                 <tr>
-                 {% for data in fila %}
-                     <td>{{ data }}</td>
-                 {% endfor %}
-                 </tr>
-             {% endfor %}
-         </tbody>
-     </table>
-{% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
-<p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
-{% endif %}
+          <table class="tbresultados">
+          <thead>
+                    <th>Select</th>
+               {% for dato in datos.listaclientes.encabezados %}
+                    <th>{{ dato }}</th>
+               {% endfor %}
+          </thead>
+          <tbody>
+               {% for fila in datos.listaclientes.datos %}
+                    <tr>
+                         <td>
+                              <form action="{{ url_for('clientes', aut=datos.aut) }}" method="post">
+                                   <button type="submit" name="clienteSeleccion" value="{{ fila.0 }}">Seleccionar</button>
+                              </form>
+                         </td>
+                    {% for data in fila %}
+                         <td>{{ data }}</td>
+                    {% endfor %}
+                    </tr>
+               {% endfor %}
+          </tbody>
+          </table>
+     {% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
+          <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
+     {% endif %}
      <br><hr><br>
      <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <label for="seleccioncliente">
