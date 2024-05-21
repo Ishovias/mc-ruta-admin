@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>Mediclean Ruta</h1>
+        <h2>Administrador de ruta</h2>
+        <h3>(Ruta actual {{ datos.fecharuta }})</h3>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+{% if "listaclientes" in datos %}
+     {% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
+          <table class="tbresultados">
+          <thead>
+                    <th>Realizado</th>
+               {% for dato in datos.listaclientes.encabezados %}
+                    <th>{{ dato }}</th>
+               {% endfor %}
+          </thead>
+          <tbody>
+               {% for fila in datos.listaclientes.datos %}
+                    <tr>
+                    <td>
+                      <form action="{{ url_for('ruta', aut=datos.aut) }}" method="post">
+                        <button type="submit" name="cliente_confirmar" value="{{ fila.0 }}">Realizado</button>
+                      </form>
+                    </td>
+                    {% for data in fila %}
+                         <td>{{ data }}</td>
+                    {% endfor %}
+                    </tr>
+               {% endfor %}
+          </tbody>
+          </table>
+     {% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
+          <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
+     {% endif %}
+     <br><hr><br>
+
+
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+    <label for="nombre">Indica nombre:</label><br>
+    <input name="nombre" placeholder="Indica nombre o parte de nombre" required>
+    <button name="buscacliente" value="buscacliente">Buscar</button>
+    <button name="nuevocliente" value="nuevocliente">Nuevo cliente</button>
+  </form>    
+{% endblock %}
