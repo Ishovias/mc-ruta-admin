@@ -96,7 +96,7 @@ class conectorbd:
    def guardar_modificacion(self, rut: str, data: list) -> bool:
         fila = self.busca_ubicacion(rut,"rut")
         try:
-             self.bd.ingresador(fila,data,1)
+             self.bd.ingresador(fila,data,2)
         except:
              return False
         else:
@@ -111,7 +111,35 @@ class conectorbd:
         else:
              return True
         
-
+   def estado_cliente(self, rut: str, estado: str) -> bool:
+        ubicacion = self.busca_ubicacion(rut,"rut")
+        try:
+             self.bd.ingresador(
+                  ubicacion,
+                  [estado],
+                  self.hojaActual["columnas"]["estado"]
+                  )
+        except:
+             return False
+        else:
+             return True
+   def agregar_a_ruta(self, datos: list) -> bool:
+        verificar = self.busca_datoscliente(datos[0],"rut")
+        if verificar != 0:
+             return False
+        ubicacion = self.busca_ubicacion(None, "cliente")
+        try:
+             self.bd.ingresador(
+                  ubicacion,
+                  datos,
+                  self.hojaActual["rut"]
+                  )
+             self.
+        except:
+             return False
+        else:
+             return True
+        
 if __name__ == '__main__':
      def limpiapantalla(): 
           os.system("clear")
@@ -121,6 +149,7 @@ if __name__ == '__main__':
           print("adduser - 'Agrega un usuario nuevo'")
           print("deluser - 'elimina un usuario'")
           print("listuser - 'lista los usuarios existentes'")
+          print("mod - modificacion personalizada a bd en el codigo")
           print("----------------------------")
      
      def guarda(bd: object):
@@ -182,6 +211,26 @@ if __name__ == '__main__':
           elif comando == "listuser":
                lista_usuarios()
           
+          elif comando == "mod":
+               bda = bdmediclean(params.CLIENTES["nombrehoja"])
+               encabezados = 1
+               columnainicio = 1
+               bda.ingresador(
+                    encabezados,
+                    ["ESTADO",
+                    "RUT",
+                    "CLIENTE",
+                    "DIRECCION",
+                    "COMUNA",
+                    "TELEFONO",
+                    "GPS",
+                    "OTRO"],
+                    columnainicio
+                    )
+               limpiapantalla()
+               guarda(bda)
+               bda.cerrar()
+
           elif comando == "quit":
                print("\n\nBye!!\n\n")
                break

@@ -19,8 +19,8 @@ class bdmediclean:
     def contarfilas(self, filainicial: int) -> int:
 
         filas = 0
-
-        for fila in range(filainicial, params.MAX_FILAS,1):
+        
+        while True:
             celda = self.hojabd.cell(row=fila,column=1)
             if celda.value != None:
                 filas += 1

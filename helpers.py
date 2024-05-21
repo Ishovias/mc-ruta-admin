@@ -1,7 +1,7 @@
 from conectorbd import conectorbd
 from enum import Enum
 import params
-import datetime
+from datetime import datetime
 
 class mensajes(Enum):
      USUARIO_INCORRECTO = "Usuario o contraseña incorrecto"
@@ -9,6 +9,10 @@ class mensajes(Enum):
      CLIENTE_GUARDADO_ERROR = "Error en guardado o cliente preexistente"
      CLIENTE_BORRADO = "Cliente eliminado con éxito"
      CLIENTE_BORRADO_ERROR = "Error al intentar borrar cliente"
+     CLIENTE_BAJA = "Cliente dado de baja del sistema"
+     CLIENTE_BAJA_ERROR = "Error al intentar dar de baja en BD"
+     CLIENTE_A_RUTA = "Cliente agregado a la ruta"
+     CLIENTE_EN_RUTA = "Cliente YA existente en ruta o Error en BD"
 
 def verificatoken(coder: object, request: object) -> bool:
      if request.args:
@@ -77,25 +81,39 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
           elif "nuevocliente" in request.form:
                paquete["redirect"] = "nuevoCliente"
           
-          elif "modifica" in request.form:
+          elif "modificaCliente" in request.form:
                clientesbd = conectorbd(conectorbd.hojaClientes)
-               identificador = request.form.get("seleccioncliente")
-               rut = extrae_rut(identificador)
-               resultados = clientesbd.busca_datoscliente(rut,"rut")
+               identificador = request.form.get("clienteSeleccion")
+               resultados = clientesbd.busca_datoscliente(identificador,"rut")
                clientesbd.cierra_conexion()
                
                paquete["modificacion"] = resultados
           
-          elif "eliminar" in request.form:
+          elif "aRuta" in request.form:
                clientesbd = conectorbd(conectorbd.hojaClientes)
-               identificador = request.form.get("seleccioncliente")
-               rut = extrae_rut(identificador)
-               eliminado = clientesbd.elimina_cliente(identificador)
-               guardado = clientesbd.guarda_cambios()
-               if eliminado and guardado:
-                    paquete["alerta"] = mensajes.CLIENTE_BORRADO.value
+               rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+               identificador = request.form.get("aRuta")
+               cliente = clientesbd.busca_datoscliente(identificador,"rut")
+               cliente.remove(cliente[0])
+               aruta = rutaactualbd.agregar_a_ruta(cliente)
+               clientesbd.cierra_conexion()
+               rutaactualbd.cierra_conexion()
+               
+               if aruta:
+                    paquete["alerta"] = mensajes.CLIENTE_A_RUTAs.value
                else:
-                    paquete["alerta"] = mensajes.CLIENTE_BORRADO_ERROR.value
+                    paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
+                    
+          
+          elif "darbaja" in request.form:
+               clientesbd = conectorbd(conectorbd.hojaClientes)
+               identificador = request.form.get("rut")
+               dadobaja = clientesbd.estado_cliente(identificador,"de baja")
+               guardado = clientesbd.guarda_cambios()
+               if dadobaja and guardado:
+                    paquete["alerta"] = mensajes.CLIENTE_BAJA.value
+               else:
+                    paquete["alerta"] = mensajes.CLIENTE_BAJA_ERROR.value
                     
                clientesbd.cierra_conexion()
           
@@ -125,6 +143,7 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
           
           if "guarda" in request.form:
                data = [
+                    "activo",
                     request.form.get("rut"),
                     request.form.get("nombre"),
                     request.form.get("direccion"),

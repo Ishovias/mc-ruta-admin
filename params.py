@@ -6,13 +6,15 @@ CLIENTES = {
   "nombrehoja":"clientes", 
   "filainicial":2,
   "columnas":{
-    "rut":1,
-    "cliente":2,
-    "direccion":3,
-    "comuna":4,
-    "telefono":5,
-    "observaciones":6,
-    "todas":[1,2,3,4,5,6]
+    "estado":1,
+    "rut":2,
+    "cliente":3,
+    "direccion":4,
+    "comuna":5,
+    "telefono":6,
+    "gps":7,
+    "otro":8,
+    "todas":[1,2,3,4,5,6,7,8]
   }, 
   "encabezados":1
 }
@@ -39,8 +41,10 @@ RUTA_ACTUAL = {
     "cliente":4,
     "direccion":5,
     "comuna":6,
-    "observaciones":7,
-    "todas":[1,2,3,4,5,6,7]
+    "telefono":7,
+    "gps":8,
+    "otro":9,
+    "todas":[1,2,3,4,5,6,7,8,9]
   }, 
   "encabezados":1
 }
