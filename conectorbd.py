@@ -75,7 +75,7 @@ class conectorbd:
       
    def nuevo_cliente(self, data: list) -> bool:
       existencia = self.busca_datoscliente(data[1])
-      if existencia["datos"] != 0:
+      if existencia != 0:
           return False
       fila = self.bd.buscafila(
            self.hojaClientes["filainicial"],
