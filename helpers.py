@@ -142,7 +142,8 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
                     paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
                bd.cierra_conexion()
                
-          
+     elif ruta == "rutaActual":
+          paquete["pagina"] = "rutas.html"     
    
      return paquete
           
