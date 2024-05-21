@@ -1,5 +1,4 @@
 from flask import Flask, redirect, url_for, request, render_template
-from conectorbd import conectorbd
 from coder.codexpy2 import codexpy2
 from helpers import verificatoken, empaquetador, comprueba_usuario, mensajes
 
@@ -49,6 +48,13 @@ def nuevoCliente() -> render_template:
      if not verificatoken(coder, request):
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"nuevocliente")
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/rutas', methods=['POST'])
+def rutas() -> render_template:
+     if not verificatoken(coder, request):
+          return redirect(url_for("login"))
+     datos = empaquetador(coder,request,"rutaActual")
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':
