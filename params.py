@@ -59,10 +59,27 @@ RUTAS_BD = {
     "cliente":4,
     "direccion":5,
     "comuna":6,
-    "observaciones":7,
-    "todas":[1,2,3,4,5,6,7]
+    "telefono":7,
+    "gps":8,
+    "otro":9,
+    "todas":[1,2,3,4,5,6,7,8,9]  
   }, 
   "encabezados":1
+}
+
+RUTAS_REGISTROS = {
+  "nombrehoja":"rutas_registros", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "ruta":2,
+    "clientesrealizados":3,
+    "clientesnorealizados":4,
+    "clientescerrados":5,
+    "otros":6,
+    "todas":[1,2,3,4,5,6]  
+  }, 
+  "encabezados":1    
 }
 
 GASTOS_BD = {

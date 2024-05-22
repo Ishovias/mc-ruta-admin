@@ -123,18 +123,26 @@ class conectorbd:
              return False
         else:
              return True
-   def agregar_a_ruta(self, datos: list) -> bool:
+   def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
         verificar = self.busca_datoscliente(datos[0],"rut")
         if verificar != 0:
              return False
         ubicacion = self.busca_ubicacion(None, "cliente")
+        idActual = self.bd.idActual(
+            self.hojaActual["filainicial"],
+            self.hojaActual["columnas"]["id"],
+            id
+            )
+        
+        datos.insert(0,idActual)
+        datos.insert(0,fecha)
+        
         try:
              self.bd.ingresador(
                   ubicacion,
                   datos,
-                  self.hojaActual["rut"]
+                  self.hojaActual["columnas"]["fecha"]
                   )
-             self.
         except:
              return False
         else:
