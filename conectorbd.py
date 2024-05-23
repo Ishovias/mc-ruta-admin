@@ -123,6 +123,7 @@ class conectorbd:
              return False
         else:
              return True
+             
    def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
         verificar = self.busca_datoscliente(datos[0],"rut")
         if verificar != 0:
@@ -147,7 +148,17 @@ class conectorbd:
              return False
         else:
              return True
-        
+
+   def fecha_ruta(self) -> str:
+        dato = self.bd.extraefila(
+             self.hojaActual["filainicial"],
+             [self.hojaActual["columnas"]["fecha"]]
+             )
+        if dato[0] == None:
+             return None
+        else:
+             return dato[0]
+             
 if __name__ == '__main__':
      def limpiapantalla(): 
           os.system("clear")

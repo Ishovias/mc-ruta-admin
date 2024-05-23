@@ -40,7 +40,7 @@ def clientes() -> render_template:
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"clientes")
      if "redirect" in datos:
-          return redirect(url_for(datos["redirect"],aut=datos["aut"]))
+          return redirect(url_for(datos["redirect"], datos=datos))
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/nuevoCliente', methods=['POST','GET'])
@@ -50,7 +50,7 @@ def nuevoCliente() -> render_template:
      datos = empaquetador(coder,request,"nuevocliente")
      return render_template(datos["pagina"], datos=datos)
 
-@app.route('/rutas', methods=['POST'])
+@app.route('/rutas', methods=['POST','GET'])
 def rutas() -> render_template:
      if not verificatoken(coder, request):
           return redirect(url_for("login"))

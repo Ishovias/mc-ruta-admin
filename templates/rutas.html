@@ -35,15 +35,22 @@
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
      {% endif %}
      <br><hr><br>
-
-
+{% elif "nuevaruta" in datos %}
+     <h2 class="encabezado">Nueva ruta</h2>
+     <br><hr><br>
+     <form name="nuevaruta" class="formularioIngreso" action="{{ url_for('rutas',aut=datos.aut) }}" method="post">
+          <label for="fecha">Fecha: 
+               <input type="date" name="fecha">
+          </label>
+          <label for="nombreruta">Nombre ruta: 
+               <input type="text" name="nombreruta" placeholder="ej: Ruta Osorno-Puerto Montt-Llanquihue">
+          </label>
+          <br>
+          <button type="submit" name="iniciaruta" value="iniciarruta">Iniciar ruta:</button>
+     </form>
+{% endif %}
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
-  <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-    <label for="nombre">Indica nombre:</label><br>
-    <input name="nombre" placeholder="Indica nombre o parte de nombre" required>
-    <button name="buscacliente" value="buscacliente">Buscar</button>
-    <button name="nuevocliente" value="nuevocliente">Nuevo cliente</button>
-  </form>    
+
 {% endblock %}

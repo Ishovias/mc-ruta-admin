@@ -92,18 +92,30 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
           elif "aRuta" in request.form:
                clientesbd = conectorbd(conectorbd.hojaClientes)
                rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-               identificador = request.form.get("aRuta")
-               cliente = clientesbd.busca_datoscliente(identificador,"rut")
-               cliente.remove(cliente[0])
-               aruta = rutaactualbd.agregar_a_ruta(cliente)
-               clientesbd.cierra_conexion()
-               rutaactualbd.cierra_conexion()
                
-               if aruta:
-                    paquete["alerta"] = mensajes.CLIENTE_A_RUTAs.value
+               verificafecha = rutaactualbd.fecha_ruta()
+               
+               if verificafecha == None:
+                    paquete["alerta"] = "Debes crear primero la ruta"
+                    paquete["nuevaruta"] = True
+                    paquete["pagina"] = "rutas.html"
+                    clientesbd.cierra_conexion()
+                    rutaactualbd.cierra_conexion()
                else:
-                    paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
+                    identificador = request.form.get("aRuta")
+                    cliente = clientesbd.busca_datoscliente(identificador,"rut")
+                    cliente.remove(cliente[0]) # Elimina el indicador estado del cliente
+                    aruta = rutaactualbd.agregar_a_ruta(cliente)
                     
+                    rutaactualbd.guarda_cambios()
+                    clientesbd.cierra_conexion()
+                    rutaactualbd.cierra_conexion()
+                    
+                    if aruta:
+                         paquete["alerta"] = mensajes.CLIENTE_A_RUTAs.value
+                    else:
+                         paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
+                         
           
           elif "darbaja" in request.form:
                clientesbd = conectorbd(conectorbd.hojaClientes)
@@ -137,7 +149,8 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
                     paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
                
                bd.cierra_conexion()
-               
+     
+     # NUEVO CLIENTE          
      elif ruta == "nuevocliente":
           paquete["pagina"] = "nuevoCliente.html"
           
@@ -160,9 +173,10 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
                else:
                     paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
                bd.cierra_conexion()
-               
+     
+     # RUTAS          
      elif ruta == "rutaActual":
-          paquete["pagina"] = "rutas.html"     
-   
+          paquete["pagina"] = "rutas.html"
+     
      return paquete
           
