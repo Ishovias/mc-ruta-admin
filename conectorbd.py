@@ -10,6 +10,7 @@ class conectorbd:
    hojaUsuarios = params.USUARIO
    hojaRutabd = params.RUTAS_BD
    hojaGastos = params.GASTOS_BD
+   hojaRutasRegistros = params.RUTAS_REGISTROS
    
    hojaActual = None
    
