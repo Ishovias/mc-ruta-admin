@@ -11,6 +11,7 @@ class mensajes(Enum):
      CLIENTE_BAJA_ERROR = "Error al intentar dar de baja en BD"
      CLIENTE_A_RUTA = "Cliente agregado a la ruta"
      CLIENTE_EN_RUTA = "Cliente YA existente en ruta o Error en BD"
+     RUTA_EXISTENTE_ERROR = "Ruta existente o no finalizada en ruta actual"
 
 def verificatoken(coder: object, request: object) -> bool:
      if request.args:
@@ -34,7 +35,7 @@ def comprueba_usuario(coder: object, request: object) -> bool:
      userbd.cierra_conexion()
      return result
 
-# ---------------------- FUNCIONES DE RUTAS --------------------------
+# ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def login(request: object, paquete: map) -> map:
      paquete["pagina"] = "autorizador.html"
      paquete["habilitador"] = "disabled"
@@ -153,6 +154,31 @@ def nuevoCliente(request: object, paquete: map) -> map:
           else:
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
           bd.cierra_conexion()
+
+def rutas(request: object, paquete: map) -> map:
+     paquete["pagina"] = "rutas.html"
+     if "iniciaruta" in request.form:
+          fecha = request.form.get("fecha")
+          ruta = request.form.get("nombreruta")
+          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+          if rutaactualbd.busca_ubicacion(fecha,"fecha") != 0:
+               bdrutasregistros = conectorbd(conectorbd.hojaRutasRegistros)
+               resultado = bdrutasregistros.nueva_ruta(fecha,ruta)
+               if resultado:
+                    paquete["alerta"] = "Ruta creada"
+               else:
+                    paquete["alerta"] = "Error en creacion de ruta"
+               bdrutasregistros.cierra_conexion()
+               rutaactualbd.cierra_conexion()
+          else:
+               paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
+               rutaactualbd.cierra_conexion()
+               
+          
+          
+     
+     
+     return paquete
      
 
 # ------------------- EMPAQUETADOR DE DATOS -------------------------
@@ -168,15 +194,15 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
                   rut = "".join(rut)
                   return rut
      
-     paquete = {}
+     # Creacion del paquete
+     paquete = {"habilitador":"enabled"}
      
      if "aut" in request.args:
           paquete["aut"] = coder.setToken(request.args.get("aut"))
      else:
           paquete["aut"] = coder.getCurrentToken()
      
-     paquete["habilitador"] = "enabled"
-     
+     # EMPAQUETADO DE RUTAS
      if ruta == "login":
           paquete = login(request, paquete)
 
@@ -186,16 +212,11 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
      elif ruta == "clientes":
           paquete = clientes(request, paquete)
      
-     # NUEVO CLIENTE          
      elif ruta == "nuevocliente":
           paquete = nuevoCliente(request, paquete)
           
-     # RUTAS          
-     elif ruta == "rutaActual":
-          paquete["pagina"] = "rutas.html"
-
-          if "iniciaruta" in request.form:
-               bdrutasregistros = conectorbd(conectorbd.hoja)
+     elif ruta == "rutas":
+          paquete = rutas(request, paquete)
      
      return paquete
           

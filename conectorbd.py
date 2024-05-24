@@ -118,13 +118,31 @@ class conectorbd:
              self.bd.ingresador(
                   ubicacion,
                   [estado],
-                  self.hojaActual["columnas"]["estado"]
+                  [self.hojaActual["columnas"]["estado"]]
                   )
         except:
              return False
         else:
              return True
              
+   def nueva_ruta(self, fecha: str, nombre: str) -> None:
+        if self.busca_ubicacion(fecha, "fecha") != 0:
+             print(f"ERROR, fecha preexistente")
+             return False
+        ubicacion = self.busca_ubicacion(None, "fecha")
+        try:
+             self.bd.ingresador(
+                  ubicacion,
+                  [fecha,nombre],
+                  [self.hojaActual["columnas"]["fecha"],
+                  self.hojaActual["columnas"]["ruta"]]
+                  )
+        except:
+             print(f"ERROR\nFila ingresando = {ubicacion}")
+             return False
+        else:
+             return True
+
    def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
         verificar = self.busca_datoscliente(datos[0],"rut")
         if verificar != 0:
