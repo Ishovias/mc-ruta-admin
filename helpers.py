@@ -47,7 +47,9 @@ def login(request: object, paquete: map) -> map:
 def accionesBotones(request: object, paquete: map) -> map:
      if "clientes" in request.form:
           paquete["pagina"] = "clientes.html"
-
+     if "rutaactual" in request.form:
+          paquete = rutas(request, paquete)
+          
      return paquete
 
 def clientes(request: object, paquete: map) -> map:
@@ -132,6 +134,8 @@ def clientes(request: object, paquete: map) -> map:
           
           bd.cierra_conexion()
 
+     return paquete
+
 def nuevoCliente(request: object, paquete: map) -> map:
      paquete["pagina"] = "nuevoCliente.html"
           
@@ -154,9 +158,15 @@ def nuevoCliente(request: object, paquete: map) -> map:
           else:
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
           bd.cierra_conexion()
+     return paquete
 
 def rutas(request: object, paquete: map) -> map:
      paquete["pagina"] = "rutas.html"
+
+     rutabd = conectorbd(conectorbd.hojaRutaActual)
+     paquete["rutaActual"] = rutabd.listar_datos()
+     rutabd.cierra_conexion()
+
      if "iniciaruta" in request.form:
           fecha = request.form.get("fecha")
           ruta = request.form.get("nombreruta")
