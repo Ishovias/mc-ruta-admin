@@ -7,5 +7,5 @@ Jinja2==3.1.3
 MarkupSafe==2.1.5
 openpyxl==3.1.2
 pillow==10.3.0
-Unidecode @ file:///home/iberoiza/Desktop/python_apps/secretario/requirements/Unidecode-1.3.8-py3-none-any.whl
+Unidecode==1.3.8
 Werkzeug==3.0.1
