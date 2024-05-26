@@ -33,7 +33,8 @@ USUARIO = {
 
 RUTA_ACTUAL = {
   "nombrehoja":"ruta_actual", 
-  "filainicial":2,
+  "filainicial":3,
+  "rutaencurso":{"fila":1,"columna":2},
   "columnas":{
     "fecha":1,
     "id":2,

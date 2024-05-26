@@ -20,7 +20,7 @@
                {% for fila in datos.rutaActual.datos %}
                     <tr>
                     <td>
-                      <form action="{{ url_for('ruta', aut=datos.aut) }}" method="post">
+                      <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
                         <button type="submit" name="cliente_confirmar" value="{{ fila.0 }}">Realizado</button>
                       </form>
                     </td>
