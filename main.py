@@ -50,7 +50,7 @@ def nuevoCliente() -> render_template:
      datos = empaquetador(coder,request,"nuevocliente")
      return render_template(datos["pagina"], datos=datos)
 
-@app.route('/rutas', methods=['POST','GET'])
+@app.route('/rutas', methods=['POST'])
 def rutas() -> render_template:
      if not verificatoken(coder, request):
           return redirect(url_for("login"))

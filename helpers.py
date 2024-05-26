@@ -168,14 +168,17 @@ def rutas(request: object, paquete: map) -> map:
      rutabd.cierra_conexion()
 
      if "iniciaruta" in request.form:
-          fecha = request.form.get("fecha")
+          fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-          if rutaactualbd.busca_ubicacion(fecha,"fecha") != 0:
+          if rutaactualbd.busca_ubicacion(fecha,"fecha") == 0:
                bdrutasregistros = conectorbd(conectorbd.hojaRutasRegistros)
-               resultado = bdrutasregistros.nueva_ruta(fecha,ruta)
-               if resultado:
+               nuevaruta = bdrutasregistros.nueva_ruta([fecha,ruta])
+               nuevarutaactual = rutaactualbd.nueva_ruta([fecha])
+               if nuevaruta and nuevarutaactual:
                     paquete["alerta"] = "Ruta creada"
+                    bdrutasregistros.guarda_cambios()
+                    rutaactualbd.guarda_cambios()
                else:
                     paquete["alerta"] = "Error en creacion de ruta"
                bdrutasregistros.cierra_conexion()
@@ -183,26 +186,11 @@ def rutas(request: object, paquete: map) -> map:
           else:
                paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
                rutaactualbd.cierra_conexion()
-               
-          
-          
-     
-     
      return paquete
      
 
 # ------------------- EMPAQUETADOR DE DATOS -------------------------
 def empaquetador(coder: object, request: object, ruta: str="") -> map:
-     
-     def extrae_rut(clave: str) -> str:
-          clave = list(clave)
-          rut = []
-          for caracter in clave:
-             if caracter != " ":
-                  rut.append(caracter)
-             else:
-                  rut = "".join(rut)
-                  return rut
      
      # Creacion del paquete
      paquete = {"habilitador":"enabled"}
@@ -225,8 +213,9 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
      elif ruta == "nuevocliente":
           paquete = nuevoCliente(request, paquete)
           
-     elif ruta == "rutas":
+     elif ruta == "rutaActual":
           paquete = rutas(request, paquete)
      
+     print(f"Token: {coder.getCurrentToken()}")
      return paquete
           

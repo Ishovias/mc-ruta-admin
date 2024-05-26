@@ -97,6 +97,7 @@ class conectorbd:
           filainicial = self.hojaActual["filainicial"]
           if dato == None:
                fila = self.bd.buscafila(filainicial,column)
+               print(f"Buscando fila vacia\nEncontrada en {fila}\nColumna: {filainicial},{columna}")
           else:
                fila = self.bd.buscadato(filainicial,column,dato)
           return fila
@@ -132,20 +133,19 @@ class conectorbd:
           else:
                return True
                
-     def nueva_ruta(self, fecha: str, nombre: str) -> None:
-          if self.busca_ubicacion(fecha, "fecha") != 0:
+     def nueva_ruta(self, fecha_nombre: list) -> None:
+          if self.busca_ubicacion(fecha_nombre[0], "fecha") != 0:
                print(f"ERROR, fecha preexistente")
                return False
           ubicacion = self.busca_ubicacion(None, "fecha")
           try:
                self.bd.ingresador(
                     ubicacion,
-                    [fecha,nombre],
-                    [self.hojaActual["columnas"]["fecha"],
-                    self.hojaActual["columnas"]["ruta"]]
+                    fecha_nombre,
+                    self.hojaActual["columnas"]["fecha"]
                     )
           except:
-               print(f"ERROR\nFila ingresando = {ubicacion}")
+               print(f"ERROR\nFila ingresando = {ubicacion} \nFecha: {fecha} \nNombre: {nombre}")
                return False
           else:
                return True

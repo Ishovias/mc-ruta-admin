@@ -31,7 +31,7 @@ class bdmediclean:
             if celda.value != None:
                 filas += 1
             else:
-                return filas
+                return filas + 2
 
     def eliminarContenidos(self,cantidadfilas: int, filainicio: int=4) -> bool:
 
