@@ -11,21 +11,27 @@ class bdmediclean:
         self.bd = load_workbook(params.LIBRODATOS,read_only=False)
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual]
+        self.maxfilas = self.contarfilas()
     
     def sethoja(self, hoja: str) -> None:
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual]
     
-    def contarfilas(self, filainicial: int) -> int:
+    def setmaxfilas(self) -> None:
+        self.maxfilas = self.contarfilas()
 
-        filas = 0
+    def getmaxfilas(self) -> int:
+        self.maxfilas = self.contarfilas()
+        return self.maxfilas
 
-        for fila in range(filainicial, params.MAX_FILAS,1):
-            celda = self.hojabd.cell(row=fila,column=1)
+    def contarfilas(self) -> int:
+        filas = 1
+        while True:
+            celda = self.hojabd.cell(row=filas,column=1)
             if celda.value != None:
                 filas += 1
             else:
-                return filas
+                return filas + 2
 
     def eliminarContenidos(self,cantidadfilas: int, filainicio: int=4) -> bool:
 
@@ -44,7 +50,7 @@ class bdmediclean:
 
         filalibre = filainicio
 
-        for fila in range(filainicio,params.MAX_FILAS,1):
+        for fila in range(filainicio,self.maxfilas,1):
             celda = self.hojabd.cell(row=fila,column=columna)
             if celda.value == None:
                 return filalibre
@@ -55,7 +61,7 @@ class bdmediclean:
 
         fila = filainicio
 
-        for fila in range(filainicio, params.MAX_FILAS, 1):
+        for fila in range(filainicio, self.maxfilas, 1):
             celda = self.hojabd.cell(row=fila,column=columna)
             try:
                  valorcelda = str(celda.value).lower()
@@ -78,7 +84,7 @@ class bdmediclean:
         
         filas = []
         
-        for fila in range(filainicio, params.MAX_FILAS, 1):
+        for fila in range(filainicio, self.maxfilas, 1):
             celda = self.hojabd.cell(row=fila,column=columna)
             valorcelda = str(celda.value)
             if dato.lower() in valorcelda.lower():
@@ -116,7 +122,7 @@ class bdmediclean:
 
         # Extraccion de datos "filas"
         resultados["datos"] = []
-        for fila in range(filainicial,params.MAX_FILAS,1):
+        for fila in range(filainicial,self.maxfilas,1):
             celda = self.hojabd.cell(row=fila, column=columnas[0])
             if celda.value == None:
                 break
@@ -161,16 +167,13 @@ class bdmediclean:
     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
 
-    def idActual(self, tipo: str) -> int:
-        for fila in range(4,params.MAX_FILAS,1):
-            celda = self.hojabd.cell(row=fila,column=1)
-            celdaAnterior = self.hojabd.cell(row=(fila-1),column=1)
+    def idActual(self, filainicial: int, columna: int, encabezado: str) -> int:
+        for fila in range(filainicial,self.maxfilas,1):
+            celda = self.hojabd.cell(row=fila,column=columna)
+            celdaAnterior = self.hojabd.cell(row=(fila-1),column=columna)
             if celda.value == None:
-                if celdaAnterior.value == "CODIGO":
-                    if tipo == "venta":
-                        return 10000
-                    if tipo == "carrito":
-                        return 1
+                if celdaAnterior.value == encabezado:
+                    return 1
                 else:
                     return int(celdaAnterior.value)+1
 
@@ -178,7 +181,7 @@ class bdmediclean:
 
         fila = 4
 
-        for fila in range(4,params.MAX_FILAS,1):
+        for fila in range(4,self.maxfilas,1):
             celda = self.hojabd.cell(row=fila,column=1)
             if celda.value == int(codigo):
                 break
@@ -213,7 +216,7 @@ class bdmediclean:
 if __name__ == '__main__':
     os.system("clear")
     sheetname = "Informes"
-    bd = pysecretario(sheetname)
+    bd = bdmediclean(sheetname)
     borrado = bd.eliminarContenidos(10,2)
     if borrado:
       print(f"\n\n\nDatos borrados de la hoja {sheetname}\n\n\n")

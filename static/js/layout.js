@@ -2,6 +2,7 @@ function alerta(mensaje){
     alert(mensaje)
 };
 
+// deprecated
 function calculaedad(idelemento1, idelemento2){
   var fecha = document.getElementById(idelemento1).value;
   

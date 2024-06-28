@@ -6,13 +6,15 @@ CLIENTES = {
   "nombrehoja":"clientes", 
   "filainicial":2,
   "columnas":{
-    "rut":1,
-    "cliente":2,
-    "direccion":3,
-    "comuna":4,
-    "telefono":5,
-    "observaciones":6,
-    "todas":[1,2,3,4,5,6]
+    "estado":1,
+    "rut":2,
+    "cliente":3,
+    "direccion":4,
+    "comuna":5,
+    "telefono":6,
+    "gps":7,
+    "otro":8,
+    "todas":[1,2,3,4,5,6,7,8]
   }, 
   "encabezados":1
 }
@@ -31,7 +33,8 @@ USUARIO = {
 
 RUTA_ACTUAL = {
   "nombrehoja":"ruta_actual", 
-  "filainicial":2,
+  "filainicial":3,
+  "rutaencurso":{"fila":1,"columna":2},
   "columnas":{
     "fecha":1,
     "id":2,
@@ -39,8 +42,10 @@ RUTA_ACTUAL = {
     "cliente":4,
     "direccion":5,
     "comuna":6,
-    "observaciones":7,
-    "todas":[1,2,3,4,5,6,7]
+    "telefono":7,
+    "gps":8,
+    "otro":9,
+    "todas":[1,2,3,4,5,6,7,8,9]
   }, 
   "encabezados":1
 }
@@ -55,10 +60,27 @@ RUTAS_BD = {
     "cliente":4,
     "direccion":5,
     "comuna":6,
-    "observaciones":7,
-    "todas":[1,2,3,4,5,6,7]
+    "telefono":7,
+    "gps":8,
+    "otro":9,
+    "todas":[1,2,3,4,5,6,7,8,9]  
   }, 
   "encabezados":1
+}
+
+RUTAS_REGISTROS = {
+  "nombrehoja":"rutas_registros", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "ruta":2,
+    "clientesrealizados":3,
+    "clientesnorealizados":4,
+    "clientescerrados":5,
+    "otros":6,
+    "todas":[1,2,3,4,5,6]  
+  }, 
+  "encabezados":1    
 }
 
 GASTOS_BD = {
