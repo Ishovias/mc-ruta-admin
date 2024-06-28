@@ -9,7 +9,7 @@
 
 {% block body_a %}
     {% if "ingresarasistencia" in datos %}
-        <form class="formularioIngreso" method="post" action="{{ url_for('ingresa_asistencia', aut=datos.aut) }}">
+        <form class="formularioIngreso" method="post" action="{{ url_for('ingresa_asistencia') }}">
             <label for="fecha">Fecha:</label><br>
             <input type="date" id="fecha_asistencia" name="fecha_asistencia" required><br>
             <label for="tiporeunion">Tipo de reunion ("entresemana" o "findesemana"):</label><br>
@@ -38,14 +38,14 @@
 			{% endfor %}
 		</tbody>
 	</table>
-    <form class="formularioIngreso" method="post" action="{{ url_for('elimina_asistencia', aut=datos.aut) }}">
+    <form class="formularioIngreso" method="post" action="{{ url_for('elimina_asistencia') }}">
         <label for="fechaeliminar">Indica la fecha si deseas eliminar:</label>
         <input type="date" name="fechaeliminar" id="fechaeliminar" required>
         <button id="eliminadato" name="eliminadato" value="eliminadato">Eliminar dato</button>
     </form>
     
     {% elif "informehermano" in datos %}
-    <form class="formularioIngreso" method="post" action="{{ url_for('informehermano', aut=datos.aut) }}">
+    <form class="formularioIngreso" method="post" action="{{ url_for('informehermano') }}">
         <label for="listahermanos">Nombre del hermano(a)</label>
         <select name="listahermanos" id="listahermanos">
             <option value="default">--Seleccione--</option>
@@ -59,7 +59,7 @@
     </form>
     
     {% elif "datoshermanos" in datos %}
-    <form class="formularioIngreso" method="post" action="{{ url_for('datoshermanos', aut=datos.aut) }}">
+    <form class="formularioIngreso" method="post" action="{{ url_for('datoshermanos') }}">
         <label for="listahermanos">Nombre del hermano(a)</label>
         <select name="listahermanos" id="listahermanos">
             <option value="default">--Seleccione--</option>
@@ -73,7 +73,7 @@
 
     <!-- FORMULARIO DE INGRESO DE INFORMES -->
     {% elif "ingresoinformes" in datos %}
-    <form class="formularioIngreso" method="post" action="{{ url_for('ingresoInforme', aut=datos.aut) }}">
+    <form class="formularioIngreso" method="post" action="{{ url_for('ingresoInforme') }}">
         <label for="anomes">Mes informe: <input type="text" name="anomes" placeholder="añomes ej. '2401'" required></label><br>
         <label for="nombre">Nombre del hermano(a): <select name="nombre" id="listahermanos"><br>
             <option value="default">--Seleccione--</option>
@@ -92,7 +92,7 @@
     </form>
     
     {% elif "nuevoregistro" in datos %}
-    <form class="formularioIngreso" method="post" action="{{ url_for('nuevoregistro', ingreso=registrar, aut=datos.aut) }}">
+    <form class="formularioIngreso" method="post" action="{{ url_for('nuevoregistro', ingreso=registrar) }}">
       <div class="tituloscentrados">
         <p class="titulos">Formulario nuevo hermano</p><br>
       </div>
@@ -152,7 +152,7 @@
 {% if "ingresoinformes" in datos %}
 <hr>
 <br>
-<form class="formularioIngreso" method="post" action="{{ url_for('ingresoInforme', aut=datos.aut) }}">
+<form class="formularioIngreso" method="post" action="{{ url_for('ingresoInforme') }}">
   <div class="confirmacioneliminacion">
     <button id="confirmarmes" name="confirmarmes" value="confirmarmes">Confirmar informes</button>
     <button id="eliminarecoleccion" name="eliminarecoleccion" value="eliminarecoleccion">Eliminar recoleccion actual</button>
@@ -171,7 +171,7 @@
 </form>
 {% endif %}
 {% elif "datoshermanos" in datos and "data" in datos %}
-<form class="formularioIngreso" action="{{ url_for('datoshermanos', aut=datos.aut) }}">
+<form class="formularioIngreso" action="{{ url_for('datoshermanos') }}">
   <div class="btnmodifica">
     <button name="moddatos" value="moddatos" {{ datos.disablemodifica }}>Modificar</button>
     <button name="guardamod" value="guardamod" {{ datos.disableguarda }}>Guardar modificacion</button>

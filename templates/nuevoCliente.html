@@ -8,7 +8,7 @@
 <!-- ------------------- BODY A ----------------------------- -->
 
 {% block body_a %}
-  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('nuevoCliente', aut=datos.aut, data=nuevosdatos) }}">
+  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('nuevoCliente', data=nuevosdatos) }}">
     <label for="nombre">Nombre:</label><br>
     <input name="nombre" placeholder="Nombre completo del cliente" required>
     <label for="rut">RUT:</label><br>

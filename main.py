@@ -58,5 +58,15 @@ def rutas() -> render_template:
      datos = empaquetador(coder,request,"rutaActual")
      return render_template(datos["pagina"], datos=datos)
 
+@app.route('/codex', methods=['POST','GET'])
+def codex() -> render_template:
+     datos = empaquetador(coder, request,"codex")
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/codex1', methods=['POST','GET'])
+def codex1() -> render_template:
+     datos = empaquetador(coder, request,"codex1")
+     return render_template(datos["pagina"], datos=datos)
+
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')

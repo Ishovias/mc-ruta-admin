@@ -1,4 +1,6 @@
 from conectorbd import conectorbd
+from coder.codexpy2 import codexpy2
+from coder.codexpy import codexpy
 from enum import Enum
 
 class mensajes(Enum):
@@ -35,13 +37,11 @@ class SessionSingleton:
           if result:
                addr = str(request.remote_addr)
                self.__usr[addr] = nombre
-               #self.__autenticado = True
           return result
           
      def cierraSesion(self, request: object) -> None:
           addr = str(request.remote_addr)
           del(self.__usr[addr])
-          #self.__autenticado = False
           
      def getAutenticado(self, request: object) -> bool:
           addr = str(request.remote_addr)
@@ -227,16 +227,40 @@ def rutas(request: object, paquete: map) -> map:
      return paquete
      
 
+def codex(coder: object, request: object, paquete: map) -> map:
+     paquete["pagina"] = "codexpy.html"
+     paquete["urlfor"] = "codex"
+     if request.args:
+          if "codificar" in request.args:
+               frase = request.args["ingreso"]
+               paquete["resultado"] = coder.encripta(frase)
+          elif "decodificar" in request.args:
+               frase = request.args["ingreso"]
+               paquete["resultado"] = coder.desencripta(frase)
+     else:
+          paquete["resultado"] = ""
+     return paquete
+
+def codex1(request: object, paquete: map) -> map:
+     coder = codexpy()
+     paquete["pagina"] = "codexpy.html"
+     paquete["urlfor"] = "codex1"
+     if request.args:
+          if "codificar" in request.args:
+               frase = request.args["ingreso"]
+               paquete["resultado"] = coder.procesa(frase)
+          elif "decodificar" in request.args:
+               frase = request.args["ingreso"]
+               paquete["resultado"] = coder.procesa(frase)
+     else:
+          paquete["resultado"] = ""
+     return paquete
+
 # ------------------- EMPAQUETADOR DE DATOS -------------------------
 def empaquetador(coder: object, request: object, ruta: str="") -> map:
      
      # Creacion del paquete
      paquete = {"habilitador":"enabled"}
-     
-     if "aut" in request.args:
-          paquete["aut"] = coder.setToken(request.args.get("aut"))
-     else:
-          paquete["aut"] = coder.getCurrentToken()
      
      # EMPAQUETADO DE RUTAS
      if ruta == "login":
@@ -253,6 +277,12 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
           
      elif ruta == "rutaActual":
           paquete = rutas(request, paquete)
+
+     elif ruta == "codex":
+          paquete = codex(coder, request, paquete)
+
+     elif ruta == "codex1":
+          paquete = codex1(request, paquete)
      
      return paquete
           
