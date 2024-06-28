@@ -15,16 +15,10 @@ class mensajes(Enum):
 
 # ---------------------- SESIONS SINGLETONS  --------------------------
 
-class Usuario:
-     
-     def __init__(self, usuario: str, contrasena: str) -> None:
-          self.__usuario = usuario
-          self.__contrasena = contrasena
-
 class SessionSingleton:
      
      __instance = None
-     __autenticado = False
+     __usr = {}
 
      def __new__(cls):
           if cls.__instance is None:
@@ -39,20 +33,26 @@ class SessionSingleton:
           result = userbd.comprueba_usuario(nombre,contrasena)
           userbd.cierra_conexion()
           if result:
-               sesion = Usuario(nombre,contrasena)
-               self.__instance = sesion
-               self.__autenticado = True
+               addr = str(request.remote_addr)
+               self.__usr[addr] = nombre
+               #self.__autenticado = True
           return result
           
-     def cierraSesion(self) -> None:
-          self.__instance = None
-          self.__autenticado = False
+     def cierraSesion(self, request: object) -> None:
+          addr = str(request.remote_addr)
+          del(self.__usr[addr])
+          #self.__autenticado = False
           
-     def getAutenticado(self) -> bool:
-          return self.__instance
+     def getAutenticado(self, request: object) -> bool:
+          addr = str(request.remote_addr)
+          if addr in self.__usr:
+               print(f"Conexion: {addr} - {self.__usr[addr]}")
+               return True
+          return False
           
-     def getUsuario(self) -> str:
-          return self.__instance.__usuario
+     def getUsuario(self, request: object) -> str:
+          addr = str(request.remote_addr)
+          return self.__usr[addr]
 
 # ---------------------- VERIFICATOKEN  --------------------------
 
@@ -69,14 +69,12 @@ def verificatoken(coder: object, request: object) -> bool:
      else:
           return False
      
-
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def login(request: object, paquete: map) -> map:
      paquete["pagina"] = "autorizador.html"
      paquete["habilitador"] = "disabled"
      if "alerta" in request.args:
           paquete["alerta"] = request.args.get("alerta")
-     
      return paquete
 
 def accionesBotones(request: object, paquete: map) -> map:
@@ -84,7 +82,12 @@ def accionesBotones(request: object, paquete: map) -> map:
           paquete["pagina"] = "clientes.html"
      if "rutaactual" in request.form:
           paquete = rutas(request, paquete)
-          
+     if "cierrasesion" in request.form:
+          sesion = SessionSingleton()
+          usr = sesion.getUsuario(request)
+          paquete["alerta"] = f"Usuario {usr} - sesion cerrada"
+          paquete["pagina"] = "autorizador.html"
+          sesion.cierraSesion(request)
      return paquete
 
 def clientes(request: object, paquete: map) -> map:
@@ -251,6 +254,5 @@ def empaquetador(coder: object, request: object, ruta: str="") -> map:
      elif ruta == "rutaActual":
           paquete = rutas(request, paquete)
      
-     print(f"Token: {coder.getCurrentToken()}")
      return paquete
           

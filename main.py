@@ -8,11 +8,11 @@ sesion = SessionSingleton()
 
 @app.route('/')
 def index() -> redirect:
-     return redirect(url_for('inicio' if verificatoken(coder, request) else 'login'))
+     return redirect(url_for('inicio' if sesion.getAutenticado(request) else 'login'))
 
 @app.route('/inicio')
 def inicio() -> render_template:
-     if not sesion.getAutenticado():
+     if not sesion.getAutenticado(request):
           return redirect(url_for("login"))
      datos = empaquetador(coder, request)
      return render_template("index.html", datos=datos)
@@ -30,14 +30,14 @@ def autorizador() -> redirect:
 
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:
-     if not sesion.getAutenticado():
+     if not sesion.getAutenticado(request):
           return redirect(url_for("login"))
      datos = empaquetador(coder, request, "accionesBotones")
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:
-     if not sesion.getAutenticado():
+     if not sesion.getAutenticado(request):
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"clientes")
      if "redirect" in datos:
@@ -46,14 +46,14 @@ def clientes() -> render_template:
 
 @app.route('/nuevoCliente', methods=['POST','GET'])
 def nuevoCliente() -> render_template:
-     if not sesion.getAutenticado():
+     if not sesion.getAutenticado(request):
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"nuevocliente")
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/rutas', methods=['POST'])
 def rutas() -> render_template:
-     if not sesion.getAutenticado():
+     if not sesion.getAutenticado(request):
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"rutaActual")
      return render_template(datos["pagina"], datos=datos)
