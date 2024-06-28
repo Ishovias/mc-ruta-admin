@@ -13,6 +13,8 @@ class mensajes(Enum):
      CLIENTE_EN_RUTA = "Cliente YA existente en ruta o Error en BD"
      RUTA_EXISTENTE_ERROR = "Ruta existente o no finalizada en ruta actual"
 
+# ---------------------- SESIONS SINGLETONS  --------------------------
+
 class Usuario:
      
      def __init__(self, usuario: str, contrasena: str) -> None:
@@ -29,8 +31,30 @@ class SessionSingleton:
                cls.__instance = super().__new__(cls)
           return cls.__instance
      
-     def iniciarSesion(self, usuario: str, contrasena: str) -> bool:
+     def iniciarSesion(self, coder: object, request: object) -> bool:
+          userbd = conectorbd(conectorbd.hojaUsuarios)
+          nombre = request.form["user"]
+          contrasena = request.form["contrasena"]
+          contrasena = coder.encripta(contrasena)
+          result = userbd.comprueba_usuario(nombre,contrasena)
+          userbd.cierra_conexion()
+          if result:
+               sesion = Usuario(nombre,contrasena)
+               self.__instance = sesion
+               self.__autenticado = True
+          return result
           
+     def cierraSesion(self) -> None:
+          self.__instance = None
+          self.__autenticado = False
+          
+     def getAutenticado(self) -> bool:
+          return self.__instance
+          
+     def getUsuario(self) -> str:
+          return self.__instance.__usuario
+
+# ---------------------- VERIFICATOKEN  --------------------------
 
 def verificatoken(coder: object, request: object) -> bool:
      if request.args:
@@ -44,15 +68,7 @@ def verificatoken(coder: object, request: object) -> bool:
           return True
      else:
           return False
-
-def comprueba_usuario(coder: object, request: object) -> bool:
-     userbd = conectorbd(conectorbd.hojaUsuarios)
-     nombre = request.form["user"]
-     contrasena = request.form["contrasena"]
-     contrasena = coder.encripta(contrasena)
-     result = userbd.comprueba_usuario(nombre,contrasena)
-     userbd.cierra_conexion()
-     return result
+     
 
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def login(request: object, paquete: map) -> map:

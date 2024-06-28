@@ -1,9 +1,10 @@
 from flask import Flask, redirect, url_for, request, render_template
 from coder.codexpy2 import codexpy2
-from helpers import verificatoken, empaquetador, comprueba_usuario, mensajes
+from helpers import SessionSingleton, verificatoken, empaquetador, mensajes
 
 app = Flask(__name__)
 coder = codexpy2()
+sesion = SessionSingleton()
 
 @app.route('/')
 def index() -> redirect:
@@ -11,7 +12,7 @@ def index() -> redirect:
 
 @app.route('/inicio')
 def inicio() -> render_template:
-     if not verificatoken(coder, request):
+     if not sesion.getAutenticado():
           return redirect(url_for("login"))
      datos = empaquetador(coder, request)
      return render_template("index.html", datos=datos)
@@ -23,20 +24,20 @@ def login() -> render_template:
 
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
-     if comprueba_usuario(coder, request):
+     if sesion.iniciarSesion(coder, request):
           return redirect(url_for('inicio', aut=coder.getCurrentToken()))
      return redirect(url_for('login',alerta=mensajes.USUARIO_INCORRECTO.value))
 
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:
-     if not verificatoken(coder, request):
+     if not sesion.getAutenticado():
           return redirect(url_for("login"))
      datos = empaquetador(coder, request, "accionesBotones")
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:
-     if not verificatoken(coder, request):
+     if not sesion.getAutenticado():
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"clientes")
      if "redirect" in datos:
@@ -45,14 +46,14 @@ def clientes() -> render_template:
 
 @app.route('/nuevoCliente', methods=['POST','GET'])
 def nuevoCliente() -> render_template:
-     if not verificatoken(coder, request):
+     if not sesion.getAutenticado():
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"nuevocliente")
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/rutas', methods=['POST'])
 def rutas() -> render_template:
-     if not verificatoken(coder, request):
+     if not sesion.getAutenticado():
           return redirect(url_for("login"))
      datos = empaquetador(coder,request,"rutaActual")
      return render_template(datos["pagina"], datos=datos)
