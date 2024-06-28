@@ -13,6 +13,25 @@ class mensajes(Enum):
      CLIENTE_EN_RUTA = "Cliente YA existente en ruta o Error en BD"
      RUTA_EXISTENTE_ERROR = "Ruta existente o no finalizada en ruta actual"
 
+class Usuario:
+     
+     def __init__(self, usuario: str, contrasena: str) -> None:
+          self.__usuario = usuario
+          self.__contrasena = contrasena
+
+class SessionSingleton:
+     
+     __instance = None
+     __autenticado = False
+
+     def __new__(cls):
+          if cls.__instance is None:
+               cls.__instance = super().__new__(cls)
+          return cls.__instance
+     
+     def iniciarSesion(self, usuario: str, contrasena: str) -> bool:
+          
+
 def verificatoken(coder: object, request: object) -> bool:
      if request.args:
           if "aut" in request.args:
