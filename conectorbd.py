@@ -4,113 +4,113 @@ import params
 import os
 
 class conectorbd:
-  
-   hojaClientes = params.CLIENTES
-   hojaRutaActual = params.RUTA_ACTUAL
-   hojaUsuarios = params.USUARIO
-   hojaRutabd = params.RUTAS_BD
-   hojaGastos = params.GASTOS_BD
-   
-   hojaActual = None
-   
-   def __init__ (self,hoja: str) -> None:
-    self.hojaActual = hoja
-    self.bd = bdmediclean(hoja["nombrehoja"])
-    
-   def set_hoja(self, hoja: str) -> None:
-    self.bd.hojaActual = hoja
-    self.bd = bdmediclean(hoja["nombrehoja"])
-   
-   def getHojaActual(self) -> str:
-    return self.bd.hojaActual
-   
-   def guarda_cambios(self) -> str:
-    try:
-      self.bd.guardar()
-    except:
-      return False
-    else:
-      return True
-   
-   def cierra_conexion(self) -> None:
-    self.bd.cerrar()
-   
-   # ------------ Metodos de trabajo en base de datos ----------------
-   def comprueba_usuario(self, nombre: str, contrasena: str) -> bool:
-      dnombre = self.bd.buscadato(self.hojaUsuarios["filainicial"],1,nombre)
-      dcontrasena = self.bd.buscadato(self.hojaUsuarios["filainicial"],2,contrasena)
-      if dnombre > 0 and dcontrasena > 0:
-         resultado = True
-      else:
-         resultado = False
-      return resultado
 
-   def busca_cliente_lista(self, nombre: str) -> map:
-      filainicio = self.hojaActual["filainicial"]
-      columna = self.hojaActual["columnas"]["cliente"]
-      filas = self.bd.buscapartedato(filainicio,columna,nombre)
-      columnas = self.hojaActual["columnas"]["todas"]
-      resultados = {}
-      resultados["encabezados"] = self.bd.extraefila(1,columnas)
-      resultados["datos"] = []
-      for fila in filas:
-         data = self.bd.extraefila(fila,columnas)
-         resultados["datos"].append(data)
-      
-      return resultados
+     hojaClientes = params.CLIENTES
+     hojaRutaActual = params.RUTA_ACTUAL
+     hojaUsuarios = params.USUARIO
+     hojaRutabd = params.RUTAS_BD
+     hojaGastos = params.GASTOS_BD
 
-   def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
-      ubicacion = self.bd.buscadato(
-           self.hojaActual["filainicial"],
-           self.hojaActual["columnas"][filtro],
-           nombre
-           )
-      if ubicacion == 0:
-           return 0
-      datos = self.bd.extraefila(
-           ubicacion,
-           self.hojaActual["columnas"]["todas"]
-           )
-      return datos
-      
-   def nuevo_cliente(self, data: list) -> bool:
-      existencia = self.busca_datoscliente(data[1])
-      if existencia != 0:
-          return False
-      fila = self.bd.buscafila(
-           self.hojaClientes["filainicial"],
-           self.hojaClientes["columnas"]["rut"],
-           )
-      self.bd.ingresador(fila,data,1)
-      return True
-      
-   def busca_ubicacion(self, dato: str, columna: str="cliente") -> int:
-        column = self.hojaActual["columnas"][columna]
-        filainicial = self.hojaActual["filainicial"]
-        if dato == None:
-             fila = self.bd.buscafila(filainicial,column)
-        else:
-             fila = self.bd.buscadato(filainicial,column,dato)
-        return fila
-        
-   def guardar_modificacion(self, rut: str, data: list) -> bool:
-        fila = self.busca_ubicacion(rut,"rut")
-        try:
-             self.bd.ingresador(fila,data,1)
-        except:
-             return False
-        else:
-             return True
+     hojaActual = None
 
-   def elimina_cliente(self, rut: str) -> bool:
-        ubicacion = self.busca_ubicacion(rut,"rut")
-        try:
-             self.bd.eliminar(ubicacion)
-        except:
-             return False
-        else:
-             return True
-        
+     def __init__ (self,hoja: str) -> None:
+          self.hojaActual = hoja
+          self.bd = bdmediclean(hoja["nombrehoja"])
+
+     def set_hoja(self, hoja: str) -> None:
+          self.bd.hojaActual = hoja
+          self.bd = bdmediclean(hoja["nombrehoja"])
+
+     def getHojaActual(self) -> str:
+          return self.bd.hojaActual
+
+     def guarda_cambios(self) -> str:
+          try:
+               self.bd.guardar()
+          except:
+               return False
+          else:
+               return True
+
+     def cierra_conexion(self) -> None:
+          self.bd.cerrar()
+
+     # ------------ Metodos de trabajo en base de datos ----------------
+     def comprueba_usuario(self, nombre: str, contrasena: str) -> bool:
+          dnombre = self.bd.buscadato(self.hojaUsuarios["filainicial"],1,nombre)
+          dcontrasena = self.bd.buscadato(self.hojaUsuarios["filainicial"],2,contrasena)
+          if dnombre > 0 and dcontrasena > 0:
+               resultado = True
+          else:
+               resultado = False
+          return resultado
+
+     def busca_cliente_lista(self, nombre: str) -> map:
+          filainicio = self.hojaActual["filainicial"]
+          columna = self.hojaActual["columnas"]["cliente"]
+          filas = self.bd.buscapartedato(filainicio,columna,nombre)
+          columnas = self.hojaActual["columnas"]["todas"]
+          resultados = {}
+          resultados["encabezados"] = self.bd.extraefila(1,columnas)
+          resultados["datos"] = []
+          for fila in filas:
+               data = self.bd.extraefila(fila,columnas)
+               resultados["datos"].append(data)
+               
+          return resultados
+
+     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
+          ubicacion = self.bd.buscadato(
+               self.hojaActual["filainicial"],
+               self.hojaActual["columnas"][filtro],
+               nombre
+               )
+          if ubicacion == 0:
+               return 0
+          datos = self.bd.extraefila(
+               ubicacion,
+               self.hojaActual["columnas"]["todas"]
+               )
+          return datos
+          
+     def nuevo_cliente(self, data: list) -> bool:
+          existencia = self.busca_datoscliente(data[1])
+          if existencia != 0:
+               return False
+          fila = self.bd.buscafila(
+               self.hojaClientes["filainicial"],
+               self.hojaClientes["columnas"]["rut"],
+               )
+          self.bd.ingresador(fila,data,1)
+          return True
+          
+     def busca_ubicacion(self, dato: str, columna: str="cliente") -> int:
+          column = self.hojaActual["columnas"][columna]
+          filainicial = self.hojaActual["filainicial"]
+          if dato == None:
+               fila = self.bd.buscafila(filainicial,column)
+          else:
+               fila = self.bd.buscadato(filainicial,column,dato)
+          return fila
+          
+     def guardar_modificacion(self, rut: str, data: list) -> bool:
+          fila = self.busca_ubicacion(rut,"rut")
+          try:
+               self.bd.ingresador(fila,data,1)
+          except:
+               return False
+          else:
+               return True
+
+     def elimina_cliente(self, rut: str) -> bool:
+          ubicacion = self.busca_ubicacion(rut,"rut")
+          try:
+               self.bd.eliminar(ubicacion)
+          except:
+               return False
+          else:
+               return True
+          
 
 if __name__ == '__main__':
      def limpiapantalla(): 
