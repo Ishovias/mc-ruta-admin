@@ -7,8 +7,8 @@ coder = codexpy2()
 
 @app.route('/')
 def index() -> redirect:
-  return redirect(url_for('inicio' if verificatoken(coder, request) else 'login'))
-  
+     return redirect(url_for('inicio' if verificatoken(coder, request) else 'login'))
+
 @app.route('/inicio')
 def inicio() -> render_template:
      if not verificatoken(coder, request):
@@ -18,15 +18,15 @@ def inicio() -> render_template:
 
 @app.route('/login')
 def login() -> render_template:
-   datos = empaquetador(coder, request, "login")
-   return render_template("autorizador.html", datos=datos)
+     datos = empaquetador(coder, request, "login")
+     return render_template("autorizador.html", datos=datos)
 
 @app.route('/autorizador', methods=['POST'])
 def autorizador() -> redirect:
-  if comprueba_usuario(coder, request):
-       return redirect(url_for('inicio', aut=coder.getCurrentToken()))
-  return redirect(url_for('login',alerta=mensajes.USUARIO_INCORRECTO.value))
-  
+     if comprueba_usuario(coder, request):
+          return redirect(url_for('inicio', aut=coder.getCurrentToken()))
+     return redirect(url_for('login',alerta=mensajes.USUARIO_INCORRECTO.value))
+
 @app.route('/accion', methods=['POST','GET'])
 def accion() -> render_template:
      if not verificatoken(coder, request):
@@ -58,4 +58,4 @@ def rutas() -> render_template:
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+     app.run(debug=True,host='0.0.0.0')
