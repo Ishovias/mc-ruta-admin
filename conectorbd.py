@@ -228,7 +228,7 @@ class conectorbd:
                return False
           else:
                return True
-     def ruta_existente(self, fecha: str) -> bool:
+          
      def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
           verificar = self.busca_datoscliente(datos[0],"rut")
           if verificar != 0:
