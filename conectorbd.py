@@ -4,7 +4,6 @@ import params
 import os
 
 class conectorbd:
-<<<<<<< HEAD
 
      hojaClientes = params.CLIENTES
      hojaRutaActual = params.RUTA_ACTUAL
@@ -25,29 +24,6 @@ class conectorbd:
      def getHojaActual(self) -> str:
           return self.bd.hojaActual
 
-=======
-  
-     hojaClientes = params.CLIENTES
-     hojaRutaActual = params.RUTA_ACTUAL
-     hojaUsuarios = params.USUARIO
-     hojaRutabd = params.RUTAS_BD
-     hojaGastos = params.GASTOS_BD
-     hojaRutasRegistros = params.RUTAS_REGISTROS
-     
-     hojaActual = None
-   
-     def __init__ (self,hoja: str) -> None:
-          self.hojaActual = hoja
-          self.bd = bdmediclean(hoja["nombrehoja"])
-
-     def set_hoja(self, hoja: str) -> None:
-          self.bd.hojaActual = hoja
-          self.bd = bdmediclean(hoja["nombrehoja"])
-
-     def getHojaActual(self) -> str:
-          return self.bd.hojaActual
-
->>>>>>> 2a3aa82003c2267d381cb53021b67b3e4098f88d
      def guarda_cambios(self) -> str:
           try:
                self.bd.guardar()
@@ -55,7 +31,6 @@ class conectorbd:
                return False
           else:
                return True
-<<<<<<< HEAD
 
      def cierra_conexion(self) -> None:
           self.bd.cerrar()
@@ -136,8 +111,6 @@ class conectorbd:
           else:
                return True
           
-=======
->>>>>>> 2a3aa82003c2267d381cb53021b67b3e4098f88d
 
      def cierra_conexion(self) -> None:
           self.bd.cerrar()
