@@ -249,9 +249,6 @@ def codex1(request: object, paquete: map) -> map:
           if "codificar" in request.args:
                frase = request.args["ingreso"]
                paquete["resultado"] = coder.procesa(frase)
-          elif "decodificar" in request.args:
-               frase = request.args["ingreso"]
-               paquete["resultado"] = coder.procesa(frase)
      else:
           paquete["resultado"] = ""
      return paquete
