@@ -255,15 +255,26 @@ class conectorbd:
           else:
                return True
 
-     def fecha_ruta(self) -> str:
+     def fecha_ruta(self, nueva_fecha: str=None) -> str:
           dato = self.bd.extraefila(
                self.hojaActual["rutaencurso"]["fila"],
                [self.hojaActual["rutaencurso"]["columna"]]
                )
           if dato[0] == None:
+               if nueva_fecha:
+                    self.bd.ingresador(
+                         self.hojaActual["rutaencurso"]["fila"],
+                         [nueva_fecha],
+                         self.hojaActual["rutaencurso"]["columna"]
+                         )
+                    return True
                return None
           else:
                return dato[0]
+               
+               
+     def ruta_en_curso(self) -> str:
+          pass
              
 if __name__ == '__main__':
      def limpiapantalla(): 

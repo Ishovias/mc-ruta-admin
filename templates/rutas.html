@@ -8,7 +8,9 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 {% if "rutaActual" in datos %}
-     {% if datos.rutaActual.datos != 0 and datos.rutaActual.datos != [] %}
+     {% if datos.ruta != None %}
+          <p class="tituloscentrados"> Ruta activa: {{ datos.ruta }}</p>
+          <hr>
           <table class="tbresultados">
           <thead>
                     <th>Realizado</th>
@@ -20,7 +22,7 @@
                {% for fila in datos.rutaActual.datos %}
                     <tr>
                     <td>
-                         <form action="{{ url_for('rutas') }}" method="post">
+                         <form method="post">
                               <button type="submit" name="cliente_confirmar" value="{{ fila.0 }}">Realizado</button>
                          </form>
                     </td>
@@ -31,12 +33,16 @@
                {% endfor %}
           </tbody>
           </table>
+          <form name="finruta" method="post">
+               <br><hr>
+               <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
+          </form>
      {% elif datos.rutaActual.datos == 0 or datos.rutaActual.datos == [] %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
           <br><hr><br>
           <h2 class="encabezado">Nueva ruta</h2>
           <br><hr><br>
-          </form><form name="nuevaruta" class="formularioIngreso" action="{{ url_for('rutas') }}" method="post">
+          </form><form name="nuevaruta" class="formularioIngreso" method="post">
                <label for="fecha">Fecha: 
                     <input type="date" name="fecha">
                </label>
@@ -51,7 +57,7 @@
 {% elif "nuevaruta" in datos %}
      <h2 class="encabezado">Nueva ruta</h2>
      <br><hr><br>
-     <form name="nuevaruta" class="formularioIngreso" action="{{ url_for('rutas') }}" method="post">
+     <form name="nuevaruta" class="formularioIngreso" method="post">
           <label for="fecha">Fecha: 
                <input type="date" name="fecha">
           </label>

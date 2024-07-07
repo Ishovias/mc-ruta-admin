@@ -6,66 +6,35 @@ app = Flask(__name__)
 coder = codexpy2()
 sesion = SessionSingleton()
 
-@app.route('/')
-def index() -> redirect:
-     return redirect(url_for('inicio' if sesion.getAutenticado(request) else 'login'))
-
-@app.route('/inicio')
-def inicio() -> render_template:
+@app.route('/', methods=['GET','POST'])
+def index() -> render_template:
+     
+     destino = "index"
+     
+     if request.method == "POST":
+          print(request.form)
+          if "logueo" in request.form:
+               destino = "login"
+          elif "clientes" in request.form:
+               destino = "clientes"
+          elif "rutaactual" in request.form or "iniciaruta" in request.form:
+               destino = "rutaactual"
+          elif "rutas" in request.form:
+               destino = "rutas"
+          elif "codexpy" in request.form or "codpy" in request.form:
+               destino = "codexpy"
+          elif "codexpy2" in request.form or "codpy2" in request.form or "decodpy2" in request.form:
+               destino = "codexpy2"
+          
+          elif "cierrasesion" in request.form:
+               if sesion.getAutenticado(request):
+                    sesion.cierraSesion(request)
+               
+     datos = empaquetador(coder, request, destino)
+     
      if not sesion.getAutenticado(request):
-          return redirect(url_for("login"))
-     datos = empaquetador(coder, request)
-     return render_template("index.html", datos=datos)
-
-@app.route('/login')
-def login() -> render_template:
-     datos = empaquetador(coder, request, "login")
-     return render_template("autorizador.html", datos=datos)
-
-@app.route('/autorizador', methods=['POST'])
-def autorizador() -> redirect:
-     if sesion.iniciarSesion(coder, request):
-          return redirect(url_for('inicio', aut=coder.getCurrentToken()))
-     return redirect(url_for('login',alerta=mensajes.USUARIO_INCORRECTO.value))
-
-@app.route('/accion', methods=['POST','GET'])
-def accion() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for("login"))
-     datos = empaquetador(coder, request, "accionesBotones")
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/clientes', methods=['POST'])
-def clientes() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for("login"))
-     datos = empaquetador(coder,request,"clientes")
-     if "redirect" in datos:
-          return redirect(url_for(datos["redirect"], datos=datos))
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/nuevoCliente', methods=['POST','GET'])
-def nuevoCliente() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for("login"))
-     datos = empaquetador(coder,request,"nuevocliente")
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/rutas', methods=['POST'])
-def rutas() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for("login"))
-     datos = empaquetador(coder,request,"rutaActual")
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/codex', methods=['POST','GET'])
-def codex() -> render_template:
-     datos = empaquetador(coder, request,"codex")
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/codex1', methods=['POST','GET'])
-def codex1() -> render_template:
-     datos = empaquetador(coder, request,"codex1")
+          datos["pagina"] = "autorizador.html"
+     
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':

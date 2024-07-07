@@ -37,6 +37,7 @@ class SessionSingleton:
           if result:
                addr = str(request.remote_addr)
                self.__usr[addr] = nombre
+               print(f"Usuario:{nombre}, Addr:{addr}")
           return result
           
      def cierraSesion(self, request: object) -> None:
@@ -70,11 +71,14 @@ def verificatoken(coder: object, request: object) -> bool:
           return False
      
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
-def login(request: object, paquete: map) -> map:
-     paquete["pagina"] = "autorizador.html"
-     paquete["habilitador"] = "disabled"
-     if "alerta" in request.args:
-          paquete["alerta"] = request.args.get("alerta")
+def login(coder: object, request: object) -> map:
+     paquete = {}
+     sesion = SessionSingleton()
+     resultado = sesion.iniciarSesion(coder,request)
+     if resultado:
+          paquete["pagina"] = "index.html"
+     else:
+          paquete["pagina"] = "autorizador.html"
      return paquete
 
 def accionesBotones(request: object, paquete: map) -> map:
@@ -90,8 +94,9 @@ def accionesBotones(request: object, paquete: map) -> map:
           sesion.cierraSesion(request)
      return paquete
 
-def clientes(request: object, paquete: map) -> map:
-     paquete["pagina"] = "clientes.html"
+def clientes(request: object) -> map:
+     
+     paquete = {"pagina":"clientes.html"}
 
      if "buscacliente" in request.form:
           clientesbd = conectorbd(conectorbd.hojaClientes)
@@ -199,20 +204,16 @@ def nuevoCliente(request: object, paquete: map) -> map:
      return paquete
 
 def rutas(request: object, paquete: map) -> map:
-     paquete["pagina"] = "rutas.html"
-
-     rutabd = conectorbd(conectorbd.hojaRutaActual)
-     paquete["rutaActual"] = rutabd.listar_datos()
-     rutabd.cierra_conexion()
+     paquete = {"pagina":"rutas.html"}
 
      if "iniciaruta" in request.form:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-          if rutaactualbd.busca_ubicacion(fecha,"fecha") == 0:
+          if rutaactualbd.fecha_ruta() == None:
                bdrutasregistros = conectorbd(conectorbd.hojaRutasRegistros)
                nuevaruta = bdrutasregistros.nueva_ruta([fecha,ruta])
-               nuevarutaactual = rutaactualbd.nueva_ruta([fecha])
+               nuevarutaactual = rutaactualbd.fecha_ruta(fecha)
                if nuevaruta and nuevarutaactual:
                     paquete["alerta"] = "Ruta creada"
                     bdrutasregistros.guarda_cambios()
@@ -224,18 +225,27 @@ def rutas(request: object, paquete: map) -> map:
           else:
                paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
                rutaactualbd.cierra_conexion()
+               
+     rutabd = conectorbd(conectorbd.hojaRutaActual)
+     rutaActiva = rutabd.fecha_ruta()
+     rutaDatos = rutabd.listar_datos()
+     if rutaActiva != None:
+          paquete["ruta"] = rutaActiva
+     else:
+          paquete["ruta"] = None
+     paquete["rutaActual"] = rutaDatos
+     rutabd.cierra_conexion()
+               
      return paquete
      
-
 def codex(coder: object, request: object, paquete: map) -> map:
-     paquete["pagina"] = "codexpy.html"
-     paquete["urlfor"] = "codex"
-     if request.args:
-          if "codificar" in request.args:
-               frase = request.args["ingreso"]
+     paquete = {"pagina":"codexpy.html","urlfor":"codex"}
+     if request.form:
+          if "codpy2" in request.form:
+               frase = request.form["ingreso"]
                paquete["resultado"] = coder.encripta(frase)
-          elif "decodificar" in request.args:
-               frase = request.args["ingreso"]
+          elif "decodpy2" in request.form:
+               frase = request.form["ingreso"]
                paquete["resultado"] = coder.desencripta(frase)
      else:
           paquete["resultado"] = ""
@@ -243,43 +253,43 @@ def codex(coder: object, request: object, paquete: map) -> map:
 
 def codex1(request: object, paquete: map) -> map:
      coder = codexpy()
-     paquete["pagina"] = "codexpy.html"
-     paquete["urlfor"] = "codex1"
-     if request.args:
-          if "codificar" in request.args:
-               frase = request.args["ingreso"]
+     paquete = {"pagina":"codexpy.html","urlfor":"codex1"}
+     if request.form:
+          if "codpy" in request.form:
+               frase = request.form["ingreso"]
                paquete["resultado"] = coder.procesa(frase)
      else:
           paquete["resultado"] = ""
      return paquete
 
 # ------------------- EMPAQUETADOR DE DATOS -------------------------
-def empaquetador(coder: object, request: object, ruta: str="") -> map:
+def empaquetador(coder: object, request: object, destino: str) -> map:
      
-     # Creacion del paquete
-     paquete = {"habilitador":"enabled"}
+     paquete = {}
      
-     # EMPAQUETADO DE RUTAS
-     if ruta == "login":
-          paquete = login(request, paquete)
+     # EMPAQUETADO DE DATOS PARA PLANTILLA
+     if destino == "index":
+          paquete["pagina"] = "index.html"
+     
+     elif destino == "login":
+          paquete = login(coder,request)
+     
+     elif destino == "clientes":
+          paquete = clientes(request)
+          
+     elif destino == "rutaactual":
+          paquete = rutas(request, paquete)
+     
+     elif destino == "codexpy":
+          paquete = codex1(request, paquete)
 
-     elif ruta == "accionesBotones":
-          paquete = accionesBotones(request, paquete)
-               
-     elif ruta == "clientes":
-          paquete = clientes(request, paquete)
-     
+     elif destino == "codexpy2":
+          paquete = codex(coder, request, paquete)
+     '''
      elif ruta == "nuevocliente":
           paquete = nuevoCliente(request, paquete)
           
-     elif ruta == "rutaActual":
-          paquete = rutas(request, paquete)
 
-     elif ruta == "codex":
-          paquete = codex(coder, request, paquete)
-
-     elif ruta == "codex1":
-          paquete = codex1(request, paquete)
-     
+     '''  
      return paquete
           

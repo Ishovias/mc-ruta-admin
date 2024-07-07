@@ -47,7 +47,7 @@ RUTA_ACTUAL = {
     "otro":9,
     "todas":[1,2,3,4,5,6,7,8,9]
   }, 
-  "encabezados":1
+  "encabezados":2
 }
 
 RUTAS_BD = {

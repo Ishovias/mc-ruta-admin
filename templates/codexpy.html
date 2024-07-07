@@ -8,19 +8,15 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
     {% if datos.urlfor == "codex" %}
-      <form class="formularioIngreso" action="{{ url_for('codex') }}">
+      <form class="formularioIngreso" method="post">
         <label for="ingreso">Palabra o frase: <input name="ingreso" onload="focus" type="text"></label><br>
-        <div>
-          <button name="codificar" value="codificar">Codifica!</button>
-          <button name="decodificar" value="decodificar">Decodifica!</button>
-        </div>
+        <button name="codpy2" value="codificar">Codifica!</button>
+        <button name="decodpy2" value="decodificar">Decodifica!</button>
       </form>
     {% elif datos.urlfor == "codex1" %}
-      <form class="formularioIngreso" action="{{ url_for('codex1') }}">
+      <form class="formularioIngreso" method="post">
         <label for="ingreso">Palabra o frase: <input name="ingreso" onload="focus" type="text"></label><br>
-        <div>
-          <button name="codificar" value="codificar">Codifica o Decodifica!</button>
-        </div>
+        <button name="codpy" value="codificar">Codifica o Decodifica!</button>
       </form>    
     {% endif %}
       

@@ -11,10 +11,12 @@
     </div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
-    <form class="botoneraMenu" method="post" action="{{ url_for('accion') }}">
+    <form class="botoneraMenu" method="post">
         <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
         <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
-        <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
+        <button class="botonanimado" id="rutas" name="rutas" value="rutas" disabled>Rutas</button>
+        <button class="botonanimado" id="codexpy" name="codexpy" value="codexpy">Codexpy1</button>
+        <button class="botonanimado" id="codexpy2" name="codexpy2" value="codexpy2">Codexpy2</button>
         <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>
     </form>
 </head>
@@ -30,6 +32,5 @@
     {% if "alerta" in datos %}
         <script>alerta("{{ datos.alerta }}")</script>
     {% endif %}
-    {{ datos }} 
 </body>
 </html>
