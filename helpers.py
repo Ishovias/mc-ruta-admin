@@ -11,7 +11,9 @@ lista_rutas = {
                "clientes",
                "nuevocliente",
                "buscacliente",
-               "guardanuevocliente"
+               "guardanuevocliente",
+               "aRuta",
+               "modificaCliente"
                ],
           "rutaactual":[
                "rutaactual",
@@ -153,10 +155,7 @@ def clientes(request: object) -> map:
                request.form.get("otros")
                ]
           bd = conectorbd(conectorbd.hojaClientes)
-          guardado = bd.nuevo_cliente(data)
-          grabado = bd.guarda_cambios()
-          print(data)
-          if guardado and grabado:
+          if bd.nuevo_cliente(data) and bd.guarda_cambios():
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
           else:
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
@@ -173,9 +172,9 @@ def clientes(request: object) -> map:
      elif "aRuta" in request.form:
           rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
           
-          verificafecha = rutaactualbd.fecha_ruta()
+          fecha = rutaactualbd.fecha_ruta()
           
-          if verificafecha == None:
+          if fecha == None:
                paquete["alerta"] = "Debes crear primero la ruta"
                paquete["nuevaruta"] = True
                paquete["pagina"] = "rutas.html"
@@ -185,17 +184,18 @@ def clientes(request: object) -> map:
                identificador = request.form.get("aRuta")
                cliente = clientesbd.busca_datoscliente(identificador,"rut")
                cliente.remove(cliente[0]) # Elimina el indicador estado del cliente
-               aruta = rutaactualbd.agregar_a_ruta(cliente)
+               aruta = rutaactualbd.agregar_a_ruta(fecha, cliente)
                
                rutaactualbd.guarda_cambios()
                clientesbd.cierra_conexion()
                rutaactualbd.cierra_conexion()
                
                if aruta:
-                    paquete["alerta"] = mensajes.CLIENTE_A_RUTAs.value
+                    paquete["alerta"] = mensajes.CLIENTE_A_RUTA.value
                else:
                     paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
                     
+          paquete = rutas(request, paquete)
      
      elif "darbaja" in request.form:
           clientesbd = conectorbd(conectorbd.hojaClientes)
@@ -232,7 +232,7 @@ def clientes(request: object) -> map:
 
      return paquete
 
-def rutas(request: object, paquete: map) -> map:
+def rutas(request: object, paquete: map, peticion: str=None) -> map:
      paquete = {"pagina":"rutas.html"}
 
      if "iniciaruta" in request.form:
