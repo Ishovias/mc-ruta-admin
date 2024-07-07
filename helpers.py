@@ -18,7 +18,9 @@ lista_rutas = {
           "rutaactual":[
                "rutaactual",
                "iniciaruta",
-               "finalizaRutaActual"
+               "finalizaRutaActual",
+               "cliente_ruta_confirmar",
+               "cliente_ruta_posponer"
                ],
           "rutas":[
                "rutas"
@@ -266,6 +268,14 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                rutaactualbd.guarda_cambios()
           rutaactualbd.cierra_conexion()
+
+     elif "cliente_ruta_confirmar" in request.form:
+          
+          pass
+     
+     elif "cliente_ruta_posponer" in request.form:
+          pass
+
 
      rutabd = conectorbd(conectorbd.hojaRutaActual)
      rutaActiva = rutabd.fecha_ruta()
