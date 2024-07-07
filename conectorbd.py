@@ -255,20 +255,25 @@ class conectorbd:
           else:
                return True
 
-     def fecha_ruta(self, nueva_fecha: str=None) -> str:
+     def fecha_ruta(self, nueva_fecha: str=None, eliminar_fecha: bool=False) -> str:
+          def modificaFecha(fecha: str) -> None:
+               self.bd.ingresador(
+                    self.hojaActual["rutaencurso"]["fila"],
+                    [fecha],
+                    self.hojaActual["rutaencurso"]["columna"]
+                    )
           dato = self.bd.extraefila(
                self.hojaActual["rutaencurso"]["fila"],
                [self.hojaActual["rutaencurso"]["columna"]]
                )
           if dato[0] == None:
                if nueva_fecha:
-                    self.bd.ingresador(
-                         self.hojaActual["rutaencurso"]["fila"],
-                         [nueva_fecha],
-                         self.hojaActual["rutaencurso"]["columna"]
-                         )
+                    modificaFecha(nueva_fecha)
                     return True
                return None
+          elif eliminar_fecha:
+               modificaFecha("")
+               return True
           else:
                return dato[0]
                

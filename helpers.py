@@ -207,9 +207,9 @@ def rutas(request: object, paquete: map) -> map:
      paquete = {"pagina":"rutas.html"}
 
      if "iniciaruta" in request.form:
+          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
-          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
           if rutaactualbd.fecha_ruta() == None:
                bdrutasregistros = conectorbd(conectorbd.hojaRutasRegistros)
                nuevaruta = bdrutasregistros.nueva_ruta([fecha,ruta])
@@ -225,7 +225,17 @@ def rutas(request: object, paquete: map) -> map:
           else:
                paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
                rutaactualbd.cierra_conexion()
-               
+     
+     elif "finalizaRutaActual" in request.form:
+          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+          datosExistentes = rutaactualbd.listar_datos()
+          if len(datosExistentes["datos"]) > 0:
+               paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
+          else:
+               fechaexistente = rutaactualbd.fecha_ruta()
+               rutaactualbd.fecha_ruta(eliminar_fecha=True)
+               paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
+
      rutabd = conectorbd(conectorbd.hojaRutaActual)
      rutaActiva = rutabd.fecha_ruta()
      rutaDatos = rutabd.listar_datos()

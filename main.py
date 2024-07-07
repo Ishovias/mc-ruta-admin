@@ -17,7 +17,7 @@ def index() -> render_template:
                destino = "login"
           elif "clientes" in request.form:
                destino = "clientes"
-          elif "rutaactual" in request.form or "iniciaruta" in request.form:
+          elif "rutaactual" in request.form or "iniciaruta" in request.form or "finalizaRutaActual" in request.form:
                destino = "rutaactual"
           elif "rutas" in request.form:
                destino = "rutas"
