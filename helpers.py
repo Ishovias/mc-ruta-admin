@@ -3,6 +3,38 @@ from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
 
+lista_rutas = {
+          "login":[
+               "logueo"
+               ],
+          "clientes":[
+               "clientes",
+               "nuevocliente",
+               "buscacliente",
+               "guardanuevocliente"
+               ],
+          "rutaactual":[
+               "rutaactual",
+               "iniciaruta",
+               "finalizaRutaActual"
+               ],
+          "rutas":[
+               "rutas"
+               ],
+          "codexpy":[
+               "codexpy",
+               "codpy"
+               ],
+          "codexpy2":[
+               "codexpy2",
+               "codpy2",
+               "decodpy2"
+               ],
+          "dineros":[
+               "dineros"
+               ]
+     }
+
 class mensajes(Enum):
      USUARIO_INCORRECTO = "Usuario o contraseña incorrecto"
      CLIENTE_GUARDADO = "Cliente guardado con éxito"
@@ -106,8 +138,29 @@ def clientes(request: object) -> map:
           
           paquete["listaclientes"] = resultados
           
-     elif "nuevocliente" in request.form:
-          paquete["redirect"] = "nuevoCliente"
+     elif "nuevocliente" in request.form: 
+          paquete["pagina"] = "nuevoCliente.html"
+     
+     elif "guardanuevocliente" in request.form:
+          data = [
+               "activo",
+               request.form.get("rut"),
+               request.form.get("nombre"),
+               request.form.get("direccion"),
+               request.form.get("comuna"),
+               request.form.get("telefono"),
+               request.form.get("gps"),
+               request.form.get("otros")
+               ]
+          bd = conectorbd(conectorbd.hojaClientes)
+          guardado = bd.nuevo_cliente(data)
+          grabado = bd.guarda_cambios()
+          print(data)
+          if guardado and grabado:
+               paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
+          else:
+               paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
+          bd.cierra_conexion()
      
      elif "modificaCliente" in request.form:
           clientesbd = conectorbd(conectorbd.hojaClientes)
@@ -179,30 +232,6 @@ def clientes(request: object) -> map:
 
      return paquete
 
-def nuevoCliente(request: object, paquete: map) -> map:
-     paquete["pagina"] = "nuevoCliente.html"
-          
-     if "guarda" in request.form:
-          data = [
-               "activo",
-               request.form.get("rut"),
-               request.form.get("nombre"),
-               request.form.get("direccion"),
-               request.form.get("comuna"),
-               request.form.get("telefono"),
-               request.form.get("gps"),
-               request.form.get("otros")
-               ]
-          bd = conectorbd(conectorbd.hojaClientes)
-          guardado = bd.nuevo_cliente(data)
-          grabado = bd.guarda_cambios()
-          if guardado and grabado:
-               paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
-          else:
-               paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
-          bd.cierra_conexion()
-     return paquete
-
 def rutas(request: object, paquete: map) -> map:
      paquete = {"pagina":"rutas.html"}
 
@@ -235,6 +264,8 @@ def rutas(request: object, paquete: map) -> map:
                fechaexistente = rutaactualbd.fecha_ruta()
                rutaactualbd.fecha_ruta(eliminar_fecha=True)
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
+               rutaactualbd.guarda_cambios()
+          rutaactualbd.cierra_conexion()
 
      rutabd = conectorbd(conectorbd.hojaRutaActual)
      rutaActiva = rutabd.fecha_ruta()

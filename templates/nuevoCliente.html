@@ -8,23 +8,23 @@
 <!-- ------------------- BODY A ----------------------------- -->
 
 {% block body_a %}
-  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('nuevoCliente', data=nuevosdatos) }}">
+  <h3>Formulario ingreso nuevo cliente</h3><hr>
+  <form name="nuevosdatos" class="formularioIngreso" method="post">
     <label for="nombre">Nombre:</label><br>
-    <input name="nombre" placeholder="Nombre completo del cliente" required>
+    <input name="nombre" placeholder="Nombre completo del cliente" required><br>
     <label for="rut">RUT:</label><br>
-    <input name="rut" placeholder="12345678-9" required>
+    <input name="rut" placeholder="12345678-9" required><br>
     <label for="direccion">Direccion:</label><br>
-    <input name="direccion" placeholder="Direccion" required>
+    <input name="direccion" placeholder="Direccion" required><br>
     <label for="comuna">Comuna:</label><br>
-    <input name="comuna" placeholder="Comuna" required>
+    <input name="comuna" placeholder="Comuna" required><br>
     <label for="telefono">Telefono:</label><br>
-    <input type="number" name="telefono" placeholder="Telefono">
+    <input type="number" name="telefono" placeholder="Telefono"><br>
     <label for="gps">Coordenadas GPS:</label><br>
-    <input name="gps" placeholder="Coordenadas GPS">
+    <input name="gps" placeholder="Coordenadas GPS"><br>
     <label for="otros">Otros:</label><br>
-    <input name="otros" placeholder="otros...">
-
-    <button name="guarda" value="guarda">Graba cliente</button>
+    <input name="otros" placeholder="otros..."><br><hr>
+    <button name="guardanuevocliente" value="guarda">Graba cliente</button>
     
   </form>
 {% endblock %}
