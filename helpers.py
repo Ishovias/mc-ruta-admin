@@ -270,6 +270,8 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           rutaactualbd.cierra_conexion()
 
      elif "cliente_ruta_confirmar" in request.form:
+          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+          datosExistentes = rutaactualbd.listar_datos()
           
           pass
      
