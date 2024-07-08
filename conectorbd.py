@@ -25,7 +25,7 @@ class conectorbd:
      def getHojaActual(self) -> str:
           return self.bd.hojaActual
 
-     def guarda_cambios(self) -> str:
+     def guarda_cambios(self) -> bool:
           try:
                self.bd.guardar()
           except:
@@ -199,7 +199,15 @@ class conectorbd:
                return False
           else:
                return True
-          
+
+     def elimina_fila(self, ubicacion: int) -> bool:
+          try:
+               self.bd.eliminar(ubicacion)
+          except:
+               return False
+          else:
+               return True
+
      def estado_cliente(self, rut: str, estado: str) -> bool:
           ubicacion = self.busca_ubicacion(rut,"rut")
           try:

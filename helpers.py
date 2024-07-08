@@ -50,6 +50,10 @@ class mensajes(Enum):
      CLIENTE_A_RUTA = "Cliente agregado a la ruta"
      CLIENTE_EN_RUTA = "Cliente YA existente en ruta o Error en BD"
      RUTA_EXISTENTE_ERROR = "Ruta existente o no finalizada en ruta actual"
+     CLIENTE_CONFIRMADO = "Cliente confirmado correctamente"
+     CLIENTE_CONFIRMADO_ERROR = "ERROR al intentar confirmar"
+     CLIENTE_POSPUESTO = "Cliente POSTERGADO del retiro correctamente"
+     CLIENTE_POSPUESTO_ERROR = "ERROR al intentar POSTERGAR"
 
 # ---------------------- SESIONS SINGLETONS  --------------------------
 
@@ -236,9 +240,9 @@ def clientes(request: object) -> map:
 
 def rutas(request: object, paquete: map, peticion: str=None) -> map:
      paquete = {"pagina":"rutas.html"}
+     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
 
      if "iniciaruta" in request.form:
-          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.fecha_ruta() == None:
@@ -252,13 +256,10 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                else:
                     paquete["alerta"] = "Error en creacion de ruta"
                bdrutasregistros.cierra_conexion()
-               rutaactualbd.cierra_conexion()
           else:
                paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
-               rutaactualbd.cierra_conexion()
      
      elif "finalizaRutaActual" in request.form:
-          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
           datosExistentes = rutaactualbd.listar_datos()
           if len(datosExistentes["datos"]) > 0:
                paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
@@ -267,17 +268,22 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                rutaactualbd.fecha_ruta(eliminar_fecha=True)
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                rutaactualbd.guarda_cambios()
-          rutaactualbd.cierra_conexion()
 
      elif "cliente_ruta_confirmar" in request.form:
-          rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-          datosExistentes = rutaactualbd.listar_datos()
-          
-          pass
+          cliente_rut = request.form.get("cliente_ruta_confirmar")
+          ubicacion = rutaactualbd.busca_ubicacion(cliente_rut,"rut")
+          if rutaactualbd.elimina_fila(ubicacion) and rutaactualbd.guarda_cambios():
+               paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO.value
+          else:
+               paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO_ERROR.value
      
      elif "cliente_ruta_posponer" in request.form:
-          pass
-
+          cliente_rut = request.form.get("cliente_ruta_confirmar")
+          ubicacion = rutaactualbd.busca_ubicacion(cliente_rut,"rut")
+          if rutaactualbd.elimina_fila(ubicacion) and rutaactualbd.guarda_cambios():
+               paquete["alerta"] = mensajes.CLIENTE_POSPUESTO.value
+          else:
+               paquete["alerta"] = mensajes.CLIENTE_POSPUESTO_ERROR.value          
 
      rutabd = conectorbd(conectorbd.hojaRutaActual)
      rutaActiva = rutabd.fecha_ruta()
@@ -288,7 +294,8 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           paquete["ruta"] = None
      paquete["rutaActual"] = rutaDatos
      rutabd.cierra_conexion()
-               
+     
+     rutaactualbd.cierra_conexion()
      return paquete
      
 def codex(coder: object, request: object, paquete: map) -> map:
