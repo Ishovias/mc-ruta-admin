@@ -272,10 +272,13 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      elif "cliente_ruta_confirmar" in request.form:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
           datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
+          datos_cliente_confirmado.append("REALIZADO")
           rutabd = conectorbd(conectorbd.hojaRutabd)
-          ingresobd = rutabd.ingre
-          rutabd.busca_ubicacion(None)
-          if rutaactualbd.elimina_fila(ubicacion) and rutaactualbd.guarda_cambios():
+          ingresobd = rutabd.ingresar_datos(
+               rutabd.busca_ubicacion(None),
+               datos_cliente_confirmado
+          )
+          if ingresobd and rutaactualbd.guarda_cambios():
                paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO.value
           else:
                paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO_ERROR.value
@@ -301,6 +304,13 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      rutaactualbd.cierra_conexion()
      return paquete
      
+def registros_rutas(request: object, paquete: map) -> map:
+     rutabd = conectorbd(conectorbd.hojaRutabd)
+
+
+
+     rutabd.cierra_conexion()
+
 def codex(coder: object, request: object, paquete: map) -> map:
      paquete = {"pagina":"codexpy.html","urlfor":"codex"}
      if request.form:

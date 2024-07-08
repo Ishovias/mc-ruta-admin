@@ -94,8 +94,13 @@ class conectorbd:
                fila = self.bd.buscadato(filainicial,column,dato)
           return fila
           
-     def ingresar_datos(self, ubicacion: int):
-          pass
+     def ingresar_datos(self, ubicacion: int, datos: list) -> bool:
+          try:
+               self.bd.ingresador(ubicacion,datos,1)
+          except:
+               return False
+          else:
+               return True
           
      def guardar_modificacion(self, rut: str, data: list) -> bool:
           fila = self.busca_ubicacion(rut,"rut")
