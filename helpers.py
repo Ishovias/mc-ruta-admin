@@ -271,7 +271,10 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
 
      elif "cliente_ruta_confirmar" in request.form:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
-          ubicacion = rutaactualbd.busca_ubicacion(cliente_rut,"rut")
+          datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
+          rutabd = conectorbd(conectorbd.hojaRutabd)
+          ingresobd = rutabd.ingre
+          rutabd.busca_ubicacion(None)
           if rutaactualbd.elimina_fila(ubicacion) and rutaactualbd.guarda_cambios():
                paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO.value
           else:
