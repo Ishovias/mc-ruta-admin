@@ -239,7 +239,7 @@ def clientes(request: object) -> map:
      return paquete
 
 def rutas(request: object, paquete: map, peticion: str=None) -> map:
-     paquete = {"pagina":"rutas.html"}
+     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
 
      if "iniciaruta" in request.form:
@@ -295,7 +295,7 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      rutaActiva = rutabd.fecha_ruta()
      rutaDatos = rutabd.listar_datos()
      if rutaActiva != None:
-          paquete["ruta"] = rutaActiva
+          paquete["ruta"] = f"Ruta activa: {rutaActiva}"
      else:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos
@@ -308,8 +308,7 @@ def registros_rutas(request: object, paquete: map) -> map:
      rutabd = conectorbd(conectorbd.hojaRutabd)
      rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
      
-     paquete = {"pagina":"rutas.html"}
-
+     paquete = {"pagina":"rutasRegistros.html"}
      
      paquete["rutaLista"] = rutaregistros.listar_datos()
      

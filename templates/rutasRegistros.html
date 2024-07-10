@@ -3,7 +3,7 @@
 {% block encabezado %}
      <h1>Mediclean Ruta</h1>
      <h2>Administrador de ruta</h2>
-     <h3>({{ datos.nombrePagina }})</h3>
+     <h3>(Registro historico de rutas)</h3>
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
@@ -13,7 +13,7 @@
           <hr>
           <table class="tbresultados">
           <thead>
-                    <th>Realizado</th>
+                    <th>DETALLES</th>
                {% for dato in datos.rutaLista.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
@@ -23,8 +23,7 @@
                     <tr>
                     <td>
                          <form method="post">
-                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="width: 95px;">Realizado</button>
-                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="width: 95px;">Pospuesto</button>
+                              <button type="submit" name="detalle_ruta_registro" value="{{ fila.2 }}" style="width: 95px;">Detalle</button>
                          </form>
                     </td>
                     {% for data in fila %}
