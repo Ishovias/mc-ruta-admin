@@ -242,6 +242,7 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
      rutabd = conectorbd(conectorbd.hojaRutabd)
+     rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
 
      def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
@@ -258,7 +259,6 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                paquete["alerta"] = mensaje_bad
      
      if "iniciaruta" in request.form:
-          rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.fecha_ruta() == None:
@@ -279,6 +279,15 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
           else:
                fechaexistente = rutaactualbd.fecha_ruta()
+               rutaregistros.ingresar_datos(
+                    rutaregistros.busca_ubicacion(None),
+                    [
+                         rutaactualbd.fecha_ruta(),
+                         rutaactualbd.nombre_ruta(), # CREAR ESTE METODO
+                         # Falta metodo para deducir cantidad de clientes realizados en ruta
+                         # Falta metodo para 
+                    ]
+               )
                rutaactualbd.fecha_ruta(eliminar_fecha=True)
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                rutaactualbd.guarda_cambios()
@@ -309,6 +318,8 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      
      rutabd.cierra_conexion()
      rutaactualbd.cierra_conexion()
+     rutaregistros.cierra_conexion()
+     
      return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
