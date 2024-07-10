@@ -298,7 +298,7 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           paquete["ruta"] = rutaActiva
      else:
           paquete["ruta"] = None
-     paquete["rutaActual"] = rutaDatos
+     paquete["rutaLista"] = rutaDatos
      rutabd.cierra_conexion()
      
      rutaactualbd.cierra_conexion()
@@ -306,19 +306,27 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      
 def registros_rutas(request: object, paquete: map) -> map:
      rutabd = conectorbd(conectorbd.hojaRutabd)
+     rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
+     
+     paquete = {"pagina":"rutas.html"}
 
-
-
+     
+     paquete["rutaLista"] = rutaregistros.listar_datos()
+     
+     
+     
      rutabd.cierra_conexion()
+     rutaregistros.cierra_conexion()
+     return paquete
 
 def codex(coder: object, request: object, paquete: map) -> map:
      paquete = {"pagina":"codexpy.html","urlfor":"codex"}
      if request.form:
           if "codpy2" in request.form:
-               frase = request.form["ingreso"]
+               frase = request.form.get("ingreso")
                paquete["resultado"] = coder.encripta(frase)
           elif "decodpy2" in request.form:
-               frase = request.form["ingreso"]
+               frase = request.form.get("ingreso")
                paquete["resultado"] = coder.desencripta(frase)
      else:
           paquete["resultado"] = ""
@@ -358,11 +366,9 @@ def empaquetador(coder: object, request: object, destino: str) -> map:
 
      elif destino == "codexpy2":
           paquete = codex(coder, request, paquete)
-     '''
-     elif ruta == "nuevocliente":
-          paquete = nuevoCliente(request, paquete)
           
+     elif destino == "rutas":
+          paquete = registros_rutas(request, paquete)
 
-     '''  
      return paquete
           

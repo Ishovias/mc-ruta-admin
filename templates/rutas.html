@@ -7,19 +7,19 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-{% if "rutaActual" in datos %}
+{% if "rutaLista" in datos %}
      {% if datos.ruta != None %}
           <p class="tituloscentrados"> Ruta activa: {{ datos.ruta }}</p>
           <hr>
           <table class="tbresultados">
           <thead>
                     <th>Realizado</th>
-               {% for dato in datos.rutaActual.encabezados %}
+               {% for dato in datos.rutaLista.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
           </thead>
           <tbody>
-               {% for fila in datos.rutaActual.datos %}
+               {% for fila in datos.rutaLista.datos %}
                     <tr>
                     <td>
                          <form method="post">
@@ -38,7 +38,7 @@
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
           </form>
-     {% elif datos.rutaActual.datos == 0 or datos.rutaActual.datos == [] %}
+     {% elif datos.rutaLista.datos == 0 or datos.rutaLista.datos == [] %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
           <br><hr><br>
           <h2 class="encabezado">Nueva ruta</h2>
