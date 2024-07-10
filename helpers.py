@@ -241,21 +241,35 @@ def clientes(request: object) -> map:
 def rutas(request: object, paquete: map, peticion: str=None) -> map:
      paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+     rutabd = conectorbd(conectorbd.hojaRutabd)
 
+     def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
+          cliente_rut = request.form.get("cliente_ruta_confirmar")
+          datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
+          datos_cliente_confirmado.append(realizadopospuesto)
+          ingresobd = rutabd.ingresar_datos(
+               rutabd.busca_ubicacion(None),
+               datos_cliente_confirmado
+          )
+          rutaactualbd.elimina_fila(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
+          if ingresobd and rutabd.guarda_cambios() and rutaactualbd.guarda_cambios():
+               paquete["alerta"] = mensaje_ok
+          else:
+               paquete["alerta"] = mensaje_bad
+     
      if "iniciaruta" in request.form:
+          rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.fecha_ruta() == None:
-               bdrutasregistros = conectorbd(conectorbd.hojaRutasRegistros)
-               nuevaruta = bdrutasregistros.nueva_ruta([fecha,ruta])
-               nuevarutaactual = rutaactualbd.fecha_ruta(fecha)
-               if nuevaruta and nuevarutaactual:
+               nuevarutaactual = rutaactualbd.fecha_ruta(nueva_fecha=fecha)
+               nuevoregistro = rutaregistros.nueva_ruta([fecha,ruta])
+               if nuevarutaactual and nuevoregistro:
                     paquete["alerta"] = "Ruta creada"
-                    bdrutasregistros.guarda_cambios()
                     rutaactualbd.guarda_cambios()
+                    rutaregistros.guarda_cambios()
                else:
                     paquete["alerta"] = "Error en creacion de ruta"
-               bdrutasregistros.cierra_conexion()
           else:
                paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
      
@@ -269,38 +283,31 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                rutaactualbd.guarda_cambios()
 
-     elif "cliente_ruta_confirmar" in request.form:
-          cliente_rut = request.form.get("cliente_ruta_confirmar")
-          datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
-          datos_cliente_confirmado.append("REALIZADO")
-          rutabd = conectorbd(conectorbd.hojaRutabd)
-          ingresobd = rutabd.ingresar_datos(
-               rutabd.busca_ubicacion(None),
-               datos_cliente_confirmado
-          )
-          if ingresobd and rutaactualbd.guarda_cambios():
-               paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO.value
-          else:
-               paquete["alerta"] = mensajes.CLIENTE_CONFIRMADO_ERROR.value
      
-     elif "cliente_ruta_posponer" in request.form:
-          cliente_rut = request.form.get("cliente_ruta_confirmar")
-          ubicacion = rutaactualbd.busca_ubicacion(cliente_rut,"rut")
-          if rutaactualbd.elimina_fila(ubicacion) and rutaactualbd.guarda_cambios():
-               paquete["alerta"] = mensajes.CLIENTE_POSPUESTO.value
-          else:
-               paquete["alerta"] = mensajes.CLIENTE_POSPUESTO_ERROR.value          
+     elif "cliente_ruta_confirmar" in request.form:
+          confpos(
+               "REALIZADO", 
+               mensajes.CLIENTE_CONFIRMADO.value, 
+               mensajes.CLIENTE_CONFIRMADO_ERROR
+               )
 
-     rutabd = conectorbd(conectorbd.hojaRutaActual)
-     rutaActiva = rutabd.fecha_ruta()
-     rutaDatos = rutabd.listar_datos()
+     elif "cliente_ruta_posponer" in request.form:
+          confpos(
+               "POSPUESTO", 
+               mensajes.CLIENTE_POSPUESTO.value, 
+               mensajes.CLIENTE_POSPUESTO_ERROR.value
+               )
+
+     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+     rutaActiva = rutaactualbd.fecha_ruta()
+     rutaDatos = rutaactualbd.listar_datos()
      if rutaActiva != None:
           paquete["ruta"] = f"Ruta activa: {rutaActiva}"
      else:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos
-     rutabd.cierra_conexion()
      
+     rutabd.cierra_conexion()
      rutaactualbd.cierra_conexion()
      return paquete
      

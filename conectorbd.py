@@ -229,7 +229,7 @@ class conectorbd:
           else:
                return True
                
-     def nueva_ruta(self, fecha_nombre: list) -> None:
+     def nueva_ruta(self, fecha_nombre: list) -> bool:
           if self.busca_ubicacion(fecha_nombre[0], "fecha") != 0:
                print(f"ERROR, fecha preexistente")
                return False
@@ -254,7 +254,7 @@ class conectorbd:
           idActual = self.bd.idActual(
                self.hojaActual["filainicial"],
                self.hojaActual["columnas"]["id"],
-               id
+               "ID"
                )
           
           datos.insert(0,idActual)
