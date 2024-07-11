@@ -85,9 +85,9 @@ class conectorbd:
           self.bd.ingresador(fila,data,1)
           return True
           
-     def busca_ubicacion(self, dato: str, columna: str="cliente") -> int:
+     def busca_ubicacion(self, dato: str, columna: str="cliente", fila: int=False) -> int:
           column = self.hojaActual["columnas"][columna]
-          filainicial = self.hojaActual["filainicial"]
+          filainicial = self.hojaActual["filainicial"] if not fila else fila
           if dato == None:
                fila = self.bd.buscafila(filainicial,column)
           else:
@@ -292,8 +292,7 @@ class conectorbd:
                return True
           else:
                return dato[0]
-               
-               
+          
      def ruta_en_curso(self) -> str:
           pass
              

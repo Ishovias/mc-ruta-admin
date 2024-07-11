@@ -189,8 +189,9 @@ def clientes(request: object) -> map:
                clientesbd = conectorbd(conectorbd.hojaClientes)
                identificador = request.form.get("aRuta")
                cliente = clientesbd.busca_datoscliente(identificador,"rut")
-               cliente.remove(cliente[0]) # Elimina el indicador estado del cliente
+               cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
                aruta = rutaactualbd.agregar_a_ruta(fecha, cliente)
+               rutaactualbd.fecha
                
                rutaactualbd.guarda_cambios()
                clientesbd.cierra_conexion()
@@ -239,10 +240,6 @@ def clientes(request: object) -> map:
      return paquete
 
 def rutas(request: object, paquete: map, peticion: str=None) -> map:
-     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
-     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-     rutabd = conectorbd(conectorbd.hojaRutabd)
-     rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
 
      def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
@@ -255,16 +252,22 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           rutaactualbd.elimina_fila(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
           if ingresobd and rutabd.guarda_cambios() and rutaactualbd.guarda_cambios():
                paquete["alerta"] = mensaje_ok
+               return True
           else:
                paquete["alerta"] = mensaje_bad
+               return False
+
+     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
+     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
+     rutabd = conectorbd(conectorbd.hojaRutabd)
+     rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
      
      if "iniciaruta" in request.form:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.fecha_ruta() == None:
                nuevarutaactual = rutaactualbd.fecha_ruta(nueva_fecha=fecha)
-               nuevoregistro = rutaregistros.nueva_ruta([fecha,ruta])
-               if nuevarutaactual and nuevoregistro:
+               if nuevarutaactual:
                     paquete["alerta"] = "Ruta creada"
                     rutaactualbd.guarda_cambios()
                     rutaregistros.guarda_cambios()

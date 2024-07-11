@@ -35,6 +35,10 @@ RUTA_ACTUAL = {
   "nombrehoja":"ruta_actual", 
   "filainicial":3,
   "rutaencurso":{"fila":1,"columna":2},
+  "nombreruta":{"fila":1,"columna":3},
+  "clientesconfirmados":{"fila":1,"columna":4},
+  "clientespostergados":{"fila":1,"columna":5},
+  "clientesdeuda":{"fila":1,"columna":6},
   "columnas":{
     "fecha":1,
     "id":2,
