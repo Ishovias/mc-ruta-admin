@@ -36,9 +36,9 @@ RUTA_ACTUAL = {
   "filainicial":3,
   "rutaencurso":{"fila":1,"columna":2},
   "nombreruta":{"fila":1,"columna":3},
-  "clientesconfirmados":{"fila":1,"columna":4},
-  "clientespostergados":{"fila":1,"columna":5},
-  "clientesdeuda":{"fila":1,"columna":6},
+  "REALIZADO":{"fila":1,"columna":4},
+  "POSPUESTO":{"fila":1,"columna":5},
+  "DEUDA":{"fila":1,"columna":6},
   "columnas":{
     "fecha":1,
     "id":2,
@@ -78,9 +78,9 @@ RUTAS_REGISTROS = {
   "columnas":{
     "fecha":1,
     "ruta":2,
-    "clientesrealizados":3,
-    "clientesnorealizados":4,
-    "clientescerrados":5,
+    "REALIZADO":3,
+    "POSPUESTO":4,
+    "DEUDA":5,
     "otros":6,
     "todas":[1,2,3,4,5,6]  
   }, 

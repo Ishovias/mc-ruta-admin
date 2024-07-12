@@ -245,10 +245,18 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
           datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
           datos_cliente_confirmado.append(realizadopospuesto)
+          # Traslado de cliente a BD
           ingresobd = rutabd.ingresar_datos(
                rutabd.busca_ubicacion(None),
                datos_cliente_confirmado
           )
+          # incremento indicador de clientes realizados o pospuestos
+          cantregistrada = rutaregistros.get_dato_simple(identificador=realizadopospuesto)
+          rutaregistros.ingresar_dato_simple(
+               str(int(cantregistrada) + 1),
+               identificador=realizadopospuesto
+          )
+          # 
           rutaactualbd.elimina_fila(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
           if ingresobd and rutabd.guarda_cambios() and rutaactualbd.guarda_cambios():
                paquete["alerta"] = mensaje_ok
@@ -266,8 +274,10 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.fecha_ruta() == None:
-               nuevarutaactual = rutaactualbd.fecha_ruta(nueva_fecha=fecha)
-               if nuevarutaactual:
+               nuevarutaactual = rutaactualbd.ingresar_dato_simple(fecha, identificador="rutaencurso")
+               nombrenuevaruta = rutaactualbd.ingresar_dato_simple(ruta, identificador="nombreruta")
+               registroruta = rutaregistros.nueva_ruta([fecha,ruta])
+               if nuevarutaactual and registroruta and nombrenuevaruta:
                     paquete["alerta"] = "Ruta creada"
                     rutaactualbd.guarda_cambios()
                     rutaregistros.guarda_cambios()
@@ -287,14 +297,15 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                     [
                          rutaactualbd.fecha_ruta(),
                          rutaactualbd.nombre_ruta(), # CREAR ESTE METODO
-                         # Falta metodo para deducir cantidad de clientes realizados en ruta
-                         # Falta metodo para 
+                         rutaactualbd.get_dato_simple(identificador="REALIZADO"), # Falta metodo para deducir cantidad de clientes realizados en ruta
+                         rutaactualbd.get_dato_simple(identificador="POSPUESTO"), # Falta metodo para 
+                         rutaactualbd.get_dato_simple(identificador="DEUDA"),
+                         "RUTA FINALIZADA"
                     ]
                )
                rutaactualbd.fecha_ruta(eliminar_fecha=True)
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                rutaactualbd.guarda_cambios()
-
      
      elif "cliente_ruta_confirmar" in request.form:
           confpos(
@@ -310,14 +321,16 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
                mensajes.CLIENTE_POSPUESTO_ERROR.value
                )
 
-     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-     rutaActiva = rutaactualbd.fecha_ruta()
+     rutaActiva = rutaactualbd.get_dato_simple(identificador="rutaencurso")
      rutaDatos = rutaactualbd.listar_datos()
-     if rutaActiva != None:
+     if rutaActiva:
           paquete["ruta"] = f"Ruta activa: {rutaActiva}"
      else:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos
+     
+     print(paquete["ruta"])
+     print(paquete["rutaLista"])
      
      rutabd.cierra_conexion()
      rutaactualbd.cierra_conexion()

@@ -94,6 +94,32 @@ class conectorbd:
                fila = self.bd.buscadato(filainicial,column,dato)
           return fila
           
+     def ingresar_dato_simple(self, dato: str, fila: int=None, columna: str=None, identificador: str=None ) -> bool:
+          if identificador:
+               row = self.hojaActual[identificador]["fila"]
+               column = self.hojaActual[identificador]["columna"]
+          else:
+               row = fila
+               column = self.hojaActual["columnas"][columna]
+          try:
+               self.bd.ingresador(row,dato,column)
+          except:
+               return False
+          else:
+               return True
+     
+     def get_dato_simple(self, fila: int=None, columna: str=None, identificador: str=None) -> str:
+          if identificador:
+               row = self.hojaActual[identificador]["fila"]
+               column = self.hojaActual[identificador]["columna"]
+          else:
+               row = fila
+               column = self.hojaActual["columnas"][columna]
+          
+          dato = self.bd.extraefila(row,[column])
+          
+          return dato[0]
+     
      def ingresar_datos(self, ubicacion: int, datos: list) -> bool:
           try:
                self.bd.ingresador(ubicacion,datos,1)
