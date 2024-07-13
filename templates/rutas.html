@@ -7,7 +7,7 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-{% if "rutaLista" in datos %}
+{% if "ruta" in datos %}
      {% if datos.ruta != None %}
           <p class="tituloscentrados">{{ datos.ruta }}</p>
           <hr>
@@ -38,7 +38,7 @@
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
           </form>
-     {% elif datos.rutaLista.datos == 0 or datos.rutaLista.datos == [] %}
+     {% else %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
           <br><hr><br>
           <h2 class="encabezado">Nueva ruta</h2>
@@ -55,7 +55,8 @@
           </form>
      {% endif %}
      <br><hr><br>
-{% elif "nuevaruta" in datos %}
+{% endif %}
+{% if "nuevaruta" in datos %}
      <h2 class="encabezado">Nueva ruta</h2>
      <br><hr><br>
      <form name="nuevaruta" class="formularioIngreso" method="post">

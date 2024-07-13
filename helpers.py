@@ -239,7 +239,7 @@ def clientes(request: object) -> map:
 
      return paquete
 
-def rutas(request: object, paquete: map, peticion: str=None) -> map:
+def rutas(request: object, paquete: map) -> map:
 
      def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           cliente_rut = request.form.get("cliente_ruta_confirmar")
@@ -273,7 +273,7 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      if "iniciaruta" in request.form:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
-          if rutaactualbd.fecha_ruta() == None:
+          if rutaactualbd.get_dato_simple(identificador="rutaencurso") == None:
                nuevarutaactual = rutaactualbd.ingresar_dato_simple(fecha, identificador="rutaencurso")
                nombrenuevaruta = rutaactualbd.ingresar_dato_simple(ruta, identificador="nombreruta")
                registroruta = rutaregistros.nueva_ruta([fecha,ruta])
@@ -328,9 +328,6 @@ def rutas(request: object, paquete: map, peticion: str=None) -> map:
      else:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos
-     
-     print(paquete["ruta"])
-     print(paquete["rutaLista"])
      
      rutabd.cierra_conexion()
      rutaactualbd.cierra_conexion()
