@@ -1,4 +1,5 @@
 from conectorbd import conectorbd
+from handlers.rutas import RutaActual, RutaRegistros
 from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
@@ -266,32 +267,29 @@ def rutas(request: object, paquete: map) -> map:
                return False
 
      paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
-     rutaactualbd = conectorbd(conectorbd.hojaRutaActual)
-     rutabd = conectorbd(conectorbd.hojaRutabd)
-     rutaregistros = conectorbd(conectorbd.hojaRutasRegistros)
      
      if "iniciaruta" in request.form:
+          rutaactualbd = RutaActual()
+          rutaregistros = RutaRegistros()
+          
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
-          if rutaactualbd.get_dato_simple(identificador="rutaencurso") == None:
-               nuevarutaactual = rutaactualbd.ingresar_dato_simple(fecha, identificador="rutaencurso")
-               nombrenuevaruta = rutaactualbd.ingresar_dato_simple(ruta, identificador="nombreruta")
-               registroruta = rutaregistros.nueva_ruta([fecha,ruta])
-               if nuevarutaactual and registroruta and nombrenuevaruta:
-                    paquete["alerta"] = "Ruta creada"
-                    rutaactualbd.guarda_cambios()
-                    rutaregistros.guarda_cambios()
-               else:
-                    paquete["alerta"] = "Error en creacion de ruta"
+          if rutaactualbd.nuevaRuta(fecha,ruta) and rutaregistros.nuevaRuta(fecha,ruta):
+               paquete["alerta"] = "Ruta creada"
+               rutaactualbd.guardaCierra()
+               rutaregistros.guardaCierra()
           else:
-               paquete["alerta"] = mensajes.RUTA_EXISTENTE_ERROR.value
+               paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
      
      elif "finalizaRutaActual" in request.form:
-          datosExistentes = rutaactualbd.listar_datos()
+          rutaactualbd = RutaActual()
+          rutaregistros = RutaRegistros()
+          
+          datosExistentes = rutaactualbd.listar()
           if len(datosExistentes["datos"]) > 0:
                paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
           else:
-               fechaexistente = rutaactualbd.fecha_ruta()
+               fechaexistente = rutaactualbd.get_data(identificador="rutaencurso")
                rutaregistros.ingresar_datos(
                     rutaregistros.busca_ubicacion(None),
                     [
