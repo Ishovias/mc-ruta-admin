@@ -1,12 +1,4 @@
 # hoja de parametros generales
-hojas_bd = {
-     hojaClientes = params.CLIENTES,
-     hojaUsuarios = params.USUARIO,
-     hojaRutaActual = params.RUTA_ACTUAL,
-     hojaRutasBD = params.RUTAS_BD,
-     hojaRutasRegistros = params.RUTAS_REGISTROS,
-     hojaGastosBD = params.GASTOS_BD
-}
 
 LIBRODATOS = "./bd/mediclean_bd.xlsx"
 MAX_FILAS = 10000

@@ -57,23 +57,23 @@ class bdmediclean:
             else:
                 filalibre += 1
 
-    def buscadato(self, filainicio:int, columna: int, dato: str) -> int:
+    def buscadato(self, filainicio: int, columna: int, dato: str) -> int:
 
         fila = filainicio
 
         for fila in range(filainicio, self.maxfilas, 1):
             celda = self.hojabd.cell(row=fila,column=columna)
             try:
-                 valorcelda = str(celda.value).lower()
-                 datob = dato.lower()
+                valorcelda = str(celda.value).lower()
+                datob = dato.lower()
             except:
-                 valorcelda = str(celda.value)
-                 datob = dato
+                valorcelda = str(celda.value)
+                datob = dato
             finally:
-                 if datob == valorcelda:
-                     return fila
-                 else:
-                     fila += 1
+                if datob == valorcelda:
+                    return fila
+                else:
+                    fila += 1
         else:
             fila = 0
         return fila
@@ -90,7 +90,7 @@ class bdmediclean:
             if dato.lower() in valorcelda.lower():
                 filas.append(fila)
             elif valorcelda == None:
-               break
+                break
             else:
                 fila += 1
                 

@@ -1,5 +1,5 @@
 from conectorbd import conectorbd
-from handlers.rutas import RutaActual, RutaRegistros
+from handlers.rutas import RutaActual, RutaRegistros, RutaBD
 from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
@@ -243,23 +243,27 @@ def clientes(request: object) -> map:
 def rutas(request: object, paquete: map) -> map:
 
      def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
+          
+          rutabd = RutaBD()
+          rutaregistros = RutaRegistros()
+          rutaactual = RutaActual()
+          
           cliente_rut = request.form.get("cliente_ruta_confirmar")
           datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
           datos_cliente_confirmado.append(realizadopospuesto)
           # Traslado de cliente a BD
-          ingresobd = rutabd.ingresar_datos(
-               rutabd.busca_ubicacion(None),
-               datos_cliente_confirmado
-          )
+
+          ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
+
           # incremento indicador de clientes realizados o pospuestos
-          cantregistrada = rutaregistros.get_dato_simple(identificador=realizadopospuesto)
-          rutaregistros.ingresar_dato_simple(
+          cantregistrada = rutaregistros.getData(identificador=realizadopospuesto)
+          rutaregistros.ingresoData(
                str(int(cantregistrada) + 1),
                identificador=realizadopospuesto
           )
           # 
-          rutaactualbd.elimina_fila(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
-          if ingresobd and rutabd.guarda_cambios() and rutaactualbd.guarda_cambios():
+          rutaactualbd.eliminaData(rutaactualbd.ubicar(cliente_rut,"rut"))
+          if ingresobd and rutabd.guardaCierra() and rutaactualbd.guardaCierra():
                paquete["alerta"] = mensaje_ok
                return True
           else:
@@ -289,21 +293,36 @@ def rutas(request: object, paquete: map) -> map:
           if len(datosExistentes["datos"]) > 0:
                paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
           else:
-               fechaexistente = rutaactualbd.get_data(identificador="rutaencurso")
-               rutaregistros.ingresar_datos(
-                    rutaregistros.busca_ubicacion(None),
-                    [
-                         rutaactualbd.fecha_ruta(),
-                         rutaactualbd.nombre_ruta(), # CREAR ESTE METODO
-                         rutaactualbd.get_dato_simple(identificador="REALIZADO"), # Falta metodo para deducir cantidad de clientes realizados en ruta
-                         rutaactualbd.get_dato_simple(identificador="POSPUESTO"), # Falta metodo para 
-                         rutaactualbd.get_dato_simple(identificador="DEUDA"),
-                         "RUTA FINALIZADA"
-                    ]
+               fechaexistente = rutaactualbd.getData(identificador="rutaencurso")
+               
+               identificadores = [
+                    "rutaencurso",
+                    "nombreruta",
+                    "REALIZADO",
+                    "POSPUESTO",
+                    "DEUDA"
+               ]
+               
+               datos = []
+               for identificador in identificadores:
+                    datos.append(rutaactualbd.getData(identificador=identificador))
+               datos.append("RUTA FINALIZADA")
+
+               rutaregistros.ingresoData(
+                    datos=datos,
+                    fila=rutaregistros.ubicacionLibre(),
+                    columna="fecha"
                )
-               rutaactualbd.fecha_ruta(eliminar_fecha=True)
+               for identificador in identificadores:
+                    rutaactualbd.ingresoData(dato="", identificador=identificador)
+               
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
-               rutaactualbd.guarda_cambios()
+               
+               rutaactualbd.guardarCambios()
+               rutaregistros.guardarCambios()
+
+          rutaactualbd.cierraConexion()
+          rutaactualbd.cierraConexion()
      
      elif "cliente_ruta_confirmar" in request.form:
           confpos(
@@ -319,18 +338,17 @@ def rutas(request: object, paquete: map) -> map:
                mensajes.CLIENTE_POSPUESTO_ERROR.value
                )
 
-     rutaActiva = rutaactualbd.get_dato_simple(identificador="rutaencurso")
-     rutaDatos = rutaactualbd.listar_datos()
+     rutaactualbd = RutaActual()
+
+     rutaActiva = rutaactualbd.getData(identificador="rutaencurso")
+     rutaDatos = rutaactualbd.listarData()
      if rutaActiva:
           paquete["ruta"] = f"Ruta activa: {rutaActiva}"
      else:
           paquete["ruta"] = None
-     paquete["rutaLista"] = rutaDatos
+     paquete["rutaLista"] = rutaDatos["datos"]
      
-     rutabd.cierra_conexion()
-     rutaactualbd.cierra_conexion()
-     rutaregistros.cierra_conexion()
-     
+     rutaactualbd.cierraConexion()
      return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
