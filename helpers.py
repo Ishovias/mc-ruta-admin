@@ -240,18 +240,16 @@ def clientes(request: object) -> map:
 
      return paquete
 
-class rutas:
-     
-     def __init__(self, request: object, paquete: map) -> None:
-          self.paquete = paquete
-          self.request = request
+def rutas(request: object, paquete: map) -> map:
+          
+     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      
      def iniciaRuta(paquete: map) -> map:
           rutaactualbd = RutaActual()
           rutaregistros = RutaRegistros()
           
-          fecha = self.request.form.get("fecha").replace("-","")
-          ruta = self.request.form.get("nombreruta")
+          fecha = request.form.get("fecha").replace("-","")
+          ruta = request.form.get("nombreruta")
           nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
           rutaactualbd.guardarCerrar()
           nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
@@ -364,16 +362,7 @@ class rutas:
           ractualbd.cerrarConexion()
           return paquete
           
-
-     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
-     
-     if "iniciaruta" in request.form:
-     elif "finalizaRutaActual" in request.form:
-     
-     elif "cliente_ruta_confirmar" in request.form:
-
-     elif "cliente_ruta_posponer" in request.form:
-
+     return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
      rutabd = conectorbd(conectorbd.hojaRutabd)

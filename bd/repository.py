@@ -143,7 +143,25 @@ class bdmediclean:
             celdaDato = self.hojabd.cell(row=fila,column=columnainicio)
             celdaDato.value = dato
             columnainicio += 1
-            
+
+    def ingresar_dato_simple(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
+        if identificador:
+            row = self.hoja_actual[identificador]["fila"]
+            column = self.current_sheet[identificador]["columna"]
+        else:
+            row = fila
+            column = self.current_sheet["columnas"][columna]
+        try:
+            if datos:
+                    super().ingresador(row,datos,column)
+            else:
+                    super().ingresador(row,[dato],column)
+        except:
+            return False
+        else:
+            return True
+
+
     def ingresador_columnas(self, fila: int, datos: list, columnas: list) -> None:
         
         columna = 0
@@ -151,21 +169,6 @@ class bdmediclean:
             celdaDato = self.hojabd.cell(row=fila,column=columnas[columna])
             celdaDato.value = dato
             columna += 1
-
-    def rangofechas(self, fechainicio: str, fechatermino: str) -> list:
-
-        fechainicio = int(fechainicio)
-        fechatermino = int(fechatermino)
-
-        listafechas = []
-
-        for i in range(fechainicio,(fechainicio + 5),1):
-            listafechas.append(i)
-        
-        for i in range((fechainicio + 91),(fechatermino + 1),1):
-            listafechas.append(i)
-
-        return listafechas
 
     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
@@ -180,26 +183,6 @@ class bdmediclean:
                 else:
                     return int(celdaAnterior.value)+1
 
-    def extraedatos(self, columnas: list, codigo: str) -> list:
-
-        fila = 4
-
-        for fila in range(4,self.maxfilas,1):
-            celda = self.hojabd.cell(row=fila,column=1)
-            if celda.value == int(codigo):
-                break
-            elif celda.value == None:
-                return None
-            else:
-                fila += 1
-
-        datos = []
-        for dato in columnas:
-            celda = self.hojabd.cell(row=fila,column=dato)
-            datos.append(celda.value)
-
-        return datos
-
     def extraefila(self, fila: int, columnas: list) -> list:
 
         datos = []
@@ -209,6 +192,22 @@ class bdmediclean:
             datos.append(celda.value)
 
         return datos
+
+    def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None) -> bool:
+        if identificador:
+            row = self.current_sheet[identificador]["fila"]
+            column = self.current_sheet[identificador]["columna"]
+        else:
+            row = fila
+            column = self.current_sheet["columnas"][columna]
+        
+        if columnas:    
+            datos = super().extraefila(row,columnas)
+            return datos
+        else:
+            datos = super().extraefila(row,[column])
+            return datos[0]
+
 
     def guardar(self) -> None:
         self.bd.save(params.LIBRODATOS)
