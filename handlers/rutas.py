@@ -71,14 +71,30 @@ class Operaciones(bdmediclean):
                self.current_sheet["columnas"][columna]
                )
 
-class RutaActual(bdmediclean):
+     def guardarCambios(self) -> bool:
+          try:
+               super().guardar()
+          except:
+               return False
+          else:
+               return True
+               
+     def cierraConexion(self) -> None:
+          super().cerrar()
+
+     def guardaCierra(self) -> bool:
+          guardado = self.guardarCambios()
+          self.cierraConexion()
+          return guardado
+
+
+class RutaActual:
      
      current_sheet = ""
 
      def __init__(self) -> None:
           self.current_sheet = params.RUTA_ACTUAL
           self.operacion = Operaciones(self.current_sheet)
-          super().__init__(params.RUTA_ACTUAL["nombrehoja"])
      
      def listarData(self) -> map:
           return self.operacion.listarDatos()
@@ -90,14 +106,18 @@ class RutaActual(bdmediclean):
           return self.operacion.ubicacion(dato,columna)
 
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
-          if self.operacion.getDato(identificador="rutaencurso") == [None]:
+          if self.operacion.getDato(identificador="rutaencurso") != None:
                return False
-          ingresofecha = self.operacion.ingresar_dato_simple(dato=fecha, identificador="rutaencurso")
-          ingresoruta = self.operacion.ingresar_dato_simple(dato=ruta, identificador="nombreruta")
-          if ingresofecha and ingresoruta:
-               return True
+          try:
+               self.operacion.ingresador(
+               fila=self.current_sheet["rutaencurso"]["fila"],
+               datos=[fecha,ruta],
+               columnainicio=self.current_sheet["rutaencurso"]["columna"]
+               )
+          except:
+               return False
           else: 
-               return False
+               return True
                
      def ingresoData(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
           resultado = self.operacion.ingresar_dato_simple(dato,datos,fila,columna,identificador)
@@ -107,33 +127,25 @@ class RutaActual(bdmediclean):
           resultado = self.operacion.getDato(fila,columna,columnas,identificador)
           return resultado
 
-     def guardarCambios(self) -> bool:
-          try:
-               super().guardar()
-          except:
-               return False
-          else:
-               return True
+     def guardaDatos(self) -> bool:
+          return self.operacion.guardarCambios()
                
-     def cierraConexion(self) -> None:
-          super().cerrar()
-     
-     def guardaCierra(self) -> bool:
-          guardado = self.guardarCambios()
-          self.cierraConexion()
-          return guardado
+     def cerrarConexion(self) -> None:
+          return self.operacion.cierraConexion()
+
+     def guardarCerrar(self) -> bool:
+          return self.operacion.guardaCierra()
      
      def eliminaData(self, fila: int) -> bool:
           return self.operacion.eliminaDatos(fila)
-     
-class RutaRegistros(bdmediclean):
+
+class RutaRegistros:
      
      current_sheet = ""
 
      def __init__(self) -> None:
           self.current_sheet = params.RUTAS_REGISTROS
           self.operacion = Operaciones(self.current_sheet)
-          super().__init__(self.current_sheet["nombrehoja"])
           
      def listarData(self) -> map:
           return self.operacion.listarDatos()
@@ -147,10 +159,7 @@ class RutaRegistros(bdmediclean):
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
           ingreso = self.operacion.ingresar_dato_simple(
                datos=[fecha,ruta],
-               fila=super().buscafila(
-                    self.current_sheet["filainicial"],
-                    self.current_sheet["columnas"]["fecha"]
-                    ),
+               fila=self.operacion.filaLibre(),
                columna="fecha"
                )
           if ingreso:
@@ -166,33 +175,25 @@ class RutaRegistros(bdmediclean):
           resultado = self.operacion.getDato(fila,columna,columnas,identificador)
           return resultado
      
-     def guardarCambios(self) -> bool:
-          try:
-               super().guardar()
-          except:
-               return False
-          else:
-               return True
+     def guardaDatos(self) -> bool:
+          return self.operacion.guardarCambios()
                
-     def cierraConexion(self) -> None:
-          super().cerrar()
-     
-     def guardaCierra(self) -> bool:
-          guardado = self.guardarCambios()
-          self.cierraConexion()
-          return guardado
+     def cerrarConexion(self) -> None:
+          return self.operacion.cierraConexion()
+
+     def guardarCerrar(self) -> bool:
+          return self.operacion.guardaCierra()
 
      def eliminaData(self, fila: int) -> bool:
           return self.operacion.eliminaDatos(fila)
 
-class RutaBD(bdmediclean):
+class RutaBD:
 
      current_sheet = ""
 
      def __init__(self) -> None:
           self.current_sheet = params.RUTAS_BD
           self.operacion = Operaciones(self.current_sheet)
-          super().__init__(self.current_sheet["nombrehoja"])
           
      def listarData(self) -> map:
           return self.operacion.listarDatos()
@@ -205,8 +206,8 @@ class RutaBD(bdmediclean):
 
      def registraMovimiento(self, datos: list) -> bool:
           try:
-               super().ingresador(
-                    super().buscafila(self.current_sheet["filainicial"],1),
+               self.operacion.ingresador(
+                    self.operacion.filaLibre(),
                     datos,
                     self.current_sheet["fecha"]
                )
@@ -226,21 +227,14 @@ class RutaBD(bdmediclean):
           resultado = self.operacion.getDato(fila,columna,columnas,identificador)
           return resultado
 
-     def guardarCambios(self) -> bool:
-          try:
-               super().guardar()
-          except:
-               return False
-          else:
-               return True
+     def guardaDatos(self) -> bool:
+          return self.operacion.guardarCambios()
                
-     def cierraConexion(self) -> None:
-          super().cerrar()
-     
-     def guardaCierra(self) -> bool:
-          guardado = self.guardarCambios()
-          self.cierraConexion()
-          return guardado
+     def cerrarConexion(self) -> None:
+          return self.operacion.cierraConexion()
+
+     def guardarCerrar(self) -> bool:
+          return self.operacion.guardaCierra()
 
      def eliminaData(self, fila: int) -> bool:
           return self.operacion.eliminaDatos(fila)

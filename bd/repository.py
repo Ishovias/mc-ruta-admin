@@ -12,6 +12,7 @@ class bdmediclean:
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual]
         self.maxfilas = self.contarfilas()
+        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual} <<<<")
     
     def sethoja(self, hoja: str) -> None:
         self.hoja_actual = hoja
@@ -136,6 +137,8 @@ class bdmediclean:
 
     def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
         
+        print(f" INGRESANDO DATOS EN {self.hoja_actual}\n---> Datos:{datos} - Fila:{fila} - Columnainicio:{columnainicio}")
+
         for dato in datos:
             celdaDato = self.hojabd.cell(row=fila,column=columnainicio)
             celdaDato.value = dato
@@ -209,9 +212,11 @@ class bdmediclean:
 
     def guardar(self) -> None:
         self.bd.save(params.LIBRODATOS)
+        print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} GUARDADO <<---")
 
     def cerrar(self) -> None:
         self.bd.close()
+        print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} CERRADO <<---")
 
 if __name__ == '__main__':
     os.system("clear")
@@ -219,15 +224,15 @@ if __name__ == '__main__':
     bd = bdmediclean(sheetname)
     borrado = bd.eliminarContenidos(10,2)
     if borrado:
-      print(f"\n\n\nDatos borrados de la hoja {sheetname}\n\n\n")
+        print(f"\n\n\nDatos borrados de la hoja {sheetname}\n\n\n")
     else:
-      print(f"\n\n\nError al intentar borrar de la hoja {sheetname}\n\n\n")
-      
+        print(f"\n\n\nError al intentar borrar de la hoja {sheetname}\n\n\n")
+    
     try:
-      bd.guardar()
+        bd.guardar()
     except:
-      print("Error en guardado del libro")
+        print("Error en guardado del libro")
     else:
-      print("Cambios guardados")
+        print("Cambios guardados")
     finally:
-      bd.cerrar()
+        bd.cerrar()

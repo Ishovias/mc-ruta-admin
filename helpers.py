@@ -246,7 +246,7 @@ def rutas(request: object, paquete: map) -> map:
           
           rutabd = RutaBD()
           rutaregistros = RutaRegistros()
-          rutaactual = RutaActual()
+          rutaactualbd = RutaActual()
           
           cliente_rut = request.form.get("cliente_ruta_confirmar")
           datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
@@ -263,7 +263,7 @@ def rutas(request: object, paquete: map) -> map:
           )
           # 
           rutaactualbd.eliminaData(rutaactualbd.ubicar(cliente_rut,"rut"))
-          if ingresobd and rutabd.guardaCierra() and rutaactualbd.guardaCierra():
+          if ingresobd and rutabd.guardarCerrar() and rutaactualbd.guardarCerrar():
                paquete["alerta"] = mensaje_ok
                return True
           else:
@@ -278,9 +278,12 @@ def rutas(request: object, paquete: map) -> map:
           
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
-          if rutaactualbd.nuevaRuta(fecha,ruta) and rutaregistros.nuevaRuta(fecha,ruta):
-               rutaactualbd.guardaCierra()
-               rutaregistros.guardaCierra()
+          nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
+          rutaactualbd.guardarCerrar()
+          nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
+          rutaregistros.guardarCerrar()
+          print(f"RutaActualOK:{nueva_rutaActual} - RutaRegistroOK:{nueva_rutaRegistro}")
+          if nueva_rutaActual and nueva_rutaRegistro:
                paquete["alerta"] = "Ruta creada"
           else:
                paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
@@ -318,11 +321,11 @@ def rutas(request: object, paquete: map) -> map:
                
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                
-               rutaactualbd.guardarCambios()
-               rutaregistros.guardarCambios()
+               rutaactualbd.guardaDatos()
+               rutaregistros.guardaDatos()
 
-          rutaactualbd.cierraConexion()
-          rutaactualbd.cierraConexion()
+          rutaactualbd.cerrarConexion()
+          rutaregistros.cerrarConexion()
      
      elif "cliente_ruta_confirmar" in request.form:
           confpos(
@@ -348,7 +351,7 @@ def rutas(request: object, paquete: map) -> map:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos["datos"]
      
-     ractualbd.cierraConexion()
+     ractualbd.cerrarConexion()
      return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
