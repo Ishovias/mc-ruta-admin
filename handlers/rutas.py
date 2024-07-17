@@ -3,28 +3,19 @@ import params
 
 class Operaciones(bdmediclean):
      
-     hoja_actual = ""
+     current_sheet = ""
 
-     hojas_bd = {
-          "hojaClientes":params.CLIENTES,
-          "hojaUsuarios":params.USUARIO,
-          "hojaRutaActual":params.RUTA_ACTUAL,
-          "hojaRutasBD":params.RUTAS_BD,
-          "hojaRutasRegistros":params.RUTAS_REGISTROS,
-          "hojaGastosBD":params.GASTOS_BD
-     }
-
-     def __init__(self, hoja: str) -> None:
-          self.hoja_actual = self.hojas_bd[hoja]
-          super().__init__(self.hoja_actual["nombrehoja"])
+     def __init__(self, hoja: object) -> None:
+          self.current_sheet = hoja
+          super().__init__(self.current_sheet["nombrehoja"])
      
      def ingresar_dato_simple(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
           if identificador:
-               row = self.hoja_actual[identificador]["fila"]
-               column = self.hoja_actual[identificador]["columna"]
+               row = self.current_sheet[identificador]["fila"]
+               column = self.current_sheet[identificador]["columna"]
           else:
                row = fila
-               column = self.hoja_actual["columnas"][columna]
+               column = self.current_sheet["columnas"][columna]
           try:
                if datos:
                     super().ingresador(row,datos,column)
@@ -37,31 +28,32 @@ class Operaciones(bdmediclean):
                
      def ubicacion(self, dato: str, columna: str="rut") -> int:
           return super().buscadatos(
-               self.hoja_actual["filainicio"],
-               self.hoja_actual["columnas"][columna],
+               self.current_sheet["filainicio"],
+               self.current_sheet["columnas"][columna],
                dato
           )
      
      def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None) -> bool:
           if identificador:
-               row = self.hoja_actual[identificador]["fila"]
-               column = self.hoja_actual[identificador]["columna"]
+               row = self.current_sheet[identificador]["fila"]
+               column = self.current_sheet[identificador]["columna"]
           else:
                row = fila
-               column = self.hoja_actual["columnas"][columna]
+               column = self.current_sheet["columnas"][columna]
           
           if columnas:    
                datos = super().extraefila(row,columnas)
+               return datos
           else:
                datos = super().extraefila(row,[column])
+               return datos[0]
                
-          return datos
           
      def listarDatos(self) -> list:
           listado = super().listar(
-               self.hoja_actual["filainicial"],
-               self.hoja_actual["columnas"]["todas"],
-               self.hoja_actual["encabezados"]
+               self.current_sheet["filainicial"],
+               self.current_sheet["columnas"]["todas"],
+               self.current_sheet["encabezados"]
                )
           return listado
 
@@ -75,17 +67,17 @@ class Operaciones(bdmediclean):
           
      def filaLibre(self, columna: str="fecha") -> int:
           return super().buscafila(
-               self.hoja_actual["filainicial"],
-               self.hoja_actual["columnas"][columna]
+               self.current_sheet["filainicial"],
+               self.current_sheet["columnas"][columna]
                )
 
 class RutaActual(bdmediclean):
      
-     hoja_actual = ""
+     current_sheet = ""
 
      def __init__(self) -> None:
-          self.hoja_actual = params.RUTA_ACTUAL
-          self.operacion = Operaciones("hojaRutaActual")
+          self.current_sheet = params.RUTA_ACTUAL
+          self.operacion = Operaciones(self.current_sheet)
           super().__init__(params.RUTA_ACTUAL["nombrehoja"])
      
      def listarData(self) -> map:
@@ -136,12 +128,12 @@ class RutaActual(bdmediclean):
      
 class RutaRegistros(bdmediclean):
      
-     hoja_actual = ""
+     current_sheet = ""
 
      def __init__(self) -> None:
-          self.hoja_actual = params.RUTA_REGISTROS
-          self.operacion = Operaciones("hojaRutaRegistros")
-          super().__init__(self.hoja_actual["nombrehoja"])
+          self.current_sheet = params.RUTAS_REGISTROS
+          self.operacion = Operaciones(self.current_sheet)
+          super().__init__(self.current_sheet["nombrehoja"])
           
      def listarData(self) -> map:
           return self.operacion.listarDatos()
@@ -155,10 +147,11 @@ class RutaRegistros(bdmediclean):
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
           ingreso = self.operacion.ingresar_dato_simple(
                datos=[fecha,ruta],
-               fila=self.busca_fila(
-                    self.hoja_actual["filainicial"],
-                    self.hoja_actual["columnas"]["fecha"]
-                    )
+               fila=super().buscafila(
+                    self.current_sheet["filainicial"],
+                    self.current_sheet["columnas"]["fecha"]
+                    ),
+               columna="fecha"
                )
           if ingreso:
                return True
@@ -194,12 +187,12 @@ class RutaRegistros(bdmediclean):
 
 class RutaBD(bdmediclean):
 
-     hoja_actual = ""
+     current_sheet = ""
 
      def __init__(self) -> None:
-          self.hoja_actual = params.RUTAS_BD
-          self.operacion = Operaciones("hojaRutasBD")
-          super().__init__(self.hoja_actual["nombrehoja"])
+          self.current_sheet = params.RUTAS_BD
+          self.operacion = Operaciones(self.current_sheet)
+          super().__init__(self.current_sheet["nombrehoja"])
           
      def listarData(self) -> map:
           return self.operacion.listarDatos()
@@ -213,9 +206,9 @@ class RutaBD(bdmediclean):
      def registraMovimiento(self, datos: list) -> bool:
           try:
                super().ingresador(
-                    super().buscafila(self.hoja_actual["filainicial"],1),
+                    super().buscafila(self.current_sheet["filainicial"],1),
                     datos,
-                    self.hoja_actual["fecha"]
+                    self.current_sheet["fecha"]
                )
           except:
                return False

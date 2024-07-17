@@ -279,9 +279,9 @@ def rutas(request: object, paquete: map) -> map:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           if rutaactualbd.nuevaRuta(fecha,ruta) and rutaregistros.nuevaRuta(fecha,ruta):
-               paquete["alerta"] = "Ruta creada"
                rutaactualbd.guardaCierra()
                rutaregistros.guardaCierra()
+               paquete["alerta"] = "Ruta creada"
           else:
                paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
      
@@ -338,17 +338,17 @@ def rutas(request: object, paquete: map) -> map:
                mensajes.CLIENTE_POSPUESTO_ERROR.value
                )
 
-     rutaactualbd = RutaActual()
+     ractualbd = RutaActual()
 
-     rutaActiva = rutaactualbd.getData(identificador="rutaencurso")
-     rutaDatos = rutaactualbd.listarData()
+     rutaActiva = ractualbd.getData(identificador="rutaencurso")
+     rutaDatos = ractualbd.listarData()
      if rutaActiva:
           paquete["ruta"] = f"Ruta activa: {rutaActiva}"
      else:
           paquete["ruta"] = None
      paquete["rutaLista"] = rutaDatos["datos"]
      
-     rutaactualbd.cierraConexion()
+     ractualbd.cierraConexion()
      return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
