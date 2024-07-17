@@ -240,44 +240,18 @@ def clientes(request: object) -> map:
 
      return paquete
 
-def rutas(request: object, paquete: map) -> map:
-
-     def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
-          
-          rutabd = RutaBD()
-          rutaregistros = RutaRegistros()
-          rutaactualbd = RutaActual()
-          
-          cliente_rut = request.form.get("cliente_ruta_confirmar")
-          datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
-          datos_cliente_confirmado.append(realizadopospuesto)
-          # Traslado de cliente a BD
-
-          ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
-
-          # incremento indicador de clientes realizados o pospuestos
-          cantregistrada = rutaregistros.getData(identificador=realizadopospuesto)
-          rutaregistros.ingresoData(
-               str(int(cantregistrada) + 1),
-               identificador=realizadopospuesto
-          )
-          # 
-          rutaactualbd.eliminaData(rutaactualbd.ubicar(cliente_rut,"rut"))
-          if ingresobd and rutabd.guardarCerrar() and rutaactualbd.guardarCerrar():
-               paquete["alerta"] = mensaje_ok
-               return True
-          else:
-               paquete["alerta"] = mensaje_bad
-               return False
-
-     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
+class rutas:
      
-     if "iniciaruta" in request.form:
+     def __init__(self, request: object, paquete: map) -> None:
+          self.paquete = paquete
+          self.request = request
+     
+     def iniciaRuta(paquete: map) -> map:
           rutaactualbd = RutaActual()
           rutaregistros = RutaRegistros()
           
-          fecha = request.form.get("fecha").replace("-","")
-          ruta = request.form.get("nombreruta")
+          fecha = self.request.form.get("fecha").replace("-","")
+          ruta = self.request.form.get("nombreruta")
           nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
           rutaactualbd.guardarCerrar()
           nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
@@ -287,8 +261,10 @@ def rutas(request: object, paquete: map) -> map:
                paquete["alerta"] = "Ruta creada"
           else:
                paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
+          
+          return paquete
      
-     elif "finalizaRutaActual" in request.form:
+     def finalizaRutaActual(paquete: map) -> map:
           rutaactualbd = RutaActual()
           rutaregistros = RutaRegistros()
           
@@ -326,33 +302,78 @@ def rutas(request: object, paquete: map) -> map:
 
           rutaactualbd.cerrarConexion()
           rutaregistros.cerrarConexion()
+          
+          return paquete
+
+     def clienteRutaConfPos(paquete: map, confpos: str) -> map:
+          
+          def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
+               
+               rutabd = RutaBD()
+               rutaregistros = RutaRegistros()
+               rutaactualbd = RutaActual()
+               
+               cliente_rut = request.form.get("cliente_ruta_confirmar")
+               datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
+               datos_cliente_confirmado.append(realizadopospuesto)
+               # Traslado de cliente a BD
+     
+               ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
+     
+               # incremento indicador de clientes realizados o pospuestos
+               cantregistrada = rutaregistros.getData(identificador=realizadopospuesto)
+               rutaregistros.ingresoData(
+                    str(int(cantregistrada) + 1),
+                    identificador=realizadopospuesto
+               )
+               # 
+               rutaactualbd.eliminaData(rutaactualbd.ubicar(cliente_rut,"rut"))
+               if ingresobd and rutabd.guardarCerrar() and rutaactualbd.guardarCerrar():
+                    paquete["alerta"] = mensaje_ok
+               else:
+                    paquete["alerta"] = mensaje_bad
+                    
+               return paquete
+          
+          if confpos == "REALIZADO":
+               paquete = confpos(
+                    "REALIZADO", 
+                    mensajes.CLIENTE_CONFIRMADO.value, 
+                    mensajes.CLIENTE_CONFIRMADO_ERROR
+                    )
+          elif confpos == "POSPUESTO":
+               paquete = confpos(
+                    "POSPUESTO", 
+                    mensajes.CLIENTE_POSPUESTO.value, 
+                    mensajes.CLIENTE_POSPUESTO_ERROR.value
+                    )
+          
+          return paquete
+
+     def listarRutaActual(paquete: map) -> map:
+          ractualbd = RutaActual()
+     
+          rutaActiva = ractualbd.getData(identificador="rutaencurso")
+          rutaDatos = ractualbd.listarData()
+          if rutaActiva:
+               paquete["ruta"] = f"Ruta activa: {rutaActiva}"
+          else:
+               paquete["ruta"] = None
+          paquete["rutaLista"] = rutaDatos["datos"]
+          
+          ractualbd.cerrarConexion()
+          return paquete
+          
+
+     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
+     
+     if "iniciaruta" in request.form:
+     elif "finalizaRutaActual" in request.form:
      
      elif "cliente_ruta_confirmar" in request.form:
-          confpos(
-               "REALIZADO", 
-               mensajes.CLIENTE_CONFIRMADO.value, 
-               mensajes.CLIENTE_CONFIRMADO_ERROR
-               )
 
      elif "cliente_ruta_posponer" in request.form:
-          confpos(
-               "POSPUESTO", 
-               mensajes.CLIENTE_POSPUESTO.value, 
-               mensajes.CLIENTE_POSPUESTO_ERROR.value
-               )
 
-     ractualbd = RutaActual()
-
-     rutaActiva = ractualbd.getData(identificador="rutaencurso")
-     rutaDatos = ractualbd.listarData()
-     if rutaActiva:
-          paquete["ruta"] = f"Ruta activa: {rutaActiva}"
-     else:
-          paquete["ruta"] = None
-     paquete["rutaLista"] = rutaDatos["datos"]
-     
-     ractualbd.cerrarConexion()
-     return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
      rutabd = conectorbd(conectorbd.hojaRutabd)
