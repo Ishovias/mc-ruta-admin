@@ -10,13 +10,13 @@ class bdmediclean:
     def __init__(self, hoja: str) -> None:
         self.bd = load_workbook(params.LIBRODATOS,read_only=False)
         self.hoja_actual = hoja
-        self.hojabd = self.bd[self.hoja_actual]
+        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
-        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual} <<<<")
+        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual["nombrehoja"]} <<<<")
     
     def sethoja(self, hoja: str) -> None:
         self.hoja_actual = hoja
-        self.hojabd = self.bd[self.hoja_actual]
+        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
     
     def setmaxfilas(self) -> None:
         self.maxfilas = self.contarfilas()
@@ -147,15 +147,15 @@ class bdmediclean:
     def ingresar_dato_simple(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
         if identificador:
             row = self.hoja_actual[identificador]["fila"]
-            column = self.current_sheet[identificador]["columna"]
+            column = self.hoja_actual[identificador]["columna"]
         else:
             row = fila
-            column = self.current_sheet["columnas"][columna]
+            column = self.hoja_actual["columnas"][columna]
         try:
             if datos:
-                    super().ingresador(row,datos,column)
+                    self.ingresador(row,datos,column)
             else:
-                    super().ingresador(row,[dato],column)
+                    self.ingresador(row,[dato],column)
         except:
             return False
         else:
