@@ -245,16 +245,19 @@ def rutas(request: object, paquete: map) -> map:
      paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      
      def iniciaRuta(paquete: map) -> map:
-          rutaactualbd = RutaActual()
-          rutaregistros = RutaRegistros()
-          
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
+          
+          rutaactualbd = RutaActual()
           nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
           rutaactualbd.guardarCerrar()
+          
+          rutaregistros = RutaRegistros()
           nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
           rutaregistros.guardarCerrar()
+          
           print(f"RutaActualOK:{nueva_rutaActual} - RutaRegistroOK:{nueva_rutaRegistro}")
+          
           if nueva_rutaActual and nueva_rutaRegistro:
                paquete["alerta"] = "Ruta creada"
           else:

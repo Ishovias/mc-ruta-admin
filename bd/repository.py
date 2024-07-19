@@ -4,9 +4,6 @@ import os
 
 class bdmediclean:
 
-    # Variables
-    hoja_actual = ""
-
     def __init__(self, hoja: str) -> None:
         self.bd = load_workbook(params.LIBRODATOS,read_only=False)
         self.hoja_actual = hoja
@@ -195,17 +192,17 @@ class bdmediclean:
 
     def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None) -> bool:
         if identificador:
-            row = self.current_sheet[identificador]["fila"]
-            column = self.current_sheet[identificador]["columna"]
+            row = self.hoja_actual[identificador]["fila"]
+            column = self.hoja_actual[identificador]["columna"]
         else:
             row = fila
-            column = self.current_sheet["columnas"][columna]
+            column = self.hoja_actual["columnas"][columna]
         
         if columnas:    
-            datos = super().extraefila(row,columnas)
+            datos = self.extraefila(row,columnas)
             return datos
         else:
-            datos = super().extraefila(row,[column])
+            datos = self.extraefila(row,[column])
             return datos[0]
 
 
