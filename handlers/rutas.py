@@ -20,11 +20,33 @@ class RutaActual(bdmediclean):
           else: 
                return True
      
-     def ingresoData(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
-          return super().ingresar_dato_simple(dato,datos,fila,columna,identificador)
+     def getFechaRuta(self) -> str:
+          return super().getDato(identificador="rutaencurso")
+
+     def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
+          verificar = super().busca_datoscliente(datos[0],"rut")
+          if verificar != 0:
+               return False
+          ubicacion = super().busca_ubicacion(None, "cliente")
+          idActual = super().idActual(
+               super().hoja_actual["filainicial"],
+               super().hoja_actual["columnas"]["id"],
+               "ID"
+               )
           
-     def getData(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None) -> bool:
-          return super().getDato(fila,columna,columnas,identificador)
+          datos.insert(0,idActual)
+          datos.insert(0,fecha)
+          
+          try:
+               self.bd.ingresador(
+                    ubicacion,
+                    datos,
+                    super().hoja_actual["columnas"]["fecha"]
+                    )
+          except:
+               return False
+          else:
+               return True
 
 class RutaRegistros(bdmediclean):
 

@@ -11,6 +11,9 @@ class bdmediclean:
         self.maxfilas = self.contarfilas()
         print(f">>>> Instanciada la clase en la hoja {self.hoja_actual["nombrehoja"]} <<<<")
     
+    def __enter__(self) -> object:
+        return self
+
     def sethoja(self, hoja: str) -> None:
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
@@ -93,6 +96,31 @@ class bdmediclean:
                 fila += 1
                 
         return filas
+
+    def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
+        ubicacion = self.buscadato(
+            self.hoja_actual["filainicial"],
+            self.hoja_actual["columnas"][filtro],
+            nombre
+            )
+        if ubicacion == 0:
+            return 0
+        datos = self.extraefila(
+            ubicacion,
+            self.hoja_actual["columnas"]["todas"]
+            )
+        return datos
+    
+    def busca_ubicacion(self, dato: str, columna: str="cliente", filainicio: str="filainicial") -> int:
+        column = self.hoja_actual["columnas"][columna]
+        filainicial = self.hoja_actual[filainicio]
+        if dato == None:
+            fila = self.buscafila(filainicial,column)
+            print(f"Buscando fila vacia\nEncontrada en {fila}\nColumna: {filainicial},{columna}")
+        else:
+            fila = self.buscadato(filainicial,column,dato)
+        return fila
+
 
     def listar(self, filainicial: int, columnas: list, encabezados: int) -> map:
         """Devuelve todos los datos en una hoja especifica
@@ -207,12 +235,20 @@ class bdmediclean:
 
 
     def guardar(self) -> None:
-        self.bd.save(params.LIBRODATOS)
         print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} GUARDADO <<---")
+        try:
+            self.bd.save(params.LIBRODATOS)
+        except:
+            return False
+        else:
+            return True
 
     def cerrar(self) -> None:
         self.bd.close()
         print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} CERRADO <<---")
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.cerrar()
 
 if __name__ == '__main__':
     os.system("clear")

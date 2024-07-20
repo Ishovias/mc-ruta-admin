@@ -1,5 +1,7 @@
 from conectorbd import conectorbd
 from handlers.rutas import RutaActual, RutaRegistros, RutaBD
+from handlers.usuarios import Usuariosbd
+from handlers.clientes import Clientes
 from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
@@ -73,8 +75,8 @@ class SessionSingleton:
           nombre = request.form["user"]
           contrasena = request.form["contrasena"]
           contrasena = coder.encripta(contrasena)
-          result = userbd.comprueba_usuario(nombre,contrasena)
-          userbd.cierra_conexion()
+          with Usuariosbd() as userbd:
+               result = userbd.comprueba_usuario(nombre,contrasena)
           if result:
                addr = str(request.remote_addr)
                self.__usr[addr] = nombre
@@ -140,10 +142,11 @@ def clientes(request: object) -> map:
      paquete = {"pagina":"clientes.html"}
 
      if "buscacliente" in request.form:
-          clientesbd = conectorbd(conectorbd.hojaClientes)
-          nombre = request.form.get("nombre")
-          resultados = clientesbd.busca_cliente_lista(nombre)
-          clientesbd.cierra_conexion()
+          
+          with Clientes() as clientesbd:
+               clientesbd = conectorbd(conectorbd.hojaClientes)
+               nombre = request.form.get("nombre")
+               resultados = clientesbd.busca_cliente_lista(nombre)
           
           paquete["listaclientes"] = resultados
           
@@ -161,18 +164,18 @@ def clientes(request: object) -> map:
                request.form.get("gps"),
                request.form.get("otros")
                ]
-          bd = conectorbd(conectorbd.hojaClientes)
-          if bd.nuevo_cliente(data) and bd.guarda_cambios():
-               paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
-          else:
-               paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
-          bd.cierra_conexion()
+          
+          with Clientes() as bd:
+               if bd.nuevo_cliente(data) and bd.guardar():
+                    paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
+               else:
+                    paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
      
      elif "modificaCliente" in request.form:
-          clientesbd = conectorbd(conectorbd.hojaClientes)
-          identificador = request.form.get("clienteSeleccion")
-          resultados = clientesbd.busca_datoscliente(identificador,"rut")
-          clientesbd.cierra_conexion()
+          
+          with Clientes() as clientesbd:
+               identificador = request.form.get("clienteSeleccion")
+               resultados = clientesbd.busca_datoscliente(identificador,"rut")
           
           paquete["modificacion"] = resultados
      
@@ -185,18 +188,14 @@ def clientes(request: object) -> map:
                paquete["alerta"] = "Debes crear primero la ruta"
                paquete["nuevaruta"] = True
                paquete["pagina"] = "rutas.html"
-               rutaactualbd.cierra_conexion()
           else:
-               clientesbd = conectorbd(conectorbd.hojaClientes)
                identificador = request.form.get("aRuta")
-               cliente = clientesbd.busca_datoscliente(identificador,"rut")
-               cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
-               aruta = rutaactualbd.agregar_a_ruta(fecha, cliente)
-               rutaactualbd.fecha
-               
-               rutaactualbd.guarda_cambios()
-               clientesbd.cierra_conexion()
-               rutaactualbd.cierra_conexion()
+               with Clientes() as clientesbd:
+                    cliente = clientesbd.busca_datoscliente(identificador,"rut")
+                    cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
+               with RutaActual() as rutaactualbd:
+                    aruta = rutaactualbd.agregar_a_ruta(fecha, cliente)
+                    rutaactualbd.guardar()
                
                if aruta:
                     paquete["alerta"] = mensajes.CLIENTE_A_RUTA.value
@@ -206,19 +205,18 @@ def clientes(request: object) -> map:
           paquete = rutas(request, paquete)
      
      elif "darbaja" in request.form:
-          clientesbd = conectorbd(conectorbd.hojaClientes)
-          identificador = request.form.get("rut")
-          dadobaja = clientesbd.estado_cliente(identificador,"de baja")
-          guardado = clientesbd.guarda_cambios()
+          with Clientes() as clientesbd:
+               identificador = request.form.get("rut")
+               dadobaja = clientesbd.estado_cliente(identificador,"de baja")
+               guardado = clientesbd.guardar()
+               
           if dadobaja and guardado:
                paquete["alerta"] = mensajes.CLIENTE_BAJA.value
           else:
                paquete["alerta"] = mensajes.CLIENTE_BAJA_ERROR.value
                
-          clientesbd.cierra_conexion()
      
      elif "guardamod" in request.form:
-          bd = conectorbd(conectorbd.hojaClientes)
           rut = request.form.get("rut")
           data = [
                rut,
@@ -229,14 +227,15 @@ def clientes(request: object) -> map:
                request.form.get("gps"),
                request.form.get("otros")
                ]
-          guardado = bd.guardar_modificacion(rut,data)
-          grabado = bd.guarda_cambios()
+          
+          with Clientes() as bd:
+               guardado = bd.guardar_modificacion(rut,data)
+               grabado = bd.guarda_cambios()
+          
           if guardado and grabado:
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
           else:
                paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
-          
-          bd.cierra_conexion()
 
      return paquete
 
@@ -244,17 +243,17 @@ def rutas(request: object, paquete: map) -> map:
           
      paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
      
-     def iniciaRuta(paquete: map) -> map:
+     if "iniciaruta" in request.form:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           
-          rutaactualbd = RutaActual()
-          nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
-          rutaactualbd.guardarCerrar()
+          with RutaActual() as rutaactualbd:
+               nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
+               rutaactualbd.guardar()
           
-          rutaregistros = RutaRegistros()
-          nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
-          rutaregistros.guardarCerrar()
+          with RutaRegistros as rutaregistros:
+               nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
+               rutaregistros.guardar()
           
           print(f"RutaActualOK:{nueva_rutaActual} - RutaRegistroOK:{nueva_rutaRegistro}")
           
@@ -265,16 +264,14 @@ def rutas(request: object, paquete: map) -> map:
           
           return paquete
      
-     def finalizaRutaActual(paquete: map) -> map:
-          rutaactualbd = RutaActual()
-          rutaregistros = RutaRegistros()
+     elif "finalizaRutaActual" in request.form:
           
-          datosExistentes = rutaactualbd.listar()
+          with RutaActual() as rutaactualbd:
+               datosExistentes = rutaactualbd.listar()
+          
           if len(datosExistentes["datos"]) > 0:
                paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
           else:
-               fechaexistente = rutaactualbd.getData(identificador="rutaencurso")
-               
                identificadores = [
                     "rutaencurso",
                     "nombreruta",
@@ -284,26 +281,30 @@ def rutas(request: object, paquete: map) -> map:
                ]
                
                datos = []
-               for identificador in identificadores:
-                    datos.append(rutaactualbd.getData(identificador=identificador))
-               datos.append("RUTA FINALIZADA")
+               
+               with RutaActual() as rutaactualbd:
+                    fechaexistente = rutaactualbd.getData(identificador="rutaencurso")
+                    
+                    for identificador in identificadores:
+                         datos.append(rutaactualbd.getData(identificador=identificador))
+                    datos.append("RUTA FINALIZADA")
 
-               rutaregistros.ingresoData(
-                    datos=datos,
-                    fila=rutaregistros.ubicacionLibre(),
-                    columna="fecha"
-               )
-               for identificador in identificadores:
-                    rutaactualbd.ingresoData(dato="", identificador=identificador)
+                    for identificador in identificadores:
+                         rutaactualbd.ingresoData(dato="", identificador=identificador)
+
+                    rutaactualbd.guardar()
+               
+               with RutaRegistros() as rutaregistros:
+                    rutaregistros.ingresoData(
+                         datos=datos,
+                         fila=rutaregistros.ubicacionLibre(),
+                         columna="fecha"
+                    )
+                    rutaregistros.guardar()
                
                paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
                
-               rutaactualbd.guardaDatos()
-               rutaregistros.guardaDatos()
-
-          rutaactualbd.cerrarConexion()
-          rutaregistros.cerrarConexion()
-          
+               
           return paquete
 
      def clienteRutaConfPos(paquete: map, confpos: str) -> map:
