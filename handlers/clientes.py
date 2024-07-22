@@ -7,10 +7,10 @@ class Clientes(bdmediclean):
         super().__init__(params.CLIENTES)
 
     def busca_cliente_lista(self, nombre: str) -> map:
-        filainicio = super().hoja_actual["filainicial"]
-        columna = super().hoja_actual["columnas"]["cliente"]
+        filainicio = self.hoja_actual["filainicial"]
+        columna = self.hoja_actual["columnas"]["cliente"]
         filas = super().buscapartedato(filainicio,columna,nombre)
-        columnas = super().hoja_actual["columnas"]["todas"]
+        columnas = self.hoja_actual["columnas"]["todas"]
         resultados = {}
         resultados["encabezados"] = super().extraefila(1,columnas)
         resultados["datos"] = []
@@ -24,23 +24,23 @@ class Clientes(bdmediclean):
         if existencia != 0:
             return False
         fila = super().buscafila(
-            super().hoja_actual["filainicial"],
-            super().hoja_actual["columnas"]["rut"],
+            self.hoja_actual["filainicial"],
+            self.hoja_actual["columnas"]["rut"],
             )
         super().ingresador(fila,data,1)
         return True
     
     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
         ubicacion = super().buscadato(
-            super().hoja_actual["filainicial"],
-            super().hoja_actual["columnas"][filtro],
+            self.hoja_actual["filainicial"],
+            self.hoja_actual["columnas"][filtro],
             nombre
             )
         if ubicacion == 0:
             return 0
         datos = super().extraefila(
             ubicacion,
-            super().hoja_actual["columnas"]["todas"]
+            self.hoja_actual["columnas"]["todas"]
             )
         return datos
     
@@ -50,7 +50,7 @@ class Clientes(bdmediclean):
             super().ingresador(
                 ubicacion,
                 [estado],
-                [super().hoja_actual["columnas"]["estado"]]
+                [self.hoja_actual["columnas"]["estado"]]
                 )
         except:
             return False

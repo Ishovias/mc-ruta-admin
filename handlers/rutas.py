@@ -11,9 +11,9 @@ class RutaActual(bdmediclean):
                return False
           try:
                super().ingresador(
-               fila=super().hoja_actual["rutaencurso"]["fila"],
+               fila=self.hoja_actual["rutaencurso"]["fila"],
                datos=[fecha,ruta],
-               columnainicio=super().hoja_actual["rutaencurso"]["columna"]
+               columnainicio=self.hoja_actual["rutaencurso"]["columna"]
                )
           except:
                return False
@@ -29,8 +29,8 @@ class RutaActual(bdmediclean):
                return False
           ubicacion = super().busca_ubicacion(None, "cliente")
           idActual = super().idActual(
-               super().hoja_actual["filainicial"],
-               super().hoja_actual["columnas"]["id"],
+               self.hoja_actual["filainicial"],
+               self.hoja_actual["columnas"]["id"],
                "ID"
                )
           
@@ -41,7 +41,7 @@ class RutaActual(bdmediclean):
                self.bd.ingresador(
                     ubicacion,
                     datos,
-                    super().hoja_actual["columnas"]["fecha"]
+                    self.hoja_actual["columnas"]["fecha"]
                     )
           except:
                return False
@@ -54,9 +54,9 @@ class RutaRegistros(bdmediclean):
           super().__init__(params.RUTAS_REGISTROS)
 
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
-          ingreso = super().ingresar_dato_simple(
+          ingreso = super().putDato(
                datos=[fecha,ruta],
-               fila=super().filaLibre(),
+               fila=super().buscafila(),
                columna="fecha"
                )
           if ingreso:
@@ -64,7 +64,6 @@ class RutaRegistros(bdmediclean):
           else: 
                return False
      
-
 class RutaBD(bdmediclean):
 
      def __init__(self) -> None:
@@ -75,7 +74,7 @@ class RutaBD(bdmediclean):
                super().ingresador(
                     super().filaLibre(),
                     datos,
-                    super().hoja_actual["fecha"]
+                    self.hoja_actual["fecha"]
                )
           except:
                return False

@@ -9,6 +9,7 @@ class bdmediclean:
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
+        self.datosPorGuardar = False
         print(f">>>> Instanciada la clase en la hoja {self.hoja_actual['nombrehoja']} <<<<")
     
     def __enter__(self) -> object:
@@ -46,9 +47,12 @@ class bdmediclean:
         else:
             completado = True
             return completado
+        self.datosPorGuardar = True
 
-    def buscafila(self, filainicio: int, columna: int=1) -> int:
-
+    def buscafila(self, filainicio: int=None, columna: int=1) -> int:
+        if not filainicio:
+             filainicio = self.hoja_actual["filainicial"]
+        
         filalibre = filainicio
 
         for fila in range(filainicio,self.maxfilas,1):
@@ -122,7 +126,7 @@ class bdmediclean:
         return fila
 
 
-    def listar(self, filainicial: int, columnas: list, encabezados: int) -> map:
+    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None) -> map:
         """Devuelve todos los datos en una hoja especifica
         o desde la fila especifica hasta el final
 
@@ -138,6 +142,11 @@ class bdmediclean:
             "encabezados" con una lista de los encabezados y
             "datos" con una lista de los datos por cada fila
         """        
+        if filainicial == None or columnas == None or encabezados == None:
+             filainicial = self.hoja_actual["filainicial"]
+             columnas = self.hoja_actual["columnas"]["todas"]
+             encabezados = self.hoja_actual["encabezados"]
+        
         resultados = {}
 
         # Extraccion de encabezados
@@ -168,8 +177,9 @@ class bdmediclean:
             celdaDato = self.hojabd.cell(row=fila,column=columnainicio)
             celdaDato.value = dato
             columnainicio += 1
+        self.datosPorGuardar = True
 
-    def ingresar_dato_simple(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
+    def putDato(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
         if identificador:
             row = self.hoja_actual[identificador]["fila"]
             column = self.hoja_actual[identificador]["columna"]
@@ -184,6 +194,7 @@ class bdmediclean:
         except:
             return False
         else:
+            self.datosPorGuardar = True
             return True
 
 
@@ -194,9 +205,11 @@ class bdmediclean:
             celdaDato = self.hojabd.cell(row=fila,column=columnas[columna])
             celdaDato.value = dato
             columna += 1
+        self.datosPorGuardar = True
 
     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
+        self.datosPorGuardar = True
 
     def idActual(self, filainicial: int, columna: int, encabezado: str) -> int:
         for fila in range(filainicial,self.maxfilas,1):
@@ -248,23 +261,7 @@ class bdmediclean:
         print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} CERRADO <<---")
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        if self.datosPorGuardar:
+             self.guardar()
         self.cerrar()
 
-if __name__ == '__main__':
-    os.system("clear")
-    sheetname = "Informes"
-    bd = bdmediclean(sheetname)
-    borrado = bd.eliminarContenidos(10,2)
-    if borrado:
-        print(f"\n\n\nDatos borrados de la hoja {sheetname}\n\n\n")
-    else:
-        print(f"\n\n\nError al intentar borrar de la hoja {sheetname}\n\n\n")
-    
-    try:
-        bd.guardar()
-    except:
-        print("Error en guardado del libro")
-    else:
-        print("Cambios guardados")
-    finally:
-        bd.cerrar()

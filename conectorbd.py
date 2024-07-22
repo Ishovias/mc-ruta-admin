@@ -102,7 +102,6 @@ class conectorbd:
                row = fila
                column = self.hojaActual["columnas"][columna]
           try:
-               print(dato)
                self.bd.ingresador(row,dato,column)
           except:
                return False
