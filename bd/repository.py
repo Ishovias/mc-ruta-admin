@@ -9,7 +9,7 @@ class bdmediclean:
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
-        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual["nombrehoja"]} <<<<")
+        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual['nombrehoja']} <<<<")
     
     def __enter__(self) -> object:
         return self

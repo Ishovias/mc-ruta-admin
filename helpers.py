@@ -143,6 +143,7 @@ def clientes(request: object) -> map:
 
      if "buscacliente" in request.form:
           
+          resultados = ""
           with Clientes() as clientesbd:
                clientesbd = conectorbd(conectorbd.hojaClientes)
                nombre = request.form.get("nombre")
@@ -173,6 +174,7 @@ def clientes(request: object) -> map:
      
      elif "modificaCliente" in request.form:
           
+          resultados = ""
           with Clientes() as clientesbd:
                identificador = request.form.get("clienteSeleccion")
                resultados = clientesbd.busca_datoscliente(identificador,"rut")
@@ -190,6 +192,8 @@ def clientes(request: object) -> map:
                paquete["pagina"] = "rutas.html"
           else:
                identificador = request.form.get("aRuta")
+               cliente = ""
+               aruta = False
                with Clientes() as clientesbd:
                     cliente = clientesbd.busca_datoscliente(identificador,"rut")
                     cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
@@ -205,6 +209,9 @@ def clientes(request: object) -> map:
           paquete = rutas(request, paquete)
      
      elif "darbaja" in request.form:
+          dadobaja = False
+          guardado = False
+          
           with Clientes() as clientesbd:
                identificador = request.form.get("rut")
                dadobaja = clientesbd.estado_cliente(identificador,"de baja")
@@ -228,6 +235,9 @@ def clientes(request: object) -> map:
                request.form.get("otros")
                ]
           
+          guardado = False
+          grabado = False
+          
           with Clientes() as bd:
                guardado = bd.guardar_modificacion(rut,data)
                grabado = bd.guarda_cambios()
@@ -247,11 +257,14 @@ def rutas(request: object, paquete: map) -> map:
           fecha = request.form.get("fecha").replace("-","")
           ruta = request.form.get("nombreruta")
           
+          nueva_rutaActual = False
+          nueva_rutaRegistro = False
+          
           with RutaActual() as rutaactualbd:
                nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
                rutaactualbd.guardar()
           
-          with RutaRegistros as rutaregistros:
+          with RutaRegistros() as rutaregistros:
                nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
                rutaregistros.guardar()
           
