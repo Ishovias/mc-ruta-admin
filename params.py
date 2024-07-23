@@ -57,6 +57,11 @@ RUTA_ACTUAL = {
 RUTAS_BD = {
   "nombrehoja":"rutas_bd", 
   "filainicial":2,
+  "rutaencurso":{"fila":1,"columna":2},
+  "nombreruta":{"fila":1,"columna":3},
+  "REALIZADO":{"fila":1,"columna":4},
+  "POSPUESTO":{"fila":1,"columna":5},
+  "DEUDA":{"fila":1,"columna":6},
   "columnas":{
     "fecha":1,
     "id":2,

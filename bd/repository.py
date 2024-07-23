@@ -10,7 +10,6 @@ class bdmediclean:
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
         self.datosPorGuardar = False
-        print(f">>>> Instanciada la clase en la hoja {self.hoja_actual['nombrehoja']} <<<<")
     
     def __enter__(self) -> object:
         return self
@@ -51,7 +50,7 @@ class bdmediclean:
 
     def buscafila(self, filainicio: int=None, columna: int=1) -> int:
         if not filainicio:
-             filainicio = self.hoja_actual["filainicial"]
+            filainicio = self.hoja_actual["filainicial"]
         
         filalibre = filainicio
 
@@ -115,12 +114,14 @@ class bdmediclean:
             )
         return datos
     
-    def busca_ubicacion(self, dato: str, columna: str="cliente", filainicio: str="filainicial") -> int:
+    def busca_ubicacion(self, dato: str=None, columna: str="cliente", filainicio: str="filainicial") -> int:
         column = self.hoja_actual["columnas"][columna]
-        filainicial = self.hoja_actual[filainicio]
-        if dato == None:
+        if filainicial == int:
+            filainicial = filainicio
+        else:
+            filainicial = self.hoja_actual[filainicio]
+        if not dato:
             fila = self.buscafila(filainicial,column)
-            print(f"Buscando fila vacia\nEncontrada en {fila}\nColumna: {filainicial},{columna}")
         else:
             fila = self.buscadato(filainicial,column,dato)
         return fila
@@ -142,10 +143,10 @@ class bdmediclean:
             "encabezados" con una lista de los encabezados y
             "datos" con una lista de los datos por cada fila
         """        
-        if filainicial == None or columnas == None or encabezados == None:
-             filainicial = self.hoja_actual["filainicial"]
-             columnas = self.hoja_actual["columnas"]["todas"]
-             encabezados = self.hoja_actual["encabezados"]
+        if not filainicial or not columnas or not encabezados:
+            filainicial = self.hoja_actual["filainicial"]
+            columnas = self.hoja_actual["columnas"]["todas"]
+            encabezados = self.hoja_actual["encabezados"]
         
         resultados = {}
 
@@ -170,8 +171,6 @@ class bdmediclean:
         return resultados
 
     def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
-        
-        print(f" INGRESANDO DATOS EN {self.hoja_actual}\n---> Datos:{datos} - Fila:{fila} - Columnainicio:{columnainicio}")
 
         for dato in datos:
             celdaDato = self.hojabd.cell(row=fila,column=columnainicio)
@@ -221,8 +220,13 @@ class bdmediclean:
                 else:
                     return int(celdaAnterior.value)+1
 
-    def extraefila(self, fila: int, columnas: list) -> list:
-
+    def extraefila(self, fila: int, columna: str=None, columnas: list=None) -> list:
+        if columna:
+            ListaColumnas = self.hoja_actual["columnas"][columna]
+            columnas = [ListaColumnas]
+        elif columnas:
+            pass
+        
         datos = []
 
         for columna in columnas:
@@ -240,15 +244,14 @@ class bdmediclean:
             column = self.hoja_actual["columnas"][columna]
         
         if columnas:    
-            datos = self.extraefila(row,columnas)
+            datos = self.extraefila(fila=row,columnas=columnas)
             return datos
         else:
-            datos = self.extraefila(row,[column])
+            datos = self.extraefila(fila=row,columna=column)
             return datos[0]
 
 
     def guardar(self) -> None:
-        print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} GUARDADO <<---")
         try:
             self.bd.save(params.LIBRODATOS)
         except:
@@ -258,10 +261,9 @@ class bdmediclean:
 
     def cerrar(self) -> None:
         self.bd.close()
-        print (f"----------------------\nHOJA: {self.hoja_actual}\n--->> LIBRO {params.LIBRODATOS} CERRADO <<---")
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         if self.datosPorGuardar:
-             self.guardar()
+            self.guardar()
         self.cerrar()
 

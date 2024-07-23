@@ -36,14 +36,15 @@ class RutaActual(bdmediclean):
           
           datos.insert(0,idActual)
           datos.insert(0,fecha)
-          
+
           try:
-               self.bd.ingresador(
+               super().ingresador(
                     ubicacion,
                     datos,
                     self.hoja_actual["columnas"]["fecha"]
                     )
-          except:
+          except Exception as e:
+               print (e)
                return False
           else:
                return True
@@ -72,11 +73,12 @@ class RutaBD(bdmediclean):
      def registraMovimiento(self, datos: list) -> bool:
           try:
                super().ingresador(
-                    super().filaLibre(),
+                    super().buscafila(),
                     datos,
-                    self.hoja_actual["fecha"]
+                    self.hoja_actual["columnas"]["fecha"]
                )
-          except:
+          except Exception as e:
+               print(e)
                return False
           else:
                return True

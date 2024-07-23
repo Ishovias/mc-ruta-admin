@@ -1,10 +1,10 @@
-from conectorbd import conectorbd
 from handlers.rutas import RutaActual, RutaRegistros, RutaBD
 from handlers.usuarios import Usuariosbd
 from handlers.clientes import Clientes
 from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
+import params
 
 lista_rutas = {
           "login":[
@@ -79,7 +79,6 @@ class SessionSingleton:
           if result:
                addr = str(request.remote_addr)
                self.__usr[addr] = nombre
-               print(f"Usuario:{nombre}, Addr:{addr}")
           return result
           
      def cierraSesion(self, request: object) -> None:
@@ -89,7 +88,6 @@ class SessionSingleton:
      def getAutenticado(self, request: object) -> bool:
           addr = str(request.remote_addr)
           if addr in self.__usr:
-               print(f"Conexion: {addr} - {self.__usr[addr]}")
                return True
           return False
           
@@ -181,20 +179,23 @@ def clientes(request: object) -> map:
      
      elif "aRuta" in request.form:
           
+          fecha = None
           with RutaActual() as rutaactualbd:
                fecha = rutaactualbd.getFechaRuta()
           
-          if fecha == None:
+          if not fecha:
                paquete["alerta"] = "Debes crear primero la ruta"
                paquete["nuevaruta"] = True
                paquete["pagina"] = "rutas.html"
           else:
                identificador = request.form.get("aRuta")
-               cliente = ""
-               aruta = False
+               
+               cliente = []
                with Clientes() as clientesbd:
                     cliente = clientesbd.busca_datoscliente(identificador,"rut")
                     cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
+
+               aruta = False
                with RutaActual() as rutaactualbd:
                     aruta = rutaactualbd.agregar_a_ruta(fecha, cliente)
 
@@ -203,7 +204,6 @@ def clientes(request: object) -> map:
                else:
                     paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
                     
-          paquete = rutas(request, paquete)
      
      elif "darbaja" in request.form:
           dadobaja = False
@@ -254,21 +254,23 @@ def rutas(request: object, paquete: map) -> map:
           with RutaActual() as rutaactualbd:
                datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
                datos_cliente_confirmado.append(realizadopospuesto)
-               rutaactualbd.eliminaData(rutaactualbd.ubicar(cliente_rut,"rut"))
-          
+               rutaactualbd.eliminar(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
+               cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
+               if not cantregistrada:
+                    dato = 1
+               else:
+                    dato = str(int(cantregistrada) + 1)
+               rutaactualbd.putDato(
+                    dato=dato,
+                    identificador=realizadopospuesto
+               )
+
           # Traslado de cliente a BD
           ingresobd = False
-          with RutaBD as rutabd:
+          with RutaBD() as rutabd:
                ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
 
           # incremento indicador de clientes realizados o pospuestos
-          with RutaRegistros() as rutaregistros:
-               cantregistrada = rutaregistros.getDato(identificador=realizadopospuesto)
-               rutaregistros.putDato(
-                    dato=str(int(cantregistrada) + 1),
-                    identificador=realizadopospuesto
-               )
-               
           if ingresobd:
                paquete["alerta"] = mensaje_ok
           else:
@@ -287,13 +289,9 @@ def rutas(request: object, paquete: map) -> map:
           
           with RutaActual() as rutaactualbd:
                nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
-               rutaactualbd.guardar()
           
           with RutaRegistros() as rutaregistros:
                nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
-               rutaregistros.guardar()
-          
-          print(f"RutaActualOK:{nueva_rutaActual} - RutaRegistroOK:{nueva_rutaRegistro}")
           
           if nueva_rutaActual and nueva_rutaRegistro:
                paquete["alerta"] = "Ruta creada"
@@ -346,7 +344,7 @@ def rutas(request: object, paquete: map) -> map:
           paquete = confpos(
                "REALIZADO", 
                mensajes.CLIENTE_CONFIRMADO.value, 
-               mensajes.CLIENTE_CONFIRMADO_ERROR
+               mensajes.CLIENTE_CONFIRMADO_ERROR.value
                )
      elif "cliente_ruta_posponer" in request.form:
           paquete = confpos(
@@ -370,8 +368,41 @@ def rutas(request: object, paquete: map) -> map:
 def registros_rutas(request: object, paquete: map) -> map:
 
      paquete = {"pagina":"rutasRegistros.html"}
-     
-     paquete["rutaLista"] = rutaregistros.listar_datos()
+
+     if "detalle_ruta_registro" in request.form:
+          fecha = request.form.get("detalle_ruta_registro")
+          
+          paquete["fecha"] = f"Ruta seleccionada: {fecha}"
+          
+          data = []
+          filainicial = params.RUTAS_BD["filainicial"]
+          
+          with RutaBD() as rutabd:
+               encabezados = rutabd.extraefila(
+                    fila=params.RUTAS_BD["encabezados"],
+                    columnas=params.RUTAS_BD["columnas"]["todas"]
+               )
+               paquete["encabezados"] = encabezados
+               while(True):
+                    filadatos = rutabd.busca_ubicacion(
+                         dato=fecha,
+                         columna="fecha",
+                         filainicio=filainicial
+                    )
+                    data.append(
+                         rutabd.extraefila(
+                              fila=filadatos,
+                              columna="fecha"
+                         )
+                    )
+                    filainicial = filadatos
+                    if filainicial >= rutabd.getmaxfilas():
+                         break
+          
+          paquete["rutaResultado"] = data
+               
+     with RutaRegistros() as rutaregistros:
+          paquete["rutaLista"] = rutaregistros.listar()
      
      
      
