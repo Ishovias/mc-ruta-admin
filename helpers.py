@@ -372,11 +372,10 @@ def registros_rutas(request: object, paquete: map) -> map:
 
      if "detalle_ruta_registro" in request.form:
           fecha = request.form.get("detalle_ruta_registro")
-          print()
           paquete["fecha"] = f"Ruta seleccionada: {fecha}"
           
-          data = []
-          filainicial = params.RUTAS_BD["filainicial"]
+          data: list = []
+          filainicial: int = params.RUTAS_BD["filainicial"]
           
           with RutaBD() as rutabd:
                encabezados = rutabd.extraefila(
@@ -384,21 +383,25 @@ def registros_rutas(request: object, paquete: map) -> map:
                     columnas=params.RUTAS_BD["columnas"]["todas"]
                )
                paquete["encabezados"] = encabezados
-               maxfilas = rutabd.getmaxfilas()
+               maxfilas: int = rutabd.getmaxfilas()
                while(True):
                     filadatos = rutabd.busca_ubicacion(
                          dato=fecha,
                          columna="fecha",
                          filainicio=filainicial
                     )
-                    data.append(
+                    if not filadatos:
+                         filadatos = filainicial + 1
+                    else:
+                         data.append(
                          rutabd.extraefila(
                               fila=filadatos,
                               columna="fecha"
                          )
                     )
-                    filainicial = filadatos
-                    if filainicial == maxfilas:
+                    filainicial = filadatos + 1
+                    print(f"FilaDatos: {filadatos} - Fila inicial: {filainicial} - Maxfilas: {maxfilas}")
+                    if filainicial >= maxfilas:
                          break
           
           paquete["rutaResultado"] = data

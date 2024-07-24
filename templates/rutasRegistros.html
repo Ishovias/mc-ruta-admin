@@ -22,7 +22,7 @@
                     <tr>
                     <td>
                          <form method="post">
-                              <button type="submit" name="detalle_ruta_registro" value="{{ fila.2 }}" style="width: 95px;">Detalle</button>
+                              <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
                          </form>
                     </td>
                     {% for data in fila %}
@@ -46,7 +46,7 @@
           {% endfor %}
      </thead>
      <tbody>
-          {% for fila in datos.rutaLista.datos %}
+          {% for fila in datos.rutaResultado.datos %}
                <tr>
                {% for data in fila %}
                     <td>{{ data }}</td>

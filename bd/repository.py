@@ -45,8 +45,8 @@ class bdmediclean:
                 celda.value = None
         else:
             completado = True
+            self.datosPorGuardar = True
             return completado
-        self.datosPorGuardar = True
 
     def buscafila(self, filainicio: int=None, columna: int=1) -> int:
         if not filainicio:
@@ -79,7 +79,7 @@ class bdmediclean:
                 else:
                     fila += 1
         else:
-            fila = 0
+            fila = None
         return fila
         
     def buscapartedato(self, filainicio:int, columna: int, dato: str) -> list:
@@ -225,15 +225,15 @@ class bdmediclean:
         if columna == str and columna != None:
             ListaColumnas = self.hoja_actual["columnas"][columna]
             if ListaColumnas == list:
-                 columnas = ListaColumnas
+                columnas = ListaColumnas
             else:
-                 columnas = [ListaColumnas]
+                columnas = [ListaColumnas]
         elif columna == int and columna != None:
             columnas = [columna]
         elif columnas != None:
             pass
         else:
-             return None
+            return None
         
         datos = []
 
