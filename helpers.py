@@ -26,7 +26,8 @@ lista_rutas = {
                "cliente_ruta_posponer"
                ],
           "rutas":[
-               "rutas"
+               "rutas",
+               "detalle_ruta_registro"
                ],
           "codexpy":[
                "codexpy",
@@ -371,7 +372,7 @@ def registros_rutas(request: object, paquete: map) -> map:
 
      if "detalle_ruta_registro" in request.form:
           fecha = request.form.get("detalle_ruta_registro")
-          
+          print()
           paquete["fecha"] = f"Ruta seleccionada: {fecha}"
           
           data = []
@@ -383,6 +384,7 @@ def registros_rutas(request: object, paquete: map) -> map:
                     columnas=params.RUTAS_BD["columnas"]["todas"]
                )
                paquete["encabezados"] = encabezados
+               maxfilas = rutabd.getmaxfilas()
                while(True):
                     filadatos = rutabd.busca_ubicacion(
                          dato=fecha,
@@ -396,7 +398,7 @@ def registros_rutas(request: object, paquete: map) -> map:
                          )
                     )
                     filainicial = filadatos
-                    if filainicial >= rutabd.getmaxfilas():
+                    if filainicial == maxfilas:
                          break
           
           paquete["rutaResultado"] = data
@@ -458,6 +460,6 @@ def empaquetador(coder: object, request: object, destino: str) -> map:
           
      elif destino == "rutas":
           paquete = registros_rutas(request, paquete)
-
+          
      return paquete
           
