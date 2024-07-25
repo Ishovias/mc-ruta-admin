@@ -74,7 +74,9 @@ class bdmediclean:
                 valorcelda = str(celda.value)
                 datob = dato
             finally:
+                print(f"Dato: {datob} - celda:fila{fila},Columna{columna} ValorCelda: {valorcelda}")
                 if datob == valorcelda:
+                    print("VERDADERO")
                     return fila
                 else:
                     fila += 1
@@ -120,7 +122,6 @@ class bdmediclean:
             filainicial = self.hoja_actual[filainicio]
         else:
             filainicial = filainicio
-        print(f"FILAINICIAL: {filainicial}")
         if not dato:
             fila = self.buscafila(filainicial,column)
         else:
