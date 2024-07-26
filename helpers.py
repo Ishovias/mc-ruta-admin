@@ -287,13 +287,14 @@ def rutas(request: object, paquete: map) -> map:
           
           nueva_rutaActual = False
           nueva_rutaRegistro = False
-          
-          with RutaActual() as rutaactualbd:
-               nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
-          
+
           with RutaRegistros() as rutaregistros:
                nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
           
+          if nueva_rutaRegistro:     
+               with RutaActual() as rutaactualbd:
+                    nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
+               
           if nueva_rutaActual and nueva_rutaRegistro:
                paquete["alerta"] = "Ruta creada"
           else:
@@ -375,7 +376,6 @@ def registros_rutas(request: object, paquete: map) -> map:
           paquete["fecha"] = f"Ruta seleccionada: {fecha}"
           
           data: list = []
-          filainicial: int = params.RUTAS_BD["filainicial"]
           
           with RutaBD() as rutabd:
                encabezados = rutabd.extraefila(
@@ -383,26 +383,29 @@ def registros_rutas(request: object, paquete: map) -> map:
                     columnas=params.RUTAS_BD["columnas"]["todas"]
                )
                paquete["encabezados"] = encabezados
-               maxfilas: int = rutabd.getmaxfilas()
-               fila: int = params.RUTAS_BD["filainicial"]
-               while(fila < maxfilas):
-                    filadatos = rutabd.busca_ubicacion(
-                         dato=fecha,
-                         columna="fecha",
-                         filainicio=fila
-                    )
-                    if filadatos:
-                         recopilado = rutabd.extraefila(
-                              fila=filadatos,
-                              columna="todas"
+               maxfilas = rutabd.getmaxfilas()
+               fila = params.RUTAS_BD["filainicial"]
+               filasEncontradas = []
+               
+               while(fila <= maxfilas):
+                    filadatos = rutabd.buscadato(
+                         filainicio=fila,
+                         columna=params.RUTAS_BD["columnas"]["fecha"],
+                         dato=fecha
                          )
+                    if filadatos:
+                         filasEncontradas.append(filadatos)
                          fila = filadatos + 1
-                         print(f"Datos recopilados: {recopilado} en la filadatos: {filadatos}")
-                         data.append(recopilado)
                     else:
                          break
-                    print(f"FilaDatos: {filadatos} - Fila inicial: {filainicial} - Maxfilas: {maxfilas}")
-          
+               
+               for f in filasEncontradas:
+                    recopilado = rutabd.extraefila(
+                         fila=f,
+                         columnas=params.RUTAS_BD["columnas"]["todas"]
+                         )
+                    data.append(recopilado)
+
           paquete["rutaResultado"] = data
                
      with RutaRegistros() as rutaregistros:

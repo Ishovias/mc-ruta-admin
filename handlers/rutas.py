@@ -55,6 +55,12 @@ class RutaRegistros(bdmediclean):
           super().__init__(params.RUTAS_REGISTROS)
 
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
+          if super().buscadato(
+               filainicio=self.hoja_actual["filainicial"],
+               columna=self.hoja_actual["columnas"]["fecha"],
+               dato=fecha
+          ):
+               return False
           ingreso = super().putDato(
                datos=[fecha,ruta],
                fila=super().buscafila(),

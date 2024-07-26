@@ -74,9 +74,7 @@ class bdmediclean:
                 valorcelda = str(celda.value)
                 datob = dato
             finally:
-                print(f"Dato: {datob} - celda:fila{fila},Columna{columna} ValorCelda: {valorcelda}")
                 if datob == valorcelda:
-                    print("VERDADERO")
                     return fila
                 else:
                     fila += 1
@@ -118,7 +116,7 @@ class bdmediclean:
     
     def busca_ubicacion(self, dato: str=None, columna: str="cliente", filainicio: str="filainicial") -> int:
         column = self.hoja_actual["columnas"][columna]
-        if filainicio == str:
+        if type(filainicio) == str:
             filainicial = self.hoja_actual[filainicio]
         else:
             filainicial = filainicio
@@ -223,25 +221,22 @@ class bdmediclean:
                     return int(celdaAnterior.value)+1
 
     def extraefila(self, fila: int, columna: str=None, columnas: list=None) -> list:
-        if columna == str and columna != None:
+        if type(columna) == str and columna != None:
             ListaColumnas = self.hoja_actual["columnas"][columna]
             if ListaColumnas == list:
                 columnas = ListaColumnas
             else:
                 columnas = [ListaColumnas]
-        elif columna == int and columna != None:
+        elif type(columna) == int and columna != None:
             columnas = [columna]
         elif columnas != None:
             pass
-        else:
-            return None
         
         datos = []
 
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
             datos.append(celda.value)
-            print(f"EXTRACTOR: Fila: {fila} - Columna: {column} - DATO: {celda.value}")
 
         return datos
 
