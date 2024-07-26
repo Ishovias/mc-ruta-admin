@@ -384,21 +384,24 @@ def registros_rutas(request: object, paquete: map) -> map:
                )
                paquete["encabezados"] = encabezados
                maxfilas: int = rutabd.getmaxfilas()
-               filainicio: int = params.RUTAS_BD["filainicial"]
-               for fila in range(filainicio,maxfilas):
+               fila: int = params.RUTAS_BD["filainicial"]
+               while(fila < maxfilas):
                     filadatos = rutabd.busca_ubicacion(
                          dato=fecha,
                          columna="fecha",
                          filainicio=fila
                     )
-                    if filadatos != None:
+                    if filadatos:
                          recopilado = rutabd.extraefila(
                               fila=filadatos,
-                              columna="fecha"
+                              columna="todas"
                          )
-                         print(fecha,recopilado)
+                         fila = filadatos + 1
+                         print(f"Datos recopilados: {recopilado} en la filadatos: {filadatos}")
                          data.append(recopilado)
-                    print(f"Dato: {fecha} - FilaDatos: {filadatos} - Fila inicial: {filainicial} - Maxfilas: {maxfilas}")
+                    else:
+                         break
+                    print(f"FilaDatos: {filadatos} - Fila inicial: {filainicial} - Maxfilas: {maxfilas}")
           
           paquete["rutaResultado"] = data
                

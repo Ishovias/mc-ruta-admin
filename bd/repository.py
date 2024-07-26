@@ -241,6 +241,7 @@ class bdmediclean:
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
             datos.append(celda.value)
+            print(f"EXTRACTOR: Fila: {fila} - Columna: {column} - DATO: {celda.value}")
 
         return datos
 
