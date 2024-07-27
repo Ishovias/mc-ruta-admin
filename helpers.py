@@ -118,6 +118,7 @@ def login(coder: object, request: object) -> map:
      resultado = sesion.iniciarSesion(coder,request)
      if resultado:
           paquete["pagina"] = "index.html"
+          paquete["bienvenida"] = f"Bienvenido {sesion.getUsuario(request)}\nSelecciona una accion..."
      else:
           paquete["pagina"] = "autorizador.html"
      return paquete
@@ -247,9 +248,7 @@ def clientes(request: object) -> map:
 
 def rutas(request: object, paquete: map) -> map:
      
-     def confpos(realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
-          cliente_rut = request.form.get("cliente_ruta_confirmar")
-          
+     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           # buscando datos del cliente y eliminando registro de ruta actual
           datos_cliente_confirmado = []
           with RutaActual() as rutaactualbd:
@@ -326,7 +325,7 @@ def rutas(request: object, paquete: map) -> map:
                     for identificador in identificadores:
                          datos.append(rutaactualbd.getDato(identificador=identificador))
                     datos.append("RUTA FINALIZADA")
-
+                    
                     for identificador in identificadores:
                          rutaactualbd.putDato(dato="", identificador=identificador)
                          
@@ -344,12 +343,15 @@ def rutas(request: object, paquete: map) -> map:
      
      elif "cliente_ruta_confirmar" in request.form:
           paquete = confpos(
+               request.form.get("cliente_ruta_confirmar"),
                "REALIZADO", 
                mensajes.CLIENTE_CONFIRMADO.value, 
                mensajes.CLIENTE_CONFIRMADO_ERROR.value
                )
+
      elif "cliente_ruta_posponer" in request.form:
           paquete = confpos(
+               request.form.get("cliente_ruta_posponer"),
                "POSPUESTO", 
                mensajes.CLIENTE_POSPUESTO.value, 
                mensajes.CLIENTE_POSPUESTO_ERROR.value

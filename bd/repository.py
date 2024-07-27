@@ -106,11 +106,11 @@ class bdmediclean:
             self.hoja_actual["columnas"][filtro],
             nombre
             )
-        if ubicacion == 0:
+        if ubicacion == None:
             return 0
         datos = self.extraefila(
-            ubicacion,
-            self.hoja_actual["columnas"]["todas"]
+            fila=ubicacion,
+            columna="todas"
             )
         return datos
     
@@ -143,9 +143,11 @@ class bdmediclean:
             "encabezados" con una lista de los encabezados y
             "datos" con una lista de los datos por cada fila
         """        
-        if not filainicial or not columnas or not encabezados:
+        if not filainicial:
             filainicial = self.hoja_actual["filainicial"]
+        if not columnas:
             columnas = self.hoja_actual["columnas"]["todas"]
+        if not encabezados:
             encabezados = self.hoja_actual["encabezados"]
         
         resultados = {}
@@ -223,7 +225,7 @@ class bdmediclean:
     def extraefila(self, fila: int, columna: str=None, columnas: list=None) -> list:
         if type(columna) == str and columna != None:
             ListaColumnas = self.hoja_actual["columnas"][columna]
-            if ListaColumnas == list:
+            if type(ListaColumnas) == list:
                 columnas = ListaColumnas
             else:
                 columnas = [ListaColumnas]

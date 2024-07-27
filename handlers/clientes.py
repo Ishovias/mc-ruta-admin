@@ -10,12 +10,12 @@ class Clientes(bdmediclean):
         filainicio = self.hoja_actual["filainicial"]
         columna = self.hoja_actual["columnas"]["cliente"]
         filas = super().buscapartedato(filainicio,columna,nombre)
-        columnas = self.hoja_actual["columnas"]["todas"]
+        col = self.hoja_actual["columnas"]["todas"]
         resultados = {}
-        resultados["encabezados"] = super().extraefila(1,columnas)
+        resultados["encabezados"] = super().extraefila(fila=1,columnas=col)
         resultados["datos"] = []
         for fila in filas:
-            data = super().extraefila(fila,columnas)
+            data = super().extraefila(fila=fila,columnas=col)
             resultados["datos"].append(data)
         return resultados
 
@@ -39,8 +39,8 @@ class Clientes(bdmediclean):
         if ubicacion == 0:
             return 0
         datos = super().extraefila(
-            ubicacion,
-            self.hoja_actual["columnas"]["todas"]
+            fila=ubicacion,
+            columnas=self.hoja_actual["columnas"]["todas"]
             )
         return datos
     

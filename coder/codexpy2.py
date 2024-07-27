@@ -13,7 +13,7 @@ class codexpy2:
 
     cod_a = list("abcdefghijklmnopqrstuvwxyz1234567890@#$")
     cod_b = list("$#@0987654321zYXwvUTSRqpOnmlkjihgfedcba")
-    cod_c = list("zyxwvutsrqponmlk@#$%&?1234567abcdefghij")
+    cod_c = list("ZyxwVutsIqponmLk@#$%&?1234567abcdefghij")
     
     largotoken = 20
     
