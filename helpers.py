@@ -105,7 +105,7 @@ class SessionSingleton:
           return self.__usr
      
      def __exit__(self, exc_type, exc_value, traceback) -> None:
-        pass
+          pass
 
 # ---------------------- VERIFICATOKEN  --------------------------
 
@@ -375,15 +375,17 @@ def rutas(request: object, paquete: map) -> map:
      elif "cliente_ruta_confirmar" in request.form:
           confirmacion = request.form.get("cliente_ruta_confirmar")
           if confirmacion == "REALIZADO_FORM":
-               paquete["pagina"] = "confpos.html"
-               paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
-          else:
                confpos(
-                    request.form.get("cliente_ruta_confirmar"),
+                    request.form.get("clienterut"),
                     "REALIZADO", 
                     mensajes.CLIENTE_CONFIRMADO.value, 
                     mensajes.CLIENTE_CONFIRMADO_ERROR.value
                     )
+          else:
+               paquete["pagina"] = "confpos.html"
+               paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
+               paquete["confirmadoposponer"] = "Confirmar"
+               paquete["clienterut"] = confirmacion
 
      elif "cliente_ruta_posponer" in request.form:
           confpos(
