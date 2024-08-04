@@ -1,4 +1,5 @@
 from bd.repository import bdmediclean
+from datetime import date, timedelta
 import params
 
 class Clientes(bdmediclean):
@@ -56,6 +57,30 @@ class Clientes(bdmediclean):
             return False
         else:
             return True
+            
+    def proximo_retiro(self, rut: str, fecharetiro: str) -> str:
+         diascontrato = super().getDato(
+              fila=super().busca_ubicacion(
+                   dato=rut,
+                   columna="rut"
+                   ),
+              columna="diascontrato"
+              )
+         
+         if not diascontrato:
+              return None
+         
+         try:
+              int(diascontrato)
+         except Exception as e:
+              print(e)
+              return None
+         else:
+              lapso = timedelta(diascontrato + 2)
+         
+         fecharetiro = date.fromisoformat(fecharetiro)
+         proxretiro = date.isoformat(fecharetiro + lapso)
+         return proxretiro
         
     def guardar_modificacion(self, rut: str, data: list) -> bool:
         fila = super().busca_ubicacion(rut,"rut")

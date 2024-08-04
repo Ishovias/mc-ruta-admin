@@ -71,6 +71,9 @@ class SessionSingleton:
                cls.__instance = super().__new__(cls)
           return cls.__instance
      
+     def __enter__(self) -> object:
+          return self
+     
      def iniciarSesion(self, coder: object, request: object) -> bool:
           nombre = request.form["user"]
           contrasena = request.form["contrasena"]
@@ -94,7 +97,15 @@ class SessionSingleton:
           
      def getUsuario(self, request: object) -> str:
           addr = str(request.remote_addr)
-          return self.__usr[addr]
+          if addr in self.__usr:
+               return self.__usr[addr]
+          return None
+     
+     def getUsersMap(self) -> map:
+          return self.__usr
+     
+     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        pass
 
 # ---------------------- VERIFICATOKEN  --------------------------
 
@@ -112,33 +123,21 @@ def verificatoken(coder: object, request: object) -> bool:
           return False
      
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
-def login(coder: object, request: object) -> map:
-     paquete = {}
+def login(coder: object, request: object, paquete: map) -> map:
      sesion = SessionSingleton()
      resultado = sesion.iniciarSesion(coder,request)
      if resultado:
+          usuario = sesion.getUsuario(request)
+          paquete["bienvenida"] = f"Bienvenido {usuario} selecciona una accion..."
+          paquete["usuario"] = usuario
           paquete["pagina"] = "index.html"
-          paquete["bienvenida"] = f"Bienvenido {sesion.getUsuario(request)}\nSelecciona una accion..."
      else:
           paquete["pagina"] = "autorizador.html"
      return paquete
 
-def accionesBotones(request: object, paquete: map) -> map:
-     if "clientes" in request.form:
-          paquete["pagina"] = "clientes.html"
-     if "rutaactual" in request.form:
-          paquete = rutas(request, paquete)
-     if "cierrasesion" in request.form:
-          sesion = SessionSingleton()
-          usr = sesion.getUsuario(request)
-          paquete["alerta"] = f"Usuario {usr} - sesion cerrada"
-          paquete["pagina"] = "autorizador.html"
-          sesion.cierraSesion(request)
-     return paquete
-
-def clientes(request: object) -> map:
+def clientes(request: object, paquete: map) -> map:
      
-     paquete = {"pagina":"clientes.html"}
+     paquete ["pagina"] = "clientes.html"
 
      if "buscacliente" in request.form:
           
@@ -269,16 +268,47 @@ def rutas(request: object, paquete: map) -> map:
           ingresobd = False
           with RutaBD() as rutabd:
                ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
-
+          
+          # Anotacion de fecha en hoja clientes y calculo de proximo retiro
+          ingresoclientes = False
+          with Clientes() as clientesbd:
+               fecharetiro = datos_cliente_confirmado[0]
+               rutcliente = datos_cliente_confirmado[2]
+               
+               ubicacioncliente = clientesbd.busca_ubicacion(
+                    dato=rutcliente,
+                    columna="rut"
+                    )
+               
+               ingresoclientes = clientesbd.putDato(
+                    dato=fecharetiro,
+                    fila=ubicacioncliente,
+                    columna="ultimoretiro"
+                    )
+               
+               proxfecharetiro = clientesbd.proximo_retiro(
+                         rut=rutcliente,
+                         fecharetiro=fecharetiro
+                         )
+                    
+               if proxfecharetiro:
+                    proxfecha = clientesbd.putDato(
+                         dato=proxfecharetiro,
+                         fila=ubicacioncliente,
+                         columna="proxretiro"
+                         )
+               else:
+                    proxfecha = False
           # incremento indicador de clientes realizados o pospuestos
-          if ingresobd:
+          if ingresobd and ingresoclientes and proxfecha:
                paquete["alerta"] = mensaje_ok
           else:
                paquete["alerta"] = mensaje_bad
                
           return paquete
      
-     paquete = {"pagina":"rutas.html", "nombrePagina":"RUTA EN CURSO"}
+     paquete["pagina"] = "rutas.html"
+     paquete["nombrePagina"] = "RUTA EN CURSO"
      
      if "iniciaruta" in request.form:
           fecha = request.form.get("fecha").replace("-","")
@@ -318,6 +348,7 @@ def rutas(request: object, paquete: map) -> map:
                ]
                
                datos = []
+               fechaexistente = ""
                
                with RutaActual() as rutaactualbd:
                     fechaexistente = rutaactualbd.getDato(identificador="rutaencurso")
@@ -332,7 +363,7 @@ def rutas(request: object, paquete: map) -> map:
                with RutaRegistros() as rutaregistros:
                     rutaregistros.putDato(
                          datos=datos,
-                         fila=rutaregistros.buscafila(),
+                         fila=rutaregistros.busca_ubicacion(dato=fechaexistente, columna="fecha"),
                          columna="fecha"
                     )
                     
@@ -342,15 +373,20 @@ def rutas(request: object, paquete: map) -> map:
           return paquete
      
      elif "cliente_ruta_confirmar" in request.form:
-          paquete = confpos(
-               request.form.get("cliente_ruta_confirmar"),
-               "REALIZADO", 
-               mensajes.CLIENTE_CONFIRMADO.value, 
-               mensajes.CLIENTE_CONFIRMADO_ERROR.value
-               )
+          confirmacion = request.form.get("cliente_ruta_confirmar")
+          if confirmacion == "REALIZADO_FORM":
+               paquete["pagina"] = "confpos.html"
+               paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
+          else:
+               confpos(
+                    request.form.get("cliente_ruta_confirmar"),
+                    "REALIZADO", 
+                    mensajes.CLIENTE_CONFIRMADO.value, 
+                    mensajes.CLIENTE_CONFIRMADO_ERROR.value
+                    )
 
      elif "cliente_ruta_posponer" in request.form:
-          paquete = confpos(
+          confpos(
                request.form.get("cliente_ruta_posponer"),
                "POSPUESTO", 
                mensajes.CLIENTE_POSPUESTO.value, 
@@ -366,12 +402,11 @@ def rutas(request: object, paquete: map) -> map:
                paquete["ruta"] = None
           paquete["rutaLista"] = rutaDatos
      
-
      return paquete
      
 def registros_rutas(request: object, paquete: map) -> map:
 
-     paquete = {"pagina":"rutasRegistros.html"}
+     paquete["pagina"] = "rutasRegistros.html"
 
      if "detalle_ruta_registro" in request.form:
           fecha = request.form.get("detalle_ruta_registro")
@@ -412,13 +447,13 @@ def registros_rutas(request: object, paquete: map) -> map:
                
      with RutaRegistros() as rutaregistros:
           paquete["rutaLista"] = rutaregistros.listar()
-     
-     
-     
+
      return paquete
 
 def codex(coder: object, request: object, paquete: map) -> map:
-     paquete = {"pagina":"codexpy.html","urlfor":"codex"}
+     paquete["pagina"] = "codexpy.html"
+     paquete["urlfor"] = "codex"
+     
      if request.form:
           if "codpy2" in request.form:
                frase = request.form.get("ingreso")
@@ -432,7 +467,10 @@ def codex(coder: object, request: object, paquete: map) -> map:
 
 def codex1(request: object, paquete: map) -> map:
      coder = codexpy()
-     paquete = {"pagina":"codexpy.html","urlfor":"codex1"}
+     
+     paquete["pagina"] = "codexpy.html"
+     paquete["urlfor"] = "codex1"
+     
      if request.form:
           if "codpy" in request.form:
                frase = request.form["ingreso"]
@@ -445,16 +483,18 @@ def codex1(request: object, paquete: map) -> map:
 def empaquetador(coder: object, request: object, destino: str) -> map:
      
      paquete = {}
-     
+     with SessionSingleton() as sesion:
+          paquete["usuarios"] = sesion.getUsuario(request)
+          
      # EMPAQUETADO DE DATOS PARA PLANTILLA
      if destino == "index":
           paquete["pagina"] = "index.html"
      
      elif destino == "login":
-          paquete = login(coder,request)
+          paquete = login(coder,request,paquete)
      
      elif destino == "clientes":
-          paquete = clientes(request)
+          paquete = clientes(request,paquete)
           
      elif destino == "rutaactual":
           paquete = rutas(request, paquete)
@@ -469,4 +509,3 @@ def empaquetador(coder: object, request: object, destino: str) -> map:
           paquete = registros_rutas(request, paquete)
           
      return paquete
-          
