@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Administrador de ruta</h2>
+     <h3>({{ datos.nombrePagina }})</h3>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+     <form class="formularioIngreso" method="post">
+          <label for="rutafecha">Rut:
+               <input name="rutafecha" type="text" value="{{ datos.rutafecha }}" readonly>
+          </label>
+          <label for="rutanombre">Cliente:
+               <input name="rutanombre" type="text" value="{{ datos.rutanombre }}" readonly>
+          </label>
+          <label for="observacion">Observacion:
+               <input name="observacion" type="text" value="{{ datos.rutaobs }}">
+          </label>
+          <button type="submit" name="finalizaRutaActual" value="REALIZADO_FORM">Confirmar ruta</button>
+          <button type="button" name="rutaactual" value="rutaactual">Cancelar</button>
+     </form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}
