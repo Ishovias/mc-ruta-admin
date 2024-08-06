@@ -9,12 +9,12 @@
 {% block body_a %}
      <form class="formularioIngreso" method="post">
           <label for="clienterut">
-               <input name="clienterut" type="text" value="{{ datos.clienterut }}" disabled>
+               <input name="clienterut" type="text" value="{{ datos.clienterut }}" readonly>
           </label>
           <label for="observacion">
                <input name="observacion" type="text" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro">
           </label>
-          <button type="submit" name="cliente_ruta_confirmar" value="REALIZADO_FORM">{{ datos.confirmarposponer }}</button>
+          <button type="submit" name="{{ datos.propConfPos }}" value="REALIZADO_FORM">{{ datos.confirmarposponer }}</button>
           <button type="button" name="rutaactual" value="rutaactual">Cancelar</button>
      </form>
 {% endblock %}

@@ -9,7 +9,7 @@ class Usuariosbd(bdmediclean):
     def comprueba_usuario(self, nombre: str, contrasena: str) -> bool:
         dnombre = super().buscadato(self.hoja_actual["filainicial"],1,nombre)
         dcontrasena = super().buscadato(self.hoja_actual["filainicial"],2,contrasena)
-        if dnombre > 0 and dcontrasena > 0:
+        if dnombre != None and dcontrasena != None:
             resultado = True
         else:
             resultado = False

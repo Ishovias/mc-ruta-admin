@@ -250,9 +250,11 @@ def rutas(request: object, paquete: map) -> map:
      def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           # buscando datos del cliente y eliminando registro de ruta actual
           datos_cliente_confirmado = []
+          print(f"CLIENTE_RUT: {cliente_rut}")
           with RutaActual() as rutaactualbd:
                datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
                datos_cliente_confirmado.append(realizadopospuesto)
+               datos_cliente_confirmado.append(request.form.get("observacion"))
                rutaactualbd.eliminar(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
                cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
                if not cantregistrada:
@@ -263,12 +265,10 @@ def rutas(request: object, paquete: map) -> map:
                     dato=dato,
                     identificador=realizadopospuesto
                )
-
           # Traslado de cliente a BD
           ingresobd = False
           with RutaBD() as rutabd:
                ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
-          
           # Anotacion de fecha en hoja clientes y calculo de proximo retiro
           ingresoclientes = False
           with Clientes() as clientesbd:
@@ -304,6 +304,7 @@ def rutas(request: object, paquete: map) -> map:
                paquete["alerta"] = mensaje_ok
           else:
                paquete["alerta"] = mensaje_bad
+               print(datos_cliente_confirmado)
                
           return paquete
      
@@ -384,16 +385,25 @@ def rutas(request: object, paquete: map) -> map:
           else:
                paquete["pagina"] = "confpos.html"
                paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
-               paquete["confirmadoposponer"] = "Confirmar"
+               paquete["confirmarposponer"] = "Confirmar"
+               paquete["propConfPos"] = "cliente_ruta_confirmar"
                paquete["clienterut"] = confirmacion
 
      elif "cliente_ruta_posponer" in request.form:
-          confpos(
-               request.form.get("cliente_ruta_posponer"),
-               "POSPUESTO", 
-               mensajes.CLIENTE_POSPUESTO.value, 
-               mensajes.CLIENTE_POSPUESTO_ERROR.value
-               )
+          confirmacion = request.form.get("cliente_ruta_posponer")
+          if confirmacion == "REALIZADO_FORM":
+               confpos(
+                    request.form.get("clienterut"),
+                    "POSPUESTO", 
+                    mensajes.CLIENTE_POSPUESTO.value, 
+                    mensajes.CLIENTE_POSPUESTO_ERROR.value
+                    )
+          else:
+               paquete["pagina"] = "confpos.html"
+               paquete["nombrePagina"] = "Observaciones para cliente pospuesto"
+               paquete["confirmarposponer"] = "Posponer"
+               paquete["propConfPos"] = "cliente_ruta_posponer"
+               paquete["clienterut"] = confirmacion
 
      with RutaActual() as ractualbd:
           rutaActiva = ractualbd.getDato(identificador="rutaencurso")
