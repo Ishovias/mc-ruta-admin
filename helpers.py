@@ -272,7 +272,7 @@ def rutas(request: object, paquete: map) -> map:
                ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
           # Anotacion de fecha en hoja clientes y calculo de proximo retiro
           ingresoclientes = False
-          if realizadopospuesto == "REALIZADO"
+          if realizadopospuesto == "REALIZADO":
                with Clientes() as clientesbd:
                     fecharetiro = datos_cliente_confirmado[0]
                     rutcliente = datos_cliente_confirmado[2]
@@ -308,7 +308,6 @@ def rutas(request: object, paquete: map) -> map:
                paquete["alerta"] = mensaje_ok
           else:
                paquete["alerta"] = mensaje_bad
-               print(datos_cliente_confirmado)
                
           return paquete
      
@@ -349,8 +348,7 @@ def rutas(request: object, paquete: map) -> map:
                          "rutaencurso",
                          "nombreruta",
                          "REALIZADO",
-                         "POSPUESTO",
-                         "DEUDA"
+                         "POSPUESTO"
                     ]
                     
                     datos = []

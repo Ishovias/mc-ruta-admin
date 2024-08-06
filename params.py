@@ -41,7 +41,6 @@ RUTA_ACTUAL = {
   "nombreruta":{"fila":1,"columna":3},
   "REALIZADO":{"fila":1,"columna":4},
   "POSPUESTO":{"fila":1,"columna":5},
-  "DEUDA":{"fila":1,"columna":6},
   "columnas":{
     "fecha":1,
     "id":2,
@@ -52,7 +51,8 @@ RUTA_ACTUAL = {
     "telefono":7,
     "gps":8,
     "otro":9,
-    "todas":[1,2,3,4,5,6,7,8,9]
+    "ultimoretiro":10,
+    "todas":[1,2,3,4,5,6,7,8,9,10]
   }, 
   "encabezados":2
 }
@@ -60,11 +60,6 @@ RUTA_ACTUAL = {
 RUTAS_BD = {
   "nombrehoja":"rutas_bd", 
   "filainicial":2,
-  "rutaencurso":{"fila":1,"columna":2},
-  "nombreruta":{"fila":1,"columna":3},
-  "REALIZADO":{"fila":1,"columna":4},
-  "POSPUESTO":{"fila":1,"columna":5},
-  "DEUDA":{"fila":1,"columna":6},
   "columnas":{
     "fecha":1,
     "id":2,
@@ -90,9 +85,8 @@ RUTAS_REGISTROS = {
     "ruta":2,
     "REALIZADO":3,
     "POSPUESTO":4,
-    "DEUDA":5,
-    "otros":6,
-    "todas":[1,2,3,4,5,6]  
+    "otros":5,
+    "todas":[1,2,3,4,5]  
   }, 
   "encabezados":1    
 }
