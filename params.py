@@ -76,7 +76,8 @@ RUTAS_BD = {
     "gps":8,
     "otro":9,
     "situacion":10,
-    "todas":[1,2,3,4,5,6,7,8,9,10]  
+    "observaciones":11,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11]  
   }, 
   "encabezados":1
 }

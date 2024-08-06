@@ -8,10 +8,13 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
      <form class="formularioIngreso" method="post">
-          <label for="clienterut">
+          <label for="clienterut">Rut:
                <input name="clienterut" type="text" value="{{ datos.clienterut }}" readonly>
           </label>
-          <label for="observacion">
+          <label for="clientenombre">Cliente:
+               <input name="clientenombre" type="text" value="{{ datos.clientenombre }}" readonly>
+          </label>
+          <label for="observacion">Observacion:
                <input name="observacion" type="text" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro">
           </label>
           <button type="submit" name="{{ datos.propConfPos }}" value="REALIZADO_FORM">{{ datos.confirmarposponer }}</button>

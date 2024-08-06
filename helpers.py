@@ -4,6 +4,7 @@ from handlers.clientes import Clientes
 from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
+from datetime import datetime
 import params
 
 lista_rutas = {
@@ -250,12 +251,12 @@ def rutas(request: object, paquete: map) -> map:
      def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
           # buscando datos del cliente y eliminando registro de ruta actual
           datos_cliente_confirmado = []
-          print(f"CLIENTE_RUT: {cliente_rut}")
           with RutaActual() as rutaactualbd:
                datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
                datos_cliente_confirmado.append(realizadopospuesto)
                datos_cliente_confirmado.append(request.form.get("observacion"))
                rutaactualbd.eliminar(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
+               # incremento indicador de clientes realizados o pospuestos
                cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
                if not cantregistrada:
                     dato = 1
@@ -271,35 +272,38 @@ def rutas(request: object, paquete: map) -> map:
                ingresobd = rutabd.registraMovimiento(datos_cliente_confirmado)
           # Anotacion de fecha en hoja clientes y calculo de proximo retiro
           ingresoclientes = False
-          with Clientes() as clientesbd:
-               fecharetiro = datos_cliente_confirmado[0]
-               rutcliente = datos_cliente_confirmado[2]
-               
-               ubicacioncliente = clientesbd.busca_ubicacion(
-                    dato=rutcliente,
-                    columna="rut"
-                    )
-               
-               ingresoclientes = clientesbd.putDato(
-                    dato=fecharetiro,
-                    fila=ubicacioncliente,
-                    columna="ultimoretiro"
-                    )
-               
-               proxfecharetiro = clientesbd.proximo_retiro(
-                         rut=rutcliente,
-                         fecharetiro=fecharetiro
+          if realizadopospuesto == "REALIZADO"
+               with Clientes() as clientesbd:
+                    fecharetiro = datos_cliente_confirmado[0]
+                    rutcliente = datos_cliente_confirmado[2]
+                    
+                    ubicacioncliente = clientesbd.busca_ubicacion(
+                         dato=rutcliente,
+                         columna="rut"
                          )
                     
-               if proxfecharetiro:
-                    proxfecha = clientesbd.putDato(
-                         dato=proxfecharetiro,
+                    ingresoclientes = clientesbd.putDato(
+                         dato=fecharetiro,
                          fila=ubicacioncliente,
-                         columna="proxretiro"
+                         columna="ultimoretiro"
                          )
-               else:
-                    proxfecha = False
-          # incremento indicador de clientes realizados o pospuestos
+                    
+                    proxfecharetiro = clientesbd.proximo_retiro(
+                              rut=rutcliente,
+                              fecharetiro=fecharetiro
+                              )
+                         
+                    if proxfecharetiro:
+                         proxfecha = clientesbd.putDato(
+                              dato=proxfecharetiro,
+                              fila=ubicacioncliente,
+                              columna="proxretiro"
+                              )
+                    else:
+                         proxfecha = False
+          else:
+               proxfecha = True
+          
           if ingresobd and ingresoclientes and proxfecha:
                paquete["alerta"] = mensaje_ok
           else:
@@ -329,48 +333,54 @@ def rutas(request: object, paquete: map) -> map:
                paquete["alerta"] = "Ruta creada"
           else:
                paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
-          
+          paquete["pagina"] = "clientes.html"
           return paquete
      
      elif "finalizaRutaActual" in request.form:
-          
-          with RutaActual() as rutaactualbd:
-               datosExistentes = rutaactualbd.listar()
-          
-          if len(datosExistentes["datos"]) > 0:
-               paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
-          else:
-               identificadores = [
-                    "rutaencurso",
-                    "nombreruta",
-                    "REALIZADO",
-                    "POSPUESTO",
-                    "DEUDA"
-               ]
-               
-               datos = []
-               fechaexistente = ""
-               
+          confirmacion = request.form.get("finalizaRutaActual")
+          if confirmacion == "REALIZADO_FORM":
                with RutaActual() as rutaactualbd:
-                    fechaexistente = rutaactualbd.getDato(identificador="rutaencurso")
+                    datosExistentes = rutaactualbd.listar()
+               
+               if len(datosExistentes["datos"]) > 0:
+                    paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
+               else:
+                    identificadores = [
+                         "rutaencurso",
+                         "nombreruta",
+                         "REALIZADO",
+                         "POSPUESTO",
+                         "DEUDA"
+                    ]
                     
-                    for identificador in identificadores:
-                         datos.append(rutaactualbd.getDato(identificador=identificador))
-                    datos.append("RUTA FINALIZADA")
+                    datos = []
+                    fechaexistente = ""
                     
-                    for identificador in identificadores:
-                         rutaactualbd.putDato(dato="", identificador=identificador)
+                    with RutaActual() as rutaactualbd:
+                         fechaexistente = rutaactualbd.getDato(identificador="rutaencurso")
                          
-               with RutaRegistros() as rutaregistros:
-                    rutaregistros.putDato(
-                         datos=datos,
-                         fila=rutaregistros.busca_ubicacion(dato=fechaexistente, columna="fecha"),
-                         columna="fecha"
-                    )
-                    
-               paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
-               
-               
+                         for identificador in identificadores:
+                              datos.append(rutaactualbd.getDato(identificador=identificador))
+                         datos.append(request.form.get("observacion"))
+                         
+                         for identificador in identificadores:
+                              rutaactualbd.putDato(dato="", identificador=identificador)
+                              
+                    with RutaRegistros() as rutaregistros:
+                         rutaregistros.putDato(
+                              datos=datos,
+                              fila=rutaregistros.busca_ubicacion(dato=fechaexistente, columna="fecha"),
+                              columna="fecha"
+                         )
+                         
+                    paquete["alerta"] = f"Ruta {fechaexistente} finalizada"
+          else:
+               paquete["pagina"] = "rutaconf.html"
+               paquete["nombrePagina"] = "Confirmar termino de ruta"
+               paquete["rutaobs"] = f"{datetime.now().isoformat()} RUTA FINALIZADA"
+               with RutaActual() as rutaactual:
+                    paquete["rutafecha"] = rutaactual.getDato(identificador="rutaencurso")
+                    paquete["rutanombre"] = rutaactual.getDato(identificador="nombreruta")
           return paquete
      
      elif "cliente_ruta_confirmar" in request.form:
@@ -388,6 +398,14 @@ def rutas(request: object, paquete: map) -> map:
                paquete["confirmarposponer"] = "Confirmar"
                paquete["propConfPos"] = "cliente_ruta_confirmar"
                paquete["clienterut"] = confirmacion
+               with RutaActual() as rutaactual:
+                    paquete["clientenombre"] = rutaactual.getDato(
+                         fila=rutaactual.busca_ubicacion(
+                              dato=confirmacion,
+                              columna="rut"
+                              ),
+                         columna="cliente"
+                         )
 
      elif "cliente_ruta_posponer" in request.form:
           confirmacion = request.form.get("cliente_ruta_posponer")
@@ -404,6 +422,14 @@ def rutas(request: object, paquete: map) -> map:
                paquete["confirmarposponer"] = "Posponer"
                paquete["propConfPos"] = "cliente_ruta_posponer"
                paquete["clienterut"] = confirmacion
+               with RutaActual() as rutaactual:
+                    paquete["clientenombre"] = rutaactual.getDato(
+                         fila=rutaactual.busca_ubicacion(
+                              dato=confirmacion,
+                              columna="rut"
+                              ),
+                         columna="cliente"
+                         )
 
      with RutaActual() as ractualbd:
           rutaActiva = ractualbd.getDato(identificador="rutaencurso")
