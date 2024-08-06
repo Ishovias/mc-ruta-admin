@@ -69,6 +69,8 @@ html{
 .body_b {
     background-color: white;
     padding: 10px;
+    width: 100%;
+    overflow-x: auto;
     border-radius: 20px;
 }
 
