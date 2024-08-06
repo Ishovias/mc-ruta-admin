@@ -1,6 +1,6 @@
 # hoja de parametros generales
 
-LIBRODATOS = "/data/data/com.termux/files/home/mediclean_flask_op/bd/mediclean_bd.xlsx"
+LIBRODATOS = "./bd/mediclean_bd.xlsx"
 MAX_FILAS = 10000
 CLIENTES = {
   "nombrehoja":"clientes", 
