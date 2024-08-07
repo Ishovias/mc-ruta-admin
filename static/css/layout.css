@@ -13,6 +13,13 @@ html{
     margin-bottom: 10px;
 }
 
+.encabezado .img{
+     width: 20px;
+     height: 20px;
+     border-radius: 50%;
+     object-fit: cover;
+}
+
 .encabezado h1 {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 1.5rem;
@@ -64,12 +71,14 @@ html{
     padding: 20px;
     border-radius: 20px;
     margin-bottom: 20px;
+    width: 90%;
+    overflow-x: auto;
 }
 
 .body_b {
     background-color: white;
     padding: 10px;
-    width: 100%;
+    width: auto;
     overflow-x: auto;
     border-radius: 20px;
 }
