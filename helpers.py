@@ -543,5 +543,8 @@ def empaquetador(coder: object, request: object, destino: str) -> map:
           
      elif destino == "rutas":
           paquete = registros_rutas(request, paquete)
+     
+     with SessionSingleton() as sesion:
+          paquete["usuariosSesion"] = sesion.getUsersMap()
           
      return paquete
