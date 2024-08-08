@@ -6,18 +6,28 @@ html{
 
 .encabezado{
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    align-self: center;
     background-color: aquamarine;
     border-radius: 10px;
     margin-bottom: 10px;
+    height: 100px;
 }
 
-.encabezado .img{
-     width: 20px;
-     height: 20px;
-     border-radius: 50%;
-     object-fit: cover;
+.encabezado img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 10px;
+}
+
+.titulosEncabezados {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    border-radius: 10px;
 }
 
 .encabezado h1 {
@@ -71,7 +81,7 @@ html{
     padding: 20px;
     border-radius: 20px;
     margin-bottom: 20px;
-    width: 90%;
+    width: auto;
     overflow-x: auto;
 }
 

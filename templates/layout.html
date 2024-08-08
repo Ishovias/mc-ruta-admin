@@ -8,9 +8,11 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
     <title>Gestor de ruta MEDICLEAN Icho</title>
     <div class="encabezado">
-         <img class="avatar" src="{{ url_for('static', filename='img/icono.jpg') }}">
-        {% block encabezado %}
-        {% endblock %}
+        <img src="{{ url_for('static', filename='img/icono.jpg') }}">
+        <div class="titulosEncabezados">
+            {% block encabezado %}
+            {% endblock %}
+        </div>
     </div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
@@ -39,6 +41,5 @@
     {% if "alerta" in datos %}
         <script>alerta("{{ datos.alerta }}")</script>
     {% endif %}
-    {{ datos }}
 </body>
 </html>
