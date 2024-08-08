@@ -1,7 +1,7 @@
 # hoja de parametros generales
 
 LIBRODATOS = "./bd/mediclean_bd.xlsx" # Ruta de desarrollo
-# LIBRODATOS = "./bd/mediclean_bd.xlsx" # Ruta en linea
+# LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" # Ruta en linea
 MAX_FILAS = 10000
 CLIENTES = {
   "nombrehoja":"clientes", 
