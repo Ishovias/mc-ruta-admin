@@ -1,7 +1,6 @@
 from handlers.rutas import RutaActual, RutaRegistros, RutaBD
 from handlers.usuarios import Usuariosbd
 from handlers.clientes import Clientes
-from coder.codexpy2 import codexpy2
 from coder.codexpy import codexpy
 from enum import Enum
 from datetime import datetime
@@ -543,8 +542,5 @@ def empaquetador(coder: object, request: object, destino: str) -> map:
           
      elif destino == "rutas":
           paquete = registros_rutas(request, paquete)
-     
-     with SessionSingleton() as sesion:
-          paquete["usuariosSesion"] = sesion.getUsersMap()
           
      return paquete

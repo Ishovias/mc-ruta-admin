@@ -30,5 +30,10 @@ def index() -> render_template:
      
      return render_template(datos["pagina"], datos=datos)
 
+@app.route('/codex', methods=['GET','POST'])
+def codex() -> render_template:
+     datos = empaquetador(coder, request, "codexpy")
+     return render_template(datos["pagina"], datos=datos)
+
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')
