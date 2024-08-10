@@ -11,17 +11,23 @@ sesion = SessionSingleton()
 @app.route('/', methods=['GET','POST'])
 def index() -> render_template:
      if sesion.getAutenticado(request):
-          datos = {"pagina":"index.html"}
-     else:
-          return redirect(url_for('login'))
-     return render_template(datos["pagina"], datos=datos)
+          datos = {"bienvenida":f"Bienvenido {sesion.getUsuario}, escoge una accion"}
+          return render_template("index.html", datos=datos)
+     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET','POST'])
 def login() -> render_template:
-     if not sesion.getAutenticado(request):
-          datos = empaquetador_login(request)
-     else:
+     
+     if request.method == 'POST':
+          if not sesion.getAutenticado(request):
+               datos = empaquetador_login(request)
+               if "pagina" in datos:
+                    return render_template(datos["pagina"], datos=datos)
           return redirect(url_for('index'))
+     else:
+          if sesion.getAutenticado(request):
+               return redirect(url_for('index'))
+          return render_template("autorizador.html")
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:

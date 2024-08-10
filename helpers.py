@@ -130,6 +130,7 @@ def empaquetador_login(coder: object, request: object) -> map:
           paquete["redirect"] = "index.html"
      else:
           paquete["pagina"] = "autorizador.html"
+          paquete["alerta"] = "Usuario o contraseña invalida"
      return paquete
 
 def codex(coder: object, request: object, paquete: map) -> map:
