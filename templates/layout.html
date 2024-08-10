@@ -19,8 +19,10 @@
     <form class="botoneraMenu" method="post" action="{{ url_for('clientes') }}">
         <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
     </form>
-    <form class="botoneraMenu" method="post" action="{{ url_for('rutas') }}"></form>
+    <form class="botoneraMenu" method="post" action="{{ url_for('rutaactual') }}"></form>
         <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
+    </form>
+    <form class="botoneraMenu" method="post" action="{{ url_for('rutas') }}"></form>
         <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
     </form>
     <form class="botoneraMenu" method="post" action="{{ url_for('logout') }}">

@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request, render_template, url_for
 from coder.codexpy2 import codexpy2
-from handlers.clientes import empaquetador_clientes
-from handlers.rutas import empaquetador_registros_rutas, empaquetador_rutaactual
+from empaquetadores.pack_clientes import empaquetador_clientes
+from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual
 from helpers import SessionSingleton, empaquetador_login
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ sesion = SessionSingleton()
 @app.route('/', methods=['GET','POST'])
 def index() -> render_template:
      if sesion.getAutenticado(request):
-          datos = {"bienvenida":f"Bienvenido {sesion.getUsuario}, escoge una accion"}
+          datos = {"bienvenida":f"Bienvenido {sesion.getUsuario(request)}, escoge una accion"}
           return render_template("index.html", datos=datos)
      return redirect(url_for('login'))
 
@@ -20,7 +20,7 @@ def login() -> render_template:
      
      if request.method == 'POST':
           if not sesion.getAutenticado(request):
-               datos = empaquetador_login(request)
+               datos = empaquetador_login(coder, request)
                if "pagina" in datos:
                     return render_template(datos["pagina"], datos=datos)
           return redirect(url_for('index'))
@@ -45,10 +45,12 @@ def rutas() -> render_template:
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/logout', methods=['POST'])
-def rutas() -> render_template:
+def logout() -> render_template:
+     alerta = "Sesion ya cerrada, debes iniciar sesion nuevamente"
      if sesion.getAutenticado(request):
-          datos = {"alerta":f"Sesion de usuario {sesion.getUsuario(request)} cerrada"}
+          alerta = f"Sesion de usuario {sesion.getUsuario(request)} cerrada"
           sesion.cierraSesion(request)
+     datos = {"alerta":alerta}
      return render_template('autorizador.html', datos=datos)
 
 if __name__ == '__main__':
