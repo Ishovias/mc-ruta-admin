@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <!-- <link rel="shorcut icon" href=""> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <title>Gestor de ruta MEDICLEAN Icho</title>
+    <title>Gestor de ruta MEDICLEAN (Isaias B.)</title>
     <div class="encabezado">
-        <img src="{{ url_for('static', filename='img/icono.jpg') }}">
+        <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='img/icono.jpg') }}"></a>
         <div class="titulosEncabezados">
             {% block encabezado %}
             {% endblock %}
@@ -16,18 +16,20 @@
     </div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
-    <form class="botoneraMenu" method="post" action="{{ url_for('clientes') }}">
-        <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
-    </form>
-    <form class="botoneraMenu" method="post" action="{{ url_for('rutaactual') }}"></form>
-        <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
-    </form>
-    <form class="botoneraMenu" method="post" action="{{ url_for('rutas') }}"></form>
-        <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
-    </form>
-    <form class="botoneraMenu" method="post" action="{{ url_for('logout') }}">
-        <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>
-    </form>
+    <nav class="botoneraMenu">
+         <form method="post" action="{{ url_for('clientes') }}">
+             <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
+         </form>
+         <form method="post" action="{{ url_for('rutaactual') }}">
+             <button class="botonanimado" id="rutaactual" name="rutaactual" value="rutaactual">Ruta actual</button>
+         </form>
+         <form method="post" action="{{ url_for('rutas') }}">
+             <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
+         </form>
+         <form method="post" action="{{ url_for('logout') }}">
+             <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>
+         </form>
+    </nav>
 </head>
 <body>
     <div class="body_a">
