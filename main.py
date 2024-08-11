@@ -27,20 +27,26 @@ def login() -> render_template:
      else:
           if sesion.getAutenticado(request):
                return redirect(url_for('index'))
-          return render_template("autorizador.html")
+          return render_template("autorizador.html", datos={"alerta":"Debes iniciar sesion primeramente"})
 
 @app.route('/clientes', methods=['POST'])
 def clientes() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
      datos = empaquetador_clientes(request)
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/rutaactual', methods=['POST'])
 def rutaactual() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
      datos = empaquetador_rutaactual(request)
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/rutas', methods=['POST'])
 def rutas() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
      datos = empaquetador_registros_rutas(request)
      return render_template(datos["pagina"], datos=datos)
 
