@@ -20,6 +20,7 @@ html{
     border-radius: 50%;
     object-fit: cover;
     margin-left: 10px;
+    box-shadow: 2px 2px 7px 1px #1C6EA4;
 }
 
 .titulosEncabezados {
@@ -31,9 +32,11 @@ html{
 
 .encabezado h1 {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white;
     font-size: 1.5rem;
     padding-left: 10px;
     margin: 0px;
+    text-shadow: 1px 2px 2px black;
 }
 
 .encabezado h2 {
