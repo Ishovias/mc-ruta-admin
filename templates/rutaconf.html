@@ -7,7 +7,7 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-     <form class="formularioIngreso" method="post">
+     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
           <label for="rutafecha">Rut:
                <input name="rutafecha" type="text" value="{{ datos.rutafecha }}" readonly>
           </label>

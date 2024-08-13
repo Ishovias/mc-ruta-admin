@@ -21,7 +21,7 @@
                {% for fila in datos.rutaLista.datos %}
                     <tr>
                     <td>
-                         <form method="post">
+                         <form method="post" action="{{ url_for('rutas') }}">
                               <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
                          </form>
                     </td>

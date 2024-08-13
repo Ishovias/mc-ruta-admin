@@ -3,11 +3,11 @@
 {% block encabezado %}
      <h1>Mediclean Ruta</h1>
      <h2>Administrador de ruta</h2>
-     <h3>({{ datos.nombrePagina }})</h3>
+     <h2>({{ datos.nombrePagina }})</h2>
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-     <form class="formularioIngreso" method="post">
+     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
           <label for="clienterut">Rut:
                <input name="clienterut" type="text" value="{{ datos.clienterut }}" readonly>
           </label>

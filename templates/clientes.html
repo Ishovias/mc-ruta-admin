@@ -33,7 +33,7 @@
                {% for fila in datos.listaclientes.datos %}
                     <tr>
                          <td>
-                              <form method="post">
+                              <form method="post" action="{{ url_for('clientes') }}">
                                    <button type="submit" name="aRuta" value="{{ fila.1 }}">A Ruta</button>
                               </form>
                          </td>
@@ -41,7 +41,7 @@
                          <td>{{ data }}</td>
                     {% endfor %}
                          <td>
-                              <form method="post">
+                              <form method="post" action="{{ url_for('clientes') }}">
                                    <button type="submit" name="modificaCliente" value="{{ fila.1 }}">Modificar datos</button>
                               </form>
                          </td>
@@ -56,7 +56,7 @@
 {% endif %}
 
 {% if "modificacion" in datos %}
-     <form name="moddelete" class="formularioIngreso" method="post">
+     <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes') }}">
           <label for="nombre">Nombre:</label><br>
           <input name="nombre" value="{{ datos.modificacion.2 }}" required>
           <label for="rut">RUT:</label><br>

@@ -22,7 +22,7 @@
                {% for fila in datos.rutaLista.datos %}
                     <tr>
                     <td>
-                         <form method="post">
+                         <form method="post" action="{{ url_for('rutaactual') }}">
                               <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="width: 95px;">Realizado</button>
                               <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="width: 95px;">Pospuesto</button>
                          </form>
@@ -34,7 +34,7 @@
                {% endfor %}
           </tbody>
           </table>
-          <form name="finruta" method="post">
+          <form name="finruta" method="post" action="{{ url_for('rutaactual') }}">
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
           </form>
@@ -43,7 +43,7 @@
           <br><hr><br>
           <h2 class="encabezado">Nueva ruta</h2>
           <br><hr><br>
-          </form><form name="nuevaruta" class="formularioIngreso" method="post">
+          </form><form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
                <label for="fecha">Fecha: 
                     <input type="date" name="fecha">
                </label>
@@ -59,7 +59,7 @@
 {% if "nuevaruta" in datos %}
      <h2 class="encabezado">Nueva ruta</h2>
      <br><hr><br>
-     <form name="nuevaruta" class="formularioIngreso" method="post">
+     <form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
           <label for="fecha">Fecha: 
                <input type="date" name="fecha">
           </label>
