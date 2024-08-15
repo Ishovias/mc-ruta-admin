@@ -40,6 +40,12 @@ def empaquetador_rutaactual(request: object) -> map:
                 fecharetiro = datos_cliente_confirmado[0]
                 rutcliente = datos_cliente_confirmado[2]
                 
+                # isoformateo de fecha para registro y calculo de sgte fecha
+                compfecha = list(fecharetiro)
+                compfecha.insert(4,"-")
+                compfecha.insert(7,"-")
+                fecharetiro = "".join(compfecha)
+                
                 ubicacioncliente = clientesbd.busca_ubicacion(
                         dato=rutcliente,
                         columna="rut"
@@ -66,6 +72,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         proxfecha = False
         else:
             proxfecha = True
+            ingresoclientes = True
         
         if ingresobd and ingresoclientes and proxfecha:
             paquete["alerta"] = mensaje_ok
