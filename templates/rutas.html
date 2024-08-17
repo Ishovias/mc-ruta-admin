@@ -13,23 +13,23 @@
           <hr>
           <table class="tbresultados">
           <thead>
-                    <th>Realizado</th>
                {% for dato in datos.rutaLista.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
+                    <th>Realizado</th>
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
                     <tr>
-                    <td>
-                         <form method="post" action="{{ url_for('rutaactual') }}">
-                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="width: 95px;">Realizado</button>
-                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="width: 95px;">Pospuesto</button>
-                         </form>
-                    </td>
                     {% for data in fila %}
                          <td>{{ data }}</td>
                     {% endfor %}
+                    <td>
+                         <form method="post" action="{{ url_for('rutaactual') }}" style="display:flex">
+                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="height: 50px">CONF</button>
+                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="height: 50px">POSP</button>
+                         </form>
+                    </td>
                     </tr>
                {% endfor %}
           </tbody>

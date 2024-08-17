@@ -41,7 +41,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 rutcliente = datos_cliente_confirmado[2]
                 
                 # isoformateo de fecha para registro y calculo de sgte fecha
-                compfecha = list(fecharetiro)
+                compfecha = list(str(fecharetiro))
                 compfecha.insert(4,"-")
                 compfecha.insert(7,"-")
                 fecharetiro = "".join(compfecha)
