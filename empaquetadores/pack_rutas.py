@@ -52,27 +52,30 @@ def empaquetador_rutaactual(request: object) -> map:
                         columna="rut"
                         )
                 
-                if ubicacioncliente:
-                    ingresoclientes = clientesbd.putDato(
-                            dato=fecharetiro,
-                            fila=ubicacioncliente,
-                            columna="ultimoretiro"
-                            )
-                else:
-                    datos_nuevo_cliente = []
-                    for data in range(2,7,1):
-                        datos_nuevo_cliente.append(datos_cliente_confirmado[data])
-                    new_cliente(datos_nuevo_cliente)
+                if not ubicacioncliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
+                    new_cliente(
+                        rut = datos_cliente_confirmado[2],
+                        cliente = datos_cliente_confirmado[3],
+                        direccion = datos_cliente_confirmado[4],
+                        comuna = datos_cliente_confirmado[5],
+                        telefono = datos_cliente_confirmado[6],
+                        gps = datos_cliente_confirmado[7],
+                        otro = datos_cliente_confirmado[8],
+                        diascontrato = 60 # Lapso por defecto
+                    )
                     ubicacioncliente = clientesbd.busca_ubicacion(
                         dato=rutcliente,
                         columna="rut"
                         )
-                    ingresoclientes = clientesbd.putDato(
-                        dato=fecharetiro,
-                        fila=ubicacioncliente,
-                        columna="ultimoretiro"
-                        )
+                    
+                ingresoclientes = clientesbd.putDato(
+                    dato=fecharetiro,
+                    fila=ubicacioncliente,
+                    columna="ultimoretiro"
+                    )
                 
+                if clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
+                    
                 proxfecharetiro = clientesbd.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro
