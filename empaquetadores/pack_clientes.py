@@ -2,20 +2,35 @@ from handlers.clientes import Clientes
 from handlers.rutas import RutaActual
 from helpers import mensajes
 
-def new_cliente(data: list) -> bool:
-    """Funcion para agregar cliente
+def new_cliente(**datos: dict) -> bool:
+    """Funcion para agregar nuevos clientes a BD
 
-    Args:
-        data (list): Arreglo de datos a guardar, con orden especifico [rut, nombre, direccion, comuna, telefono, gps, otros]
+    Esta funcion exige agregar los argumentos:
+    - rut
+    - cliente
+    - direccion
+    - comuna
+    - telefono
+    - gps
+    - otro
+    - diascontrato
 
     Returns:
-        bool: Verdadero si se ejecuta correctamente el guardado, por el contrario dara Falso
+        bool: Verdadero si no existe previamente el cliente o si 
+        los datos fueron guardados con éxito
     """
     with Clientes() as bd:
-            if bd.nuevo_cliente(data):
-                return True
-            else:
-                return False
+            return bd.nuevo_cliente(
+                estado="activo",
+                rut=datos["rut"],
+                cliente=datos["cliente"],
+                direccion=datos["direccion"],
+                comuna=datos["comuna"],
+                telefono=datos["telefono"],
+                gps=datos["gps"],
+                otro=datos["otro"],
+                diascontrato=datos["contrato"]
+            )
 
 def empaquetador_clientes(request: object) -> map:
     paquete = {"pagina":"clientes.html"}
@@ -33,19 +48,16 @@ def empaquetador_clientes(request: object) -> map:
         paquete["pagina"] = "nuevoCliente.html"
     
     elif "guardanuevocliente" in request.form:
-        data = [
-            "activo",
-            request.form.get("rut"),
-            request.form.get("nombre"),
-            request.form.get("direccion"),
-            request.form.get("comuna"),
-            request.form.get("telefono"),
-            request.form.get("gps"),
-            request.form.get("otros"),
-            request.form.get("contrato")
-            ]
-        
-        if new_cliente(data):
+        if new_cliente(
+            rut=request.form.get("rut"),
+            nombre=request.form.get("nombre"),
+            direccion=request.form.get("direccion"),
+            comuna=request.form.get("comuna"),
+            telefono=request.form.get("telefono"),
+            gps=request.form.get("gps"),
+            otros=request.form.get("otros"),
+            contrato=request.form.get("contrato")
+        ):
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
         else:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value

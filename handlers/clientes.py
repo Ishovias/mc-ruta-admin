@@ -20,15 +20,13 @@ class Clientes(bdmediclean):
             resultados["datos"].append(data)
         return resultados
 
-    def nuevo_cliente(self, data: list) -> bool:
-        existencia = super().busca_datoscliente(data[1])
+    def nuevo_cliente(self, **data) -> bool:
+        existencia = super().busca_datoscliente(data["cliente"])
         if existencia != 0:
             return False
-        fila = super().buscafila(
-            self.hoja_actual["filainicial"],
-            self.hoja_actual["columnas"]["rut"],
-            )
-        super().ingresador(fila,data,1)
+        fila = super().busca_ubicacion("rut")
+        for columna, valor in data.values():
+            super().putDato(dato=valor, fila=fila, columna=columna)
         return True
     
     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
