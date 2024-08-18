@@ -1,4 +1,5 @@
 from datetime import datetime
+from empaquetadores.pack_clientes import new_cliente
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros
 from helpers import mensajes
@@ -51,7 +52,22 @@ def empaquetador_rutaactual(request: object) -> map:
                         columna="rut"
                         )
                 
-                ingresoclientes = clientesbd.putDato(
+                if ubicacioncliente:
+                    ingresoclientes = clientesbd.putDato(
+                            dato=fecharetiro,
+                            fila=ubicacioncliente,
+                            columna="ultimoretiro"
+                            )
+                else:
+                    datos_nuevo_cliente = []
+                    for data in range(2,7,1):
+                        datos_nuevo_cliente.append(datos_cliente_confirmado[data])
+                    new_cliente(datos_nuevo_cliente)
+                    ubicacioncliente = clientesbd.busca_ubicacion(
+                        dato=rutcliente,
+                        columna="rut"
+                        )
+                    ingresoclientes = clientesbd.putDato(
                         dato=fecharetiro,
                         fila=ubicacioncliente,
                         columna="ultimoretiro"
@@ -63,13 +79,13 @@ def empaquetador_rutaactual(request: object) -> map:
                             )
                         
                 if proxfecharetiro:
-                        proxfecha = clientesbd.putDato(
-                            dato=proxfecharetiro,
-                            fila=ubicacioncliente,
-                            columna="proxretiro"
-                            )
+                    proxfecha = clientesbd.putDato(
+                        dato=proxfecharetiro,
+                        fila=ubicacioncliente,
+                        columna="proxretiro"
+                        )
                 else:
-                        proxfecha = False
+                    proxfecha = False
         else:
             proxfecha = True
             ingresoclientes = True

@@ -15,8 +15,8 @@ CLIENTES = {
     "telefono":6,
     "gps":7,
     "otro":8,
-    "ultimoretiro":9,
-    "diascontrato":10,
+    "diascontrato":9,
+    "ultimoretiro":10,
     "proxretiro":11,
     "todas":[1,2,3,4,5,6,7,8,9,10,11]
   }, 

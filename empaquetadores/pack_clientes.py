@@ -2,6 +2,21 @@ from handlers.clientes import Clientes
 from handlers.rutas import RutaActual
 from helpers import mensajes
 
+def new_cliente(data: list) -> bool:
+    """Funcion para agregar cliente
+
+    Args:
+        data (list): Arreglo de datos a guardar, con orden especifico [rut, nombre, direccion, comuna, telefono, gps, otros]
+
+    Returns:
+        bool: Verdadero si se ejecuta correctamente el guardado, por el contrario dara Falso
+    """
+    with Clientes() as bd:
+            if bd.nuevo_cliente(data):
+                return True
+            else:
+                return False
+
 def empaquetador_clientes(request: object) -> map:
     paquete = {"pagina":"clientes.html"}
 
@@ -26,15 +41,15 @@ def empaquetador_clientes(request: object) -> map:
             request.form.get("comuna"),
             request.form.get("telefono"),
             request.form.get("gps"),
-            request.form.get("otros")
+            request.form.get("otros"),
+            request.form.get("contrato")
             ]
         
-        with Clientes() as bd:
-            if bd.nuevo_cliente(data):
-                paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
-            else:
-                paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
-    
+        if new_cliente(data):
+            paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
+        else:
+            paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
+
     elif "modificaCliente" in request.form:
         resultados = ""
         with Clientes() as clientesbd:
