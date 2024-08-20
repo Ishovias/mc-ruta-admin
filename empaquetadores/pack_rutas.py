@@ -8,7 +8,7 @@ import params
 
 def empaquetador_rutaactual(request: object) -> map:
     
-    paquete = {"pagina":"rutas.html"}
+    paquete = {"pagina":"rutas.html","aut":request.args.get("aut")}
 
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
@@ -74,8 +74,12 @@ def empaquetador_rutaactual(request: object) -> map:
                     columna="ultimoretiro"
                     )
                 
-                if clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
-                    
+                if not clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
+                    clientesbd.putDato(
+                         dato=60,
+                         fila=ubicacioncliente,
+                         columna="diascontrato"
+                         )
                 proxfecharetiro = clientesbd.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro

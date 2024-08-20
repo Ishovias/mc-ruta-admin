@@ -33,7 +33,7 @@ def new_cliente(**datos: dict) -> bool:
             )
 
 def empaquetador_clientes(request: object) -> map:
-    paquete = {"pagina":"clientes.html"}
+    paquete = {"pagina":"clientes.html","aut":request.args.get("aut")}
 
     if "buscacliente" in request.form:
         
