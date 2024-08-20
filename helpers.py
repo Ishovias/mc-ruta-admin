@@ -77,24 +77,26 @@ class SessionSingleton:
           with Usuariosbd() as userbd:
                result = userbd.comprueba_usuario(nombre,contrasena)
           if result:
-               addr = str(request.remote_addr)
-               self.__usr[addr] = nombre
+               token = coder.gtoken()
+               self.__usr[token] = nombre
+               return token
           return result
           
      def cierraSesion(self, request: object) -> None:
-          addr = str(request.remote_addr)
-          del(self.__usr[addr])
+          token = request.args.get("aut")
+          del(self.__usr[token])
           
      def getAutenticado(self, request: object) -> bool:
-          addr = str(request.remote_addr)
-          if addr in self.__usr:
+          token = request.args.get("aut")
+          if token in self.__usr:
                return True
           return False
           
-     def getUsuario(self, request: object) -> str:
-          addr = str(request.remote_addr)
-          if addr in self.__usr:
-               return self.__usr[addr]
+     def getUsuario(self, request: object, token: str=None) -> str:
+          if not token:
+               token = request.args.get("aut")
+          if token in self.__usr:
+               return self.__usr[token]
           return None
      
      def getUsersMap(self) -> map:
@@ -105,16 +107,14 @@ class SessionSingleton:
 
 # ---------------------- VERIFICATOKEN  --------------------------
 
-def verificatoken(coder: object, request: object) -> bool:
+def verificatoken(request: object) -> bool:
      if request.args:
           if "aut" in request.args:
-               aut = request.args.get("aut")
-               current_token = coder.getCurrentToken()
-               if aut == current_token:
-                    return True
-               else:
-                    return False
-          return True
+               with SessionSingleton() as sesion:
+                    if sesion.getAutenticado(request):
+                         return True
+                    else:
+                         return False
      else:
           return False
      
@@ -124,10 +124,11 @@ def empaquetador_login(coder: object, request: object) -> map:
      sesion = SessionSingleton()
      resultado = sesion.iniciarSesion(coder,request)
      if resultado:
-          usuario = sesion.getUsuario(request)
+          usuario = sesion.getUsuario(request, token=resultado)
           paquete["bienvenida"] = f"Bienvenido {usuario} selecciona una accion..."
           paquete["usuario"] = usuario
           paquete["redirect"] = "index.html"
+          paquete["aut"] = resultado
      else:
           paquete["pagina"] = "autorizador.html"
           paquete["alerta"] = "Usuario o contraseña invalida"
