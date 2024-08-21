@@ -250,12 +250,16 @@ class bdmediclean:
             row = fila
             column = self.hoja_actual["columnas"][columna]
         
-        if columnas:    
-            datos = self.extraefila(fila=row,columnas=columnas)
-            return datos
+        if columnas:
+            if row:
+                 datos = self.extraefila(fila=row,columnas=columnas)
+                 return datos
+            return None
         else:
-            datos = self.extraefila(fila=row,columna=column)
-            return datos[0]
+            if row:
+               datos = self.extraefila(fila=row,columna=column)
+               return datos[0]
+            return None
 
 
     def guardar(self) -> None:
