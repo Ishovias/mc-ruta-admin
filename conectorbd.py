@@ -3,6 +3,7 @@ from coder.codexpy2 import codexpy2
 import params
 import os
 
+# Deprecated
 class conectorbd:
 
      hojaClientes = params.CLIENTES
