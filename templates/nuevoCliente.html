@@ -9,7 +9,7 @@
 
 {% block body_a %}
   <h2>Formulario ingreso nuevo cliente</h2><hr>
-  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('clientes') }}">
+  <form name="nuevosdatos" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
     <label for="nombre">Nombre:</label><br>
     <input name="nombre" placeholder="Nombre completo del cliente" required><br>
     <label for="rut">RUT:</label><br>

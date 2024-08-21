@@ -25,25 +25,25 @@
                          <td>{{ data }}</td>
                     {% endfor %}
                     <td>
-                         <form method="post" action="{{ url_for('rutaactual') }}" style="display:flex">
-                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="height: 50px">CONF</button>
-                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="height: 50px">POSP</button>
+                         <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
+                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
+                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
                          </form>
                     </td>
                     </tr>
                {% endfor %}
           </tbody>
           </table>
-          <form name="finruta" method="post" action="{{ url_for('rutaactual') }}">
+          <form name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
-               <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
+               <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.cpEnabled }}>Finalizar ruta actual</button>
           </form>
      {% else %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
           <br><hr><br>
           <h2 class="encabezado">Nueva ruta</h2>
           <br><hr><br>
-          </form><form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
+          </form><form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <label for="fecha">Fecha: 
                     <input type="date" name="fecha">
                </label>
@@ -51,7 +51,7 @@
                     <input type="text" name="nombreruta" placeholder="ej: Ruta Osorno-Puerto Montt-Llanquihue">
                </label>
                <br>
-               <button type="submit" name="iniciaruta" value="iniciaruta">Iniciar ruta:</button>
+               <button type="submit" name="iniciaruta" value="iniciaruta" {{ datos.inirutaEnabled }}>Iniciar ruta:</button>
           </form>
      {% endif %}
      <br><hr><br>
@@ -59,7 +59,7 @@
 {% if "nuevaruta" in datos %}
      <h2 class="encabezado">Nueva ruta</h2>
      <br><hr><br>
-     <form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual') }}">
+     <form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
           <label for="fecha">Fecha: 
                <input type="date" name="fecha">
           </label>

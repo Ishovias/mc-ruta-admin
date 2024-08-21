@@ -2,13 +2,13 @@ from datetime import datetime
 from empaquetadores.pack_clientes import new_cliente
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros
-from helpers import mensajes
+from helpers import mensajes, privilegios
 import params
 
 
 def empaquetador_rutaactual(request: object) -> map:
-    
     paquete = {"pagina":"rutas.html","aut":request.args.get("aut")}
+    paquete = privilegios(request, paquete)
 
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
@@ -234,8 +234,8 @@ def empaquetador_rutaactual(request: object) -> map:
     return paquete
     
 def empaquetador_registros_rutas(request: object) -> map:
-
-    paquete = {"pagina":"rutasRegistros.html"}
+    paquete = {"pagina":"rutasRegistros.html","aut":request.args.get("aut")}
+    paquete = privilegios(request, paquete)
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")

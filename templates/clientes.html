@@ -16,7 +16,7 @@
      </form>
      <hr>
      <form class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-          <button name="nuevocliente" value="nuevocliente">Nuevo cliente</button>
+          <button name="nuevocliente" value="nuevocliente" {{ datos.newclienteEnabled }}>Nuevo cliente</button>
      </form>
 {% endblock %}
 
@@ -36,7 +36,7 @@
                     <tr>
                          <td>
                               <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="aRuta" value="{{ fila.1 }}">A Ruta</button>
+                                   <button type="submit" name="aRuta" value="{{ fila.1 }}" {{ datos.arutaEnabled }}>A Ruta</button>
                               </form>
                          </td>
                     {% for data in fila %}
@@ -44,7 +44,7 @@
                     {% endfor %}
                          <td>
                               <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="modificaCliente" value="{{ fila.1 }}">Modificar datos</button>
+                                   <button type="submit" name="modificaCliente" value="{{ fila.1 }}" {{ datos.modclienteEnabled }}>Modificar datos</button>
                               </form>
                          </td>
                     </tr>

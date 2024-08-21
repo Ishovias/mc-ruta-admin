@@ -39,6 +39,23 @@ lista_rutas = {
                ]
      }
 
+priv = {
+     "iberoiza":{
+          "cpEnabled":"enabled",
+          "inirutaEnabled":"enabled",
+          "newclienteEnabled":"enabled",
+          "arutaEnabled":"enabled",
+          "modclienteEnabled":"enabled"
+     },
+     "mjose":{
+          "cpEnabled":"disabled",
+          "inirutaEnabled":"disabled",
+          "newclienteEnabled":"disabled",
+          "arutaEnabled":"disabled",
+          "modclienteEnabled":"disabled"
+     }
+}
+
 class mensajes(Enum):
      USUARIO_INCORRECTO = "Usuario o contraseña incorrecto"
      CLIENTE_GUARDADO = "Cliente guardado con éxito"
@@ -117,7 +134,15 @@ def verificatoken(request: object) -> bool:
                          return False
      else:
           return False
-     
+
+# ---------------------- RETORNO DE PRIVILEGIOS ----------------------
+def privilegios(request: object, paquete: map) -> map:
+     with SessionSingleton() as sesion:
+          usuario = sesion.getUsuario(request)
+     if usuario in priv:
+          for boton in priv[usuario]:
+               paquete[boton] = priv[usuario][boton]
+     return paquete
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def empaquetador_login(coder: object, request: object) -> map:
      paquete = {}
@@ -161,37 +186,4 @@ def codex1(request: object, paquete: map) -> map:
                paquete["resultado"] = coder.procesa(frase)
      else:
           paquete["resultado"] = ""
-     return paquete
-
-
-
-# ------------------- EMPAQUETADOR DE DATOS -------------------------
-def empaquetador(coder: object, request: object, destino: str) -> map:
-     
-     paquete = {}
-     with SessionSingleton() as sesion:
-          paquete["usuarios"] = sesion.getUsuario(request)
-          
-     # EMPAQUETADO DE DATOS PARA PLANTILLA
-     if destino == "index":
-          paquete["pagina"] = "index.html"
-     
-     elif destino == "login":
-          paquete = login(coder,request,paquete)
-     
-     elif destino == "clientes":
-          paquete = clientes(request,paquete)
-          
-     elif destino == "rutaactual":
-          paquete = rutas(request, paquete)
-     
-     elif destino == "codexpy":
-          paquete = codex1(request, paquete)
-
-     elif destino == "codexpy2":
-          paquete = codex(coder, request, paquete)
-          
-     elif destino == "rutas":
-          paquete = registros_rutas(request, paquete)
-          
      return paquete

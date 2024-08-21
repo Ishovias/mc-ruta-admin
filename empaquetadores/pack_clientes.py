@@ -1,6 +1,6 @@
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual
-from helpers import mensajes
+from helpers import mensajes, privilegios
 
 def new_cliente(**datos: dict) -> bool:
     """Funcion para agregar nuevos clientes a BD
@@ -29,19 +29,18 @@ def new_cliente(**datos: dict) -> bool:
                 telefono=datos["telefono"],
                 gps=datos["gps"],
                 otro=datos["otro"],
-                diascontrato=datos["contrato"]
+                diascontrato=datos["diascontrato"]
             )
 
 def empaquetador_clientes(request: object) -> map:
     paquete = {"pagina":"clientes.html","aut":request.args.get("aut")}
-
+    paquete = privilegios(request, paquete)
+  
     if "buscacliente" in request.form:
-        
         resultados = ""
         with Clientes() as clientesbd:
             nombre = request.form.get("nombre")
             resultados = clientesbd.busca_cliente_lista(nombre)
-        
         paquete["listaclientes"] = resultados
         
     elif "nuevocliente" in request.form: 

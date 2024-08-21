@@ -25,8 +25,8 @@ class Clientes(bdmediclean):
         if existencia != 0:
             return False
         fila = super().busca_ubicacion("rut")
-        for columna, valor in data.values():
-            super().putDato(dato=valor, fila=fila, columna=columna)
+        for dato in data.keys():
+            super().putDato(dato=data[dato], fila=fila, columna=str(dato))
         return True
     
     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:

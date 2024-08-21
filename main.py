@@ -20,7 +20,6 @@ def index() -> render_template:
 
 @app.route('/login', methods=['GET','POST'])
 def login() -> render_template:
-     
      if request.method == 'POST':
           if not sesion.getAutenticado(request):
                datos = empaquetador_login(coder, request)
