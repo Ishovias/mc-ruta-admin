@@ -4,7 +4,6 @@ from helpers import mensajes, privilegios
 
 def new_cliente(**datos: dict) -> bool:
     """Funcion para agregar nuevos clientes a BD
-
     Esta funcion exige agregar los argumentos:
     - rut
     - cliente
@@ -42,7 +41,12 @@ def empaquetador_clientes(request: object) -> map:
             nombre = request.form.get("nombre")
             resultados = clientesbd.busca_cliente_lista(nombre)
         paquete["listaclientes"] = resultados
-        
+
+    elif "listarclientes" in request.form:
+        with Clientes() as clientesbd:
+            resultados = clientesbd.listar()
+        paquete["listaclientes"] = resultados
+
     elif "nuevocliente" in request.form: 
         paquete["pagina"] = "nuevoCliente.html"
     
@@ -55,7 +59,7 @@ def empaquetador_clientes(request: object) -> map:
             telefono=request.form.get("telefono"),
             gps=request.form.get("gps"),
             otros=request.form.get("otros"),
-            contrato=request.form.get("contrato")
+            diascontrato=request.form.get("diascontratocontrato")
         ):
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
         else:

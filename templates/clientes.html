@@ -12,6 +12,8 @@
           <label for="nombre">Indica nombre:</label><br>
           <input name="nombre" placeholder="Indica nombre o parte de nombre" required><br>
           <button name="buscacliente" value="buscacliente">Buscar</button><hr>
+     </form>
+     <form name="listaclientes" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <button name="listarclientes" value="listarclientes">Listar clientes</button><hr>
      </form>
      <hr>
