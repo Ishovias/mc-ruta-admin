@@ -68,7 +68,7 @@ def empaquetador_clientes(request: object) -> map:
     elif "modificaCliente" in request.form:
         resultados = ""
         with Clientes() as clientesbd:
-            identificador = request.form.get("clienteSeleccion")
+            identificador = request.form.get("modificaCliente")
             resultados = clientesbd.busca_datoscliente(identificador,"rut")
         paquete["modificacion"] = resultados
     
@@ -125,12 +125,11 @@ def empaquetador_clientes(request: object) -> map:
             ]
         
         guardado = False
-        grabado = False
         
         with Clientes() as bd:
             guardado = bd.guardar_modificacion(rut,data)
 
-        if guardado and grabado:
+        if guardado:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
         else:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
