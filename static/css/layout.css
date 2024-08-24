@@ -61,7 +61,8 @@ html{
 .botoneraMenu {
     display: flex;
     padding: 10px;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 2px;
     margin-bottom: 20px;
     background-color: chocolate;
     border-radius: 10px;
@@ -94,6 +95,12 @@ html{
     width: auto;
     overflow-x: auto;
     border-radius: 20px;
+}
+
+.botoneraFormClientes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .formularioIngreso {

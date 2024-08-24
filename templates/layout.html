@@ -26,6 +26,9 @@
         <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
             <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
         </form>
+        <form>
+            <button class="botonanimado" id="gastos" name="gastos" value="gastos">Gastos</button>
+        </form>
         <form method="post" action="{{ url_for('logout', aut=datos.aut) }}">
             <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>
         </form>

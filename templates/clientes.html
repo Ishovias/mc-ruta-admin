@@ -8,18 +8,19 @@
 <!-- ------------------- BODY A ----------------------------- -->
 
 {% block body_a %}
+<div class="botoneraFormClientes">
      <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-          <label for="nombre">Indica nombre:</label><br>
+          <label for="nombre">Indica nombre:</label>
           <input name="nombre" placeholder="Indica nombre o parte de nombre" required><br>
-          <button name="buscacliente" value="buscacliente">Buscar</button><hr>
+          <button name="buscacliente" value="buscacliente">Buscar</button>
      </form>
      <form name="listaclientes" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-          <button name="listarclientes" value="listarclientes">Listar clientes</button><hr>
+          <button name="listarclientes" value="listarclientes">Listar clientes</button>
      </form>
-     <hr>
      <form class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <button name="nuevocliente" value="nuevocliente" {{ datos.newclienteEnabled }}>Nuevo cliente</button>
      </form>
+</div>
 {% endblock %}
 
 <!-- -------------------------BODY B------------------------------- -->
