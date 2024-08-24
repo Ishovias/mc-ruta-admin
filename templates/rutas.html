@@ -20,7 +20,7 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr>
+                    <tr {% if fila.8 == "DEUDA" or fila.8 == "deuda" %} style="background-color: red;" {% endif %}>
                     {% for data in fila %}
                          <td>{{ data }}</td>
                     {% endfor %}
