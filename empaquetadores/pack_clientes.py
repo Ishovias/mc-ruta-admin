@@ -1,6 +1,6 @@
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual
-from helpers import mensajes, privilegios
+from helpers import mensajes, privilegios, priv
 
 def new_cliente(**datos: dict) -> bool:
     """Funcion para agregar nuevos clientes a BD
@@ -33,7 +33,14 @@ def new_cliente(**datos: dict) -> bool:
 
 def empaquetador_clientes(request: object) -> map:
     paquete = {"pagina":"clientes.html","aut":request.args.get("aut")}
-    paquete = privilegios(request, paquete)
+    privilegio = privilegios(request, paquete, retornaUser=True)
+    paquete = privilegio["paquete"]
+    usuario = privilegio["usuario"]
+    
+    def listadoClientes() -> map:
+        with Clientes() as clientesbd:
+            resultados = clientesbd.listar()
+        return resultados
   
     if "buscacliente" in request.form:
         resultados = ""
@@ -43,11 +50,9 @@ def empaquetador_clientes(request: object) -> map:
         paquete["listaclientes"] = resultados
 
     elif "listarclientes" in request.form:
-        with Clientes() as clientesbd:
-            resultados = clientesbd.listar()
-        paquete["listaclientes"] = resultados
+        paquete["listaclientes"] = listadoClientes()
 
-    elif "nuevocliente" in request.form: 
+    elif "nuevocliente" in request.form and priv[usuario]["newclienteEnabled"] == "enabled": 
         paquete["pagina"] = "nuevoCliente.html"
     
     elif "guardanuevocliente" in request.form:
@@ -65,14 +70,14 @@ def empaquetador_clientes(request: object) -> map:
         else:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
 
-    elif "modificaCliente" in request.form:
+    elif "modificaCliente" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         resultados = ""
         with Clientes() as clientesbd:
             identificador = request.form.get("modificaCliente")
             resultados = clientesbd.busca_datoscliente(identificador,"rut")
         paquete["modificacion"] = resultados
     
-    elif "aRuta" in request.form:
+    elif "aRuta" in request.form  and priv[usuario]["arutaEnabled"] == "enabled":
         fecha = None
         with RutaActual() as rutaactualbd:
             fecha = rutaactualbd.getFechaRuta()
@@ -96,8 +101,7 @@ def empaquetador_clientes(request: object) -> map:
                 paquete["alerta"] = mensajes.CLIENTE_A_RUTA.value
             else:
                 paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
-                
-    
+
     elif "darbaja" in request.form:
         dadobaja = False
         guardado = False
@@ -110,8 +114,7 @@ def empaquetador_clientes(request: object) -> map:
             paquete["alerta"] = mensajes.CLIENTE_BAJA.value
         else:
             paquete["alerta"] = mensajes.CLIENTE_BAJA_ERROR.value
-            
-    
+
     elif "guardamod" in request.form:
         rut = request.form.get("rut")
         data = [
@@ -133,5 +136,8 @@ def empaquetador_clientes(request: object) -> map:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
         else:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
+
+    else:
+         paquete["listaclientes"] = listadoClientes()
 
     return paquete

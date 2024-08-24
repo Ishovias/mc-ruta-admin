@@ -47,7 +47,7 @@
      </thead>
      <tbody>
           {% for fila in datos.rutaResultado %}
-               <tr>
+               <tr {% if fila.10 == "POSPUESTO" %} style="background-color: red;" {% endif %}>
                {% for data in fila %}
                     <td>{{ data }}</td>
                {% endfor %}

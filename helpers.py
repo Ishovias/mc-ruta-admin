@@ -2,60 +2,7 @@ from handlers.usuarios import Usuariosbd
 from coder.codexpy import codexpy
 from enum import Enum
 
-lista_rutas = {
-          "login":[
-               "logueo"
-               ],
-          "clientes":[
-               "clientes",
-               "nuevocliente",
-               "buscacliente",
-               "guardanuevocliente",
-               "aRuta",
-               "modificaCliente"
-               ],
-          "rutaactual":[
-               "rutaactual",
-               "iniciaruta",
-               "finalizaRutaActual",
-               "cliente_ruta_confirmar",
-               "cliente_ruta_posponer"
-               ],
-          "rutas":[
-               "rutas",
-               "detalle_ruta_registro"
-               ],
-          "codexpy":[
-               "codexpy",
-               "codpy"
-               ],
-          "codexpy2":[
-               "codexpy2",
-               "codpy2",
-               "decodpy2"
-               ],
-          "dineros":[
-               "dineros"
-               ]
-     }
-
-priv = {
-     "iberoiza":{
-          "cpEnabled":"enabled",
-          "inirutaEnabled":"enabled",
-          "newclienteEnabled":"enabled",
-          "arutaEnabled":"enabled",
-          "modclienteEnabled":"enabled"
-     },
-     "mjose":{
-          "cpEnabled":"disabled",
-          "inirutaEnabled":"disabled",
-          "newclienteEnabled":"disabled",
-          "arutaEnabled":"disabled",
-          "modclienteEnabled":"disabled"
-     }
-}
-
+# ---------------------- MENSAJES PREDEFINIDOS ----------------------
 class mensajes(Enum):
      USUARIO_INCORRECTO = "Usuario o contraseña incorrecto"
      CLIENTE_GUARDADO = "Cliente guardado con éxito"
@@ -73,7 +20,6 @@ class mensajes(Enum):
      CLIENTE_POSPUESTO_ERROR = "ERROR al intentar POSTERGAR"
 
 # ---------------------- SESIONS SINGLETONS  --------------------------
-
 class SessionSingleton:
      
      __instance = None
@@ -123,7 +69,6 @@ class SessionSingleton:
           pass
 
 # ---------------------- VERIFICATOKEN  --------------------------
-
 def verificatoken(request: object) -> bool:
      if request.args:
           if "aut" in request.args:
@@ -136,12 +81,41 @@ def verificatoken(request: object) -> bool:
           return False
 
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
-def privilegios(request: object, paquete: map) -> map:
+priv = {
+     "iberoiza":{
+          "cpEnabled":"enabled",
+          "finEnabled":"enabled",
+          "inirutaEnabled":"enabled",
+          "newclienteEnabled":"enabled",
+          "arutaEnabled":"enabled",
+          "modclienteEnabled":"enabled"
+     },
+     "mjose":{
+          "cpEnabled":"enabled",
+          "finEnabled":"disabled",
+          "inirutaEnabled":"disabled",
+          "newclienteEnabled":"disabled",
+          "arutaEnabled":"disabled",
+          "modclienteEnabled":"disabled"
+     },
+     "invitado":{
+          "cpEnabled":"disabled",
+          "finEnabled":"disabled",
+          "inirutaEnabled":"disabled",
+          "newclienteEnabled":"disabled",
+          "arutaEnabled":"disabled",
+          "modclienteEnabled":"disabled"
+     }
+}
+
+def privilegios(request: object, paquete: map, retornaUser: bool=False) -> map:
      with SessionSingleton() as sesion:
           usuario = sesion.getUsuario(request)
      if usuario in priv:
           for boton in priv[usuario]:
                paquete[boton] = priv[usuario][boton]
+     if retornaUser:
+          return {"paquete":paquete, "usuario":usuario}
      return paquete
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def empaquetador_login(coder: object, request: object) -> map:

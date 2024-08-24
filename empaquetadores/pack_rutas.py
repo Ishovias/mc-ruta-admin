@@ -2,13 +2,15 @@ from datetime import datetime
 from empaquetadores.pack_clientes import new_cliente
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros
-from helpers import mensajes, privilegios
+from helpers import mensajes, privilegios, priv
 import params
 
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = {"pagina":"rutas.html","aut":request.args.get("aut")}
-    paquete = privilegios(request, paquete)
+    privilegio = privilegios(request, paquete, retornaUser=True)
+    paquete = privilegio["paquete"]
+    usuario = privilegio["usuario"]
 
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
@@ -107,7 +109,7 @@ def empaquetador_rutaactual(request: object) -> map:
     paquete["pagina"] = "rutas.html"
     paquete["nombrePagina"] = "RUTA EN CURSO"
     
-    if "iniciaruta" in request.form:
+    if "iniciaruta" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
         fecha = request.form.get("fecha").replace("-","")
         ruta = request.form.get("nombreruta")
         
@@ -128,7 +130,7 @@ def empaquetador_rutaactual(request: object) -> map:
         paquete["pagina"] = "clientes.html"
         return paquete
     
-    elif "finalizaRutaActual" in request.form:
+    elif "finalizaRutaActual" in request.form and priv[usuario]["finEnabled"] == "enabled":
         confirmacion = request.form.get("finalizaRutaActual")
         if confirmacion == "REALIZADO_FORM":
             with RutaActual() as rutaactualbd:
@@ -174,7 +176,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["rutanombre"] = rutaactual.getDato(identificador="nombreruta")
         return paquete
     
-    elif "cliente_ruta_confirmar" in request.form:
+    elif "cliente_ruta_confirmar" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_confirmar")
         if confirmacion == "REALIZADO_FORM":
             confpos(
@@ -198,7 +200,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         columna="cliente"
                         )
 
-    elif "cliente_ruta_posponer" in request.form:
+    elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
         if confirmacion == "REALIZADO_FORM":
             confpos(
@@ -235,7 +237,9 @@ def empaquetador_rutaactual(request: object) -> map:
     
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = {"pagina":"rutasRegistros.html","aut":request.args.get("aut")}
-    paquete = privilegios(request, paquete)
+    privilegio = privilegios(request, paquete, retornaUser=True)
+    paquete = privilegio["paquete"]
+    usuario = privilegio["usuario"]
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")

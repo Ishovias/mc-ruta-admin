@@ -36,7 +36,7 @@
           </table>
           <form name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
-               <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.cpEnabled }}>Finalizar ruta actual</button>
+               <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.finEnabled }}>Finalizar ruta actual</button>
           </form>
      {% else %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>

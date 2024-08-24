@@ -61,15 +61,15 @@ class bdmediclean:
             else:
                 filalibre += 1
 
-    def buscadato(self, filainicio: int, columna: int, dato: str) -> int:
+    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False) -> int:
 
         fila = filainicio
 
         for fila in range(filainicio, self.maxfilas, 1):
             celda = self.hojabd.cell(row=fila,column=columna)
             try:
-                valorcelda = str(celda.value).lower()
-                datob = dato.lower()
+                valorcelda = str(celda.value) if exacto else str(celda.value).lower()
+                datob = dato if exacto else dato.lower()
             except:
                 valorcelda = str(celda.value)
                 datob = dato
