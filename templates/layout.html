@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
     <title>Gestor de ruta MEDICLEAN (Isaias B.)</title>
     <div class="encabezado">
-        <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='img/icono.jpg') }}"></a>
+        <a href="{{ url_for('index', aut=datos.aut) }}"><img src="{{ url_for('static', filename='img/icono.jpg') }}"></a>
         <div class="titulosEncabezados">
             {% block encabezado %}
             {% endblock %}
@@ -26,9 +26,9 @@
         <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
             <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
         </form>
-        <form>
+        <!-- <form>
             <button class="botonanimado" id="gastos" name="gastos" value="gastos" disabled>Gastos</button>
-        </form>
+        </form> -->
         {% if datos.usuario == "iberoiza" or datos.usuario == "mjose" %}
             <form method="post" action="{{ url_for('todo', aut=datos.aut) }}">
                 <button class="botonanimado" id="todo" name="todo" value="todo">ToDo</button>
