@@ -117,6 +117,7 @@ def privilegios(request: object, paquete: map, retornaUser: bool=False) -> map:
      if retornaUser:
           return {"paquete":paquete, "usuario":usuario}
      return paquete
+
 # ---------------------- FUNCIONES DE EMPAQUE  --------------------------
 def empaquetador_login(coder: object, request: object) -> map:
      paquete = {}

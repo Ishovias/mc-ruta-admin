@@ -36,12 +36,13 @@ def empaquetador_clientes(request: object) -> map:
     privilegio = privilegios(request, paquete, retornaUser=True)
     paquete = privilegio["paquete"]
     usuario = privilegio["usuario"]
+    paquete["usuario"] = usuario
     
     def listadoClientes() -> map:
         with Clientes() as clientesbd:
             resultados = clientesbd.listar()
         return resultados
-  
+
     if "buscacliente" in request.form:
         resultados = ""
         with Clientes() as clientesbd:
@@ -138,6 +139,6 @@ def empaquetador_clientes(request: object) -> map:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value
 
     else:
-         paquete["listaclientes"] = listadoClientes()
+        paquete["listaclientes"] = listadoClientes()
 
     return paquete

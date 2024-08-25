@@ -13,7 +13,8 @@ def index() -> render_template:
      if sesion.getAutenticado(request):
           datos = {
                "bienvenida":f"Bienvenido {sesion.getUsuario(request)}, escoge una accion",
-               "aut":request.args.get("aut")
+               "aut":request.args.get("aut"),
+               "usuario":sesion.getUsuario(request)
           }
           return render_template("index.html", datos=datos)
      return redirect(url_for('login'))
@@ -60,6 +61,14 @@ def logout() -> render_template:
           sesion.cierraSesion(request)
      datos = {"alerta":alerta}
      return render_template('autorizador.html', datos=datos)
+
+@app.route('/todo', methods=['POST'])
+def todo() -> render_template:
+     return "Ruta ToDo"
+
+@app.route('/usersactives', methods=['POST'])
+def usersactives() -> render_template:
+     return "Ruta UsersActives"
 
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')

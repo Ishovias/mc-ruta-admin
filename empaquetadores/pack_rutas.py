@@ -11,6 +11,7 @@ def empaquetador_rutaactual(request: object) -> map:
     privilegio = privilegios(request, paquete, retornaUser=True)
     paquete = privilegio["paquete"]
     usuario = privilegio["usuario"]
+    paquete["usuario"] = usuario
 
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
@@ -240,6 +241,7 @@ def empaquetador_registros_rutas(request: object) -> map:
     privilegio = privilegios(request, paquete, retornaUser=True)
     paquete = privilegio["paquete"]
     usuario = privilegio["usuario"]
+    paquete["usuario"] = usuario
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")
