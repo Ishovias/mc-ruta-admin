@@ -3,6 +3,7 @@ from coder.codexpy2 import codexpy2
 from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual
 from empaquetadores.pack_admin import empaquetador_usersactives
+from empaquetadores.pack_todo import empaquetador_todo
 from helpers import SessionSingleton, empaquetador_login
 
 app = Flask(__name__)
@@ -65,7 +66,10 @@ def logout() -> render_template:
 
 @app.route('/todo', methods=['POST'])
 def todo() -> render_template:
-     return "Ruta ToDo"
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
+     datos = empaquetador_todo(request)
+     return render_template(datos["pagina"], datos=datos)
 
 @app.route('/usersactives', methods=['POST'])
 def usersactives() -> render_template:
