@@ -65,6 +65,9 @@ class SessionSingleton:
      def getUsersMap(self) -> map:
           return self.__usr
      
+     def delUser(self, token: str) -> None:
+          del(self.__usr[token])
+     
      def __exit__(self, exc_type, exc_value, traceback) -> None:
           pass
 

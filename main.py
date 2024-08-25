@@ -2,6 +2,7 @@ from flask import Flask, redirect, request, render_template, url_for
 from coder.codexpy2 import codexpy2
 from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual
+from empaquetadores.pack_admin import empaquetador_usersactives
 from helpers import SessionSingleton, empaquetador_login
 
 app = Flask(__name__)
@@ -68,7 +69,10 @@ def todo() -> render_template:
 
 @app.route('/usersactives', methods=['POST'])
 def usersactives() -> render_template:
-     return "Ruta UsersActives"
-
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
+     datos = empaquetador_usersactives(request)
+     return render_template(datos["pagina"], datos=datos)
+     
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')
