@@ -2,7 +2,11 @@
 
 LIBRODATOS = "./bd/mediclean_bd.xlsx" # Ruta de desarrollo
 # LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" # Ruta en linea
+LIBROTODO = "./bd/todo_bd.xlsx" # Ruta de desarrollo
+# LIBRODATOS = "/home/iberoiza/mediclean/bd/todo_bd.xlsx" # Ruta en linea
+
 MAX_FILAS = 10000
+
 CLIENTES = {
   "nombrehoja":"clientes", 
   "filainicial":2,
@@ -101,6 +105,19 @@ GASTOS_BD = {
     "monto":2,
     "descripcion":3,
     "todas":[1,2,3]
+  }, 
+  "encabezados":1
+}
+
+TODO = {
+  "nombrehoja":"todo_list", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "descripcion":2,
+    "completado":3,
+    "fechacompletado":4,
+    "todas":[1,2,3,4]
   }, 
   "encabezados":1
 }
