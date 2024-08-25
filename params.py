@@ -3,7 +3,7 @@
 LIBRODATOS = "./bd/mediclean_bd.xlsx" # Ruta de desarrollo
 # LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" # Ruta en linea
 LIBROTODO = "./bd/todo_bd.xlsx" # Ruta de desarrollo
-# LIBRODATOS = "/home/iberoiza/mediclean/bd/todo_bd.xlsx" # Ruta en linea
+# LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx" # Ruta en linea
 
 MAX_FILAS = 10000
 
