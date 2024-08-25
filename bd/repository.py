@@ -4,8 +4,13 @@ import os
 
 class bdmediclean:
 
-    def __init__(self, hoja: str) -> None:
-        self.bd = load_workbook(params.LIBRODATOS,read_only=False)
+    def __init__(self, hoja: str, otrolibro: str=None) -> None:
+        if otrolibro:
+          self.bd = load_workbook(otrolibro,read_only=False)
+          self.libroPorGuardar = otrolibro
+        else:   
+          self.bd = load_workbook(params.LIBRODATOS,read_only=False)
+          self.libroPorGuardar = params.LIBRODATOS
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
@@ -264,7 +269,7 @@ class bdmediclean:
 
     def guardar(self) -> None:
         try:
-            self.bd.save(params.LIBRODATOS)
+            self.bd.save(self.libroPorGuardar)
         except:
             return False
         else:
