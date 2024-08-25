@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+        <h1>Mediclean Ruta</h1>
+        <h2>ADMIN</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<table>
+        <thead>
+                <th>Usuario</th>
+                <th>Token</th>
+        </thead>
+        <tbody>
+                {% for fila in datos.usuarios %}
+                <tr>
+                        {% for dato in fila %}
+                        <td>{{ dato }}</td>
+                        {% endfor %}
+                </tr>
+        </tbody>
+</table>
+{% for  %}
+
+
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}
