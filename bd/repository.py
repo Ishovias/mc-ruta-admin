@@ -173,7 +173,7 @@ class bdmediclean:
                 datafile = []
                 for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)
-                    datafile.append(dato.value)
+                    datafile.append(str(dato.value))
                 resultados["datos"].append(datafile)
         return resultados
 
@@ -243,7 +243,7 @@ class bdmediclean:
 
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
-            datos.append(celda.value)
+            datos.append(str(celda.value))
 
         return datos
 
