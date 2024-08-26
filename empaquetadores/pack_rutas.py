@@ -245,7 +245,7 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")
-        paquete["fecha"] = f"Ruta seleccionada: {fecha}"
+        paquete["fecha"] = fecha
         
         data: list = []
         
