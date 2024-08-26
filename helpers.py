@@ -137,10 +137,14 @@ def empaquetador_login(coder: object, request: object) -> map:
           paquete["alerta"] = "Usuario o contraseña invalida"
      return paquete
 
-def codex(coder: object, request: object, paquete: map) -> map:
-     paquete["pagina"] = "codexpy.html"
+def empaquetador_codex2(coder: object, request: object) -> map:
+     paquete = {"pagina":"codexpy.html", "aut":request.args.get("aut")}
+     privilegio = privilegios(request,paquete,retornaUser=True)
+     paquete = privilegio["paquete"]
+     usuario = privilegio["usuario"]
+     paquete["usuario"] = usuario
      paquete["urlfor"] = "codex"
-     
+
      if request.form:
           if "codpy2" in request.form:
                frase = request.form.get("ingreso")
@@ -152,10 +156,14 @@ def codex(coder: object, request: object, paquete: map) -> map:
           paquete["resultado"] = ""
      return paquete
 
-def codex1(request: object, paquete: map) -> map:
+def empaquetador_codex1(request: object) -> map:
      coder = codexpy()
      
-     paquete["pagina"] = "codexpy.html"
+     paquete = {"pagina":"codexpy.html", "aut":request.args.get("aut")}
+     privilegio = privilegios(request,paquete,retornaUser=True)
+     paquete = privilegio["paquete"]
+     usuario = privilegio["usuario"]
+     paquete["usuario"] = usuario
      paquete["urlfor"] = "codex1"
      
      if request.form:
