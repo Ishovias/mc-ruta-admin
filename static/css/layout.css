@@ -66,6 +66,7 @@ html{
     margin-bottom: 20px;
     background-color: chocolate;
     border-radius: 10px;
+    flex-wrap: wrap;
 }
 .botonanimado {
     width: 70px;
