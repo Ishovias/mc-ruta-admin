@@ -19,7 +19,7 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr>
+                    <tr {% if fila.0 == datos.fecha %} style="background-color: yellowgreen;" {% endif %}>
                     <td>
                          <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
                               <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
@@ -37,7 +37,7 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if "rutaResultado" in datos %}
-     <p class="tituloscentrados">{{ datos.fecha }}</p>
+     {% if datos.fecha %} <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> {% endif %}
      <hr>
      <table class="tbresultados">
      <thead>
