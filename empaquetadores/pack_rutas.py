@@ -229,7 +229,7 @@ def empaquetador_rutaactual(request: object) -> map:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
         rutaDatos = ractualbd.listar()
         if rutaActiva:
-            paquete["ruta"] = f"Ruta activa: {rutaActiva}"
+            paquete["ruta"] = rutaActiva
         else:
             paquete["ruta"] = None
         paquete["rutaLista"] = rutaDatos
