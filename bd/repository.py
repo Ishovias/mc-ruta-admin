@@ -1,16 +1,15 @@
 from openpyxl import load_workbook
 import params
-import os
 
 class bdmediclean:
 
     def __init__(self, hoja: str, otrolibro: str=None) -> None:
         if otrolibro:
-          self.bd = load_workbook(otrolibro,read_only=False)
-          self.libroPorGuardar = otrolibro
+            self.bd = load_workbook(otrolibro,read_only=False)
+            self.libroPorGuardar = otrolibro
         else:   
-          self.bd = load_workbook(params.LIBRODATOS,read_only=False)
-          self.libroPorGuardar = params.LIBRODATOS
+            self.bd = load_workbook(params.LIBRODATOS,read_only=False)
+            self.libroPorGuardar = params.LIBRODATOS
         self.hoja_actual = hoja
         self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
@@ -173,7 +172,7 @@ class bdmediclean:
                 datafile = []
                 for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)
-                    datafile.append(str(dato.value))
+                    datafile.append(dato.value)
                 resultados["datos"].append(datafile)
         return resultados
 
@@ -243,7 +242,7 @@ class bdmediclean:
 
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
-            datos.append(str(celda.value))
+            datos.append(celda.value)
 
         return datos
 
@@ -257,13 +256,13 @@ class bdmediclean:
         
         if columnas:
             if row:
-                 datos = self.extraefila(fila=row,columnas=columnas)
-                 return datos
+                datos = self.extraefila(fila=row,columnas=columnas)
+                return datos
             return None
         else:
             if row:
-               datos = self.extraefila(fila=row,columna=column)
-               return datos[0]
+                datos = self.extraefila(fila=row,columna=column)
+                return datos[0]
             return None
 
 
