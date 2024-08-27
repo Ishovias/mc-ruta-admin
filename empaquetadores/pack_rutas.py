@@ -79,10 +79,10 @@ def empaquetador_rutaactual(request: object) -> map:
                 
                 if not clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
                     clientesbd.putDato(
-                         dato=60,
-                         fila=ubicacioncliente,
-                         columna="diascontrato"
-                         )
+                        dato=60,
+                        fila=ubicacioncliente,
+                        columna="diascontrato"
+                        )
                 proxfecharetiro = clientesbd.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro

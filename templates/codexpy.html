@@ -24,6 +24,8 @@
 
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
-<label class="textosinformativos" for="resultado">Resultado:</label>
-<textarea name="resultado" style="width:100%">{{ datos.resultado }}</textarea>
+<div class="resultadoCodexpy">
+  <label class="textosinformativos" for="resultado">Resultado:</label>
+  <textarea name="resultado" style="width:100%" readonly>{{ datos.resultado }}</textarea>
+</div>
 {% endblock %}

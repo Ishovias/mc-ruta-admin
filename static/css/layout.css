@@ -101,11 +101,17 @@ html{
 .botoneraFormClientes {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.botoneraFormClientes div {
+.buscadorclientes {
     display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.listaringresarclientes {
+    display: flex;
+    flex-direction: row;
     gap: 10px;
 }
 
@@ -161,22 +167,28 @@ html{
     transition: 300ms;
 }
 
+.resultadoCodexpy {
+    width: 335px;
+    display: flex;
+    flex-direction: column;
+}
+
 .confirmacioneliminacion {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .btnmodifica {
-  display: block;
-  align-items: right;
+    display: block;
+    align-items: right;
 }
 
 .tituloscentrados {
-  display: flex;
-  width: 100%;
-  margin-bottom: 10px;
-  place-content: center;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+    place-content: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .scrabbleresultados {
