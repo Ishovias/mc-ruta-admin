@@ -77,6 +77,7 @@ def empaquetador_rutaactual(request: object) -> map:
                     columna="ultimoretiro"
                     )
                 
+                # Procedimiento puntual para agregar dias de contrato de no haber dato
                 if not clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
                     clientesbd.putDato(
                         dato=60,
