@@ -32,23 +32,19 @@ def empaquetador_rutaactual(request: object) -> map:
         
         # Anotacion de fecha en hoja clientes y calculo de proximo retiro
         ingresoclientes = False
+        fecharetiro = datos_cliente_confirmado[0]
+        rutcliente = datos_cliente_confirmado[2]
+        nombrecliente = datos_cliente_confirmado[3]
+        # isoformateo de fecha para registro y calculo de sgte fecha
+        compfecha = list(str(fecharetiro))
+        compfecha.insert(4,"-")
+        compfecha.insert(7,"-")
+        fecharetiro = "".join(compfecha)
+        
         if realizadopospuesto == "REALIZADO":
             with Clientes() as clientesbd:
-                fecharetiro = datos_cliente_confirmado[0]
-                rutcliente = datos_cliente_confirmado[2]
-                
-                # isoformateo de fecha para registro y calculo de sgte fecha
-                compfecha = list(str(fecharetiro))
-                compfecha.insert(4,"-")
-                compfecha.insert(7,"-")
-                fecharetiro = "".join(compfecha)
-                
-                ubicacioncliente = clientesbd.busca_ubicacion(
-                        dato=rutcliente,
-                        columna="rut"
-                        )
-                
-                if not ubicacioncliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
+                filacliente = clientesbd.verifica_existencia(nombrecliente, "cliente", retornafila=True)
+                if not cliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
                     clientesbd.nuevo_cliente(
                         estado = "activo",
                         rut = datos_cliente_confirmado[2],
@@ -60,17 +56,18 @@ def empaquetador_rutaactual(request: object) -> map:
                         otro = datos_cliente_confirmado[8],
                         diascontrato = 60 # Lapso por defecto
                     )
-                    ubicacioncliente = clientesbd.busca_ubicacion(
-                        dato=rutcliente,
-                        columna="rut"
-                        )
-                    
+                         
+            with Clientes() as clientesbd:
+                filacliente = clientesbd.verifica_existencia(
+                     nombrecliente, 
+                     "cliente", 
+                     retornafila=True
+                     )     
                 ingresoclientes = clientesbd.putDato(
                     dato=fecharetiro,
                     fila=ubicacioncliente,
                     columna="ultimoretiro"
                     )
-                
                 # Procedimiento puntual para agregar dias de contrato de no haber dato
                 if not clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
                     clientesbd.putDato(
@@ -78,11 +75,12 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacioncliente,
                         columna="diascontrato"
                         )
+                
+            with Clientes() as clientesbd:
                 proxfecharetiro = clientesbd.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro
                             )
-                        
                 if proxfecharetiro:
                     proxfecha = clientesbd.putDato(
                         dato=proxfecharetiro,
@@ -98,7 +96,7 @@ def empaquetador_rutaactual(request: object) -> map:
         if ingresobd and ingresoclientes and proxfecha:
             paquete["alerta"] = mensaje_ok
         else:
-            paquete["alerta"] = mensaje_bad
+            paquete["alerta"] = f"{mensaje_bad}, ingresobd:{ingresobd}, ingresoclientes:{ingresoclientes}, proxfecha{proxfecha}"
         
         print(f" ingresobd: {ingresobd} \ningresoclientes: {ingresoclientes} \nproxfecha: {proxfecha}")
         return paquete

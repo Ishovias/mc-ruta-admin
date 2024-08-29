@@ -29,6 +29,14 @@ class Clientes(bdmediclean):
             super().putDato(dato=data[dato], fila=fila, columna=str(dato))
         return True
     
+    def verifica_existencia(self, dato: str, columna: str="rut", retornafila=False) -> bool:
+        verificacion = super().buscadato(self.hoja_actual["filainicial"],columna,dato)
+        if verificacion:
+            if retornafila:
+                 return verificacion
+            return True
+        return False
+    
     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
         ubicacion = super().buscadato(
             self.hoja_actual["filainicial"],
