@@ -1,5 +1,4 @@
 from datetime import datetime
-from empaquetadores.pack_clientes import new_cliente
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros
 from helpers import mensajes, privilegios, priv
@@ -56,7 +55,8 @@ def empaquetador_rutaactual(request: object) -> map:
                         )
                 
                 if not ubicacioncliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
-                    new_cliente(
+                    clientesbd.nuevo_cliente(
+                        estado = "activo",
                         rut = datos_cliente_confirmado[2],
                         cliente = datos_cliente_confirmado[3],
                         direccion = datos_cliente_confirmado[4],
