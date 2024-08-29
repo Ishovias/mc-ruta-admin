@@ -6,12 +6,6 @@ import params
 
 
 def empaquetador_rutaactual(request: object) -> map:
-    paquete = {"pagina":"rutas.html","aut":request.args.get("aut")}
-    privilegio = privilegios(request, paquete, retornaUser=True)
-    paquete = privilegio["paquete"]
-    usuario = privilegio["usuario"]
-    paquete["usuario"] = usuario
-
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
         datos_cliente_confirmado = []
@@ -105,11 +99,15 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["alerta"] = mensaje_ok
         else:
             paquete["alerta"] = mensaje_bad
-            
+        
+        print(f" ingresobd: {ingresobd} \ningresoclientes: {ingresoclientes} \nproxfecha: {proxfecha}")
         return paquete
     
-    paquete["pagina"] = "rutas.html"
-    paquete["nombrePagina"] = "RUTA EN CURSO"
+    paquete = {"pagina":"rutas.html","aut":request.args.get("aut"), "nombrePagina":"RUTA EN CURSO"}
+    privilegio = privilegios(request, paquete, retornaUser=True)
+    paquete = privilegio["paquete"]
+    usuario = privilegio["usuario"]
+    paquete["usuario"] = usuario
     
     if "iniciaruta" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
         fecha = request.form.get("fecha").replace("-","")

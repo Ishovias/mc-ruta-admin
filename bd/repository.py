@@ -196,7 +196,8 @@ class bdmediclean:
                     self.ingresador(row,datos,column)
             else:
                     self.ingresador(row,[dato],column)
-        except:
+        except Exception as e:
+            print(e)
             return False
         else:
             self.datosPorGuardar = True
