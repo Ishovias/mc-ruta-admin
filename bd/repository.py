@@ -131,7 +131,7 @@ class bdmediclean:
         return fila
 
 
-    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None) -> map:
+    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False) -> map:
         """Devuelve todos los datos en una hoja especifica
         o desde la fila especifica hasta el final
 
@@ -172,7 +172,10 @@ class bdmediclean:
                 datafile = []
                 for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)
-                    datafile.append(dato.value)
+                    if retornostr:
+                        datafile.append(str(dato.value))
+                    else:
+                        datafile.append(dato.value)
                 resultados["datos"].append(datafile)
         return resultados
 
@@ -227,7 +230,7 @@ class bdmediclean:
                 else:
                     return int(celdaAnterior.value)+1
 
-    def extraefila(self, fila: int, columna: str=None, columnas: list=None) -> list:
+    def extraefila(self, fila: int, columna: str=None, columnas: list=None, retornostr: bool=False) -> list:
         if type(columna) == str and columna != None:
             ListaColumnas = self.hoja_actual["columnas"][columna]
             if type(ListaColumnas) == list:
@@ -243,7 +246,10 @@ class bdmediclean:
 
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
-            datos.append(celda.value)
+            if retornostr:
+                datos.append(str(celda.value))
+            else:
+                datos.append(celda.value)
 
         return datos
 
