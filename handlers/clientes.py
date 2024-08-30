@@ -30,10 +30,10 @@ class Clientes(bdmediclean):
         return True
     
     def verifica_existencia(self, dato: str, columna: str="rut", retornafila=False) -> bool:
-        verificacion = super().buscadato(self.hoja_actual["filainicial"],columna,dato)
+        verificacion = super().buscadato(self.hoja_actual["filainicial"],self.hoja_actual["columnas"][columna],dato)
         if verificacion:
             if retornafila:
-                 return verificacion
+                return verificacion
             return True
         return False
     

@@ -42,10 +42,9 @@ def empaquetador_rutaactual(request: object) -> map:
         fecharetiro = "".join(compfecha)
         
         if realizadopospuesto == "REALIZADO":
-            with Clientes() as clientesbd:
-                filacliente = clientesbd.verifica_existencia(nombrecliente, "cliente", retornafila=True)
-                if not cliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
-                    clientesbd.nuevo_cliente(
+            with Clientes() as cverif:
+                if not cverif.verifica_existencia(nombrecliente, "cliente"):  # Procedimiento puntual si es que no es encontrado cliente en BD
+                    cverif.nuevo_cliente(
                         estado = "activo",
                         rut = datos_cliente_confirmado[2],
                         cliente = datos_cliente_confirmado[3],
@@ -56,35 +55,35 @@ def empaquetador_rutaactual(request: object) -> map:
                         otro = datos_cliente_confirmado[8],
                         diascontrato = 60 # Lapso por defecto
                     )
-                         
-            with Clientes() as clientesbd:
-                filacliente = clientesbd.verifica_existencia(
-                     nombrecliente, 
-                     "cliente", 
-                     retornafila=True
-                     )     
-                ingresoclientes = clientesbd.putDato(
+
+            with Clientes() as curetiro:
+                filacliente = curetiro.verifica_existencia(
+                    nombrecliente, 
+                    "cliente", 
+                    retornafila=True
+                    )     
+                ingresoclientes = curetiro.putDato(
                     dato=fecharetiro,
-                    fila=ubicacioncliente,
+                    fila=filacliente,
                     columna="ultimoretiro"
                     )
                 # Procedimiento puntual para agregar dias de contrato de no haber dato
-                if not clientesbd.getDato(fila=ubicacioncliente, columna="diascontrato"):
-                    clientesbd.putDato(
+                if not curetiro.getDato(fila=filacliente, columna="diascontrato"):
+                    curetiro.putDato(
                         dato=60,
-                        fila=ubicacioncliente,
+                        fila=filacliente,
                         columna="diascontrato"
                         )
                 
-            with Clientes() as clientesbd:
-                proxfecharetiro = clientesbd.proximo_retiro(
+            with Clientes() as cpr:
+                proxfecharetiro = cpr.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro
                             )
                 if proxfecharetiro:
-                    proxfecha = clientesbd.putDato(
+                    proxfecha = cpr.putDato(
                         dato=proxfecharetiro,
-                        fila=ubicacioncliente,
+                        fila=filacliente,
                         columna="proxretiro"
                         )
                 else:
