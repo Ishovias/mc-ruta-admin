@@ -40,7 +40,7 @@ def empaquetador_rutaactual(request: object) -> map:
         compfecha.insert(4,"-")
         compfecha.insert(7,"-")
         fecharetiro = "".join(compfecha)
-        
+
         if realizadopospuesto == "REALIZADO":
             with Clientes() as cverif:
                 if not cverif.verifica_existencia(nombrecliente, "cliente"):  # Procedimiento puntual si es que no es encontrado cliente en BD
@@ -61,13 +61,13 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=filacliente,
                         columna="diascontrato"
                         )
-               
+
             with Clientes() as curetiro:
                 filacliente = curetiro.verifica_existencia(
-                    nombrecliente, 
-                    "cliente", 
+                    nombrecliente,
+                    "cliente",
                     retornafila=True
-                    )     
+                    )
                 proxfecharetiro = curetiro.proximo_retiro(
                             rut=rutcliente,
                             fecharetiro=fecharetiro
@@ -88,48 +88,48 @@ def empaquetador_rutaactual(request: object) -> map:
         else:
             proxfecha = True
             ingresoclientes = True
-        
+
         if ingresobd and ingresoclientes and proxfecha:
             paquete["alerta"] = mensaje_ok
         else:
             paquete["alerta"] = f"{mensaje_bad}, ingresobd:{ingresobd}, ingresoclientes:{ingresoclientes}, proxfecha{proxfecha}"
-        
+
         print(f" ingresobd: {ingresobd} \ningresoclientes: {ingresoclientes} \nproxfecha: {proxfecha}")
         return paquete
-    
+
     paquete = {"pagina":"rutas.html","aut":request.args.get("aut"), "nombrePagina":"RUTA EN CURSO"}
     privilegio = privilegios(request, paquete, retornaUser=True)
     paquete = privilegio["paquete"]
     usuario = privilegio["usuario"]
     paquete["usuario"] = usuario
-    
+
     if "iniciaruta" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
         fecha = request.form.get("fecha").replace("-","")
         ruta = request.form.get("nombreruta")
-        
+
         nueva_rutaActual = False
         nueva_rutaRegistro = False
 
         with RutaRegistros() as rutaregistros:
             nueva_rutaRegistro = rutaregistros.nuevaRuta(fecha,ruta)
-        
-        if nueva_rutaRegistro:     
+
+        if nueva_rutaRegistro:
             with RutaActual() as rutaactualbd:
                 nueva_rutaActual = rutaactualbd.nuevaRuta(fecha,ruta)
-            
+
         if nueva_rutaActual and nueva_rutaRegistro:
             paquete["alerta"] = "Ruta creada"
         else:
             paquete["alerta"] = "Error en creacion de ruta o ruta existente no finalizada"
         paquete["pagina"] = "clientes.html"
         return paquete
-    
+
     elif "finalizaRutaActual" in request.form and priv[usuario]["finEnabled"] == "enabled":
         confirmacion = request.form.get("finalizaRutaActual")
         if confirmacion == "REALIZADO_FORM":
             with RutaActual() as rutaactualbd:
                 datosExistentes = rutaactualbd.listar()
-            
+
             if len(datosExistentes["datos"]) > 0:
                 paquete["alerta"] = "ERROR: AUN QUEDAN CLIENTES POR CONFIRMAR O DESCARTAR"
             else:
@@ -220,7 +220,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
-        rutaDatos = ractualbd.listar()
+        rutaDatos = ractualbd.listar(retornostr=True)
         if rutaActiva:
             paquete["ruta"] = rutaActiva
         else:
@@ -274,7 +274,7 @@ def empaquetador_registros_rutas(request: object) -> map:
         paquete["rutaResultado"] = data
             
     with RutaRegistros() as rutaregistros:
-        paquete["rutaLista"] = rutaregistros.listar()
+        paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
 
     return paquete
 
