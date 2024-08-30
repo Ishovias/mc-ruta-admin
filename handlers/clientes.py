@@ -21,10 +21,10 @@ class Clientes(bdmediclean):
         return resultados
 
     def nuevo_cliente(self, **data) -> bool:
-        existencia = super().busca_datoscliente(data["cliente"])
-        if existencia != 0:
+        existencia = super().busca_ubicacion(dato=data["cliente"])
+        if existencia:
             return False
-        fila = super().busca_ubicacion("rut")
+        fila = super().busca_ubicacion(columna="rut")
         for dato in data.keys():
             super().putDato(dato=data[dato], fila=fila, columna=str(dato))
         return True

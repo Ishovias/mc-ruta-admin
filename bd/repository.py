@@ -111,7 +111,7 @@ class bdmediclean:
             nombre
             )
         if ubicacion == None:
-            return 0
+            return None
         datos = self.extraefila(
             fila=ubicacion,
             columna="todas"

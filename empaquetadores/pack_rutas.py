@@ -55,33 +55,30 @@ def empaquetador_rutaactual(request: object) -> map:
                         otro = datos_cliente_confirmado[8],
                         diascontrato = 60 # Lapso por defecto
                     )
-
+                elif not curetiro.getDato(fila=filacliente, columna="diascontrato"):
+                    curetiro.putDato(
+                        dato=60,
+                        fila=filacliente,
+                        columna="diascontrato"
+                        )
+               
             with Clientes() as curetiro:
                 filacliente = curetiro.verifica_existencia(
                     nombrecliente, 
                     "cliente", 
                     retornafila=True
                     )     
+                proxfecharetiro = curetiro.proximo_retiro(
+                            rut=rutcliente,
+                            fecharetiro=fecharetiro
+                            )
                 ingresoclientes = curetiro.putDato(
                     dato=fecharetiro,
                     fila=filacliente,
                     columna="ultimoretiro"
                     )
-                # Procedimiento puntual para agregar dias de contrato de no haber dato
-                if not curetiro.getDato(fila=filacliente, columna="diascontrato"):
-                    curetiro.putDato(
-                        dato=60,
-                        fila=filacliente,
-                        columna="diascontrato"
-                        )
-                
-            with Clientes() as cpr:
-                proxfecharetiro = cpr.proximo_retiro(
-                            rut=rutcliente,
-                            fecharetiro=fecharetiro
-                            )
                 if proxfecharetiro:
-                    proxfecha = cpr.putDato(
+                    proxfecha = curetiro.putDato(
                         dato=proxfecharetiro,
                         fila=filacliente,
                         columna="proxretiro"
