@@ -1,9 +1,16 @@
 # hoja de parametros generales
 
+
+
+# ---------- RUTAS DE DESARROLLO --------------
 LIBRODATOS = "./bd/mediclean_bd.xlsx" # Ruta de desarrollo
-# LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" # Ruta en linea
 LIBROTODO = "./bd/todo_bd.xlsx" # Ruta de desarrollo
-# LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx" # Ruta en linea
+LIBRORUTA= "./bd/ruta.xlsx"
+
+# ---------- RUTAS DE PRODUCCION --------------
+#LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" 
+#LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
+#LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
 
 MAX_FILAS = 10000
 

@@ -4,7 +4,7 @@ import params
 class RutaActual(bdmediclean):
 
      def __init__(self) -> None:
-          super().__init__(params.RUTA_ACTUAL)
+          super().__init__(params.RUTA_ACTUAL, otrolibro=params.LIBRORUTA)
      
      def nuevaRuta(self, fecha: str, ruta: str) -> bool:
           if super().getDato(identificador="rutaencurso") != None:
