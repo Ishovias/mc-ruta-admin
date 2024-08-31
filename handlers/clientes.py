@@ -20,13 +20,15 @@ class Clientes(bdmediclean):
             resultados["datos"].append(data)
         return resultados
 
-    def nuevo_cliente(self, **data) -> bool:
+    def nuevo_cliente(self, retornoFila: bool=False, **data) -> bool:
         existencia = super().busca_ubicacion(dato=data["cliente"])
         if existencia:
             return False
         fila = super().busca_ubicacion(columna="rut")
         for dato in data.keys():
             super().putDato(dato=data[dato], fila=fila, columna=str(dato))
+        if retornoFila:
+            return fila
         return True
     
     def verifica_existencia(self, dato: str, columna: str="rut", retornafila=False) -> bool:
@@ -47,8 +49,15 @@ class Clientes(bdmediclean):
             return 0
         datos = super().extraefila(
             fila=ubicacion,
-            columnas=self.hoja_actual["columnas"]["todas"]
-            )
+            columnas=[
+                self.hoja_actual["columnas"]["rut"],
+                self.hoja_actual["columnas"]["cliente"],
+                self.hoja_actual["columnas"]["direccion"],
+                self.hoja_actual["columnas"]["comuna"],
+                self.hoja_actual["columnas"]["telefono"],
+                self.hoja_actual["columnas"]["diascontrato"],
+                self.hoja_actual["columnas"]["otro"]
+            ])
         return datos
     
     def estado_cliente(self, rut: str, estado: str) -> bool:

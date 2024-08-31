@@ -6,6 +6,34 @@ import params
 
 
 def empaquetador_rutaactual(request: object) -> map:
+    
+    def verifica_cliente(datos_cliente_confirmado: list) -> bool:
+        with Clientes() as cverif:
+            nombrecliente = datos_cliente_confirmado[3]
+            filacliente = cverif.verifica_existencia(nombrecliente, "cliente")
+            if not filacliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
+                cverif.nuevo_cliente(
+                    estado = "activo",
+                    rut = datos_cliente_confirmado[2],
+                    cliente = datos_cliente_confirmado[3],
+                    direccion = datos_cliente_confirmado[4],
+                    comuna = datos_cliente_confirmado[5],
+                    telefono = datos_cliente_confirmado[6],
+                    gps = datos_cliente_confirmado[7],
+                    otro = datos_cliente_confirmado[8],
+                    diascontrato = 60 # Lapso por defecto
+                )
+                return False
+            elif not cverif.getDato(fila=filacliente, columna="diascontrato"):
+                cverif.putDato(
+                    dato=60,
+                    fila=filacliente,
+                    columna="diascontrato"
+                    )
+                return False
+            else:
+                return True
+    
     def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
         datos_cliente_confirmado = []
@@ -42,26 +70,7 @@ def empaquetador_rutaactual(request: object) -> map:
         fecharetiro = "".join(compfecha)
 
         if realizadopospuesto == "REALIZADO":
-            with Clientes() as cverif:
-                if not cverif.verifica_existencia(nombrecliente, "cliente"):  # Procedimiento puntual si es que no es encontrado cliente en BD
-                    cverif.nuevo_cliente(
-                        estado = "activo",
-                        rut = datos_cliente_confirmado[2],
-                        cliente = datos_cliente_confirmado[3],
-                        direccion = datos_cliente_confirmado[4],
-                        comuna = datos_cliente_confirmado[5],
-                        telefono = datos_cliente_confirmado[6],
-                        gps = datos_cliente_confirmado[7],
-                        otro = datos_cliente_confirmado[8],
-                        diascontrato = 60 # Lapso por defecto
-                    )
-                elif not curetiro.getDato(fila=filacliente, columna="diascontrato"):
-                    curetiro.putDato(
-                        dato=60,
-                        fila=filacliente,
-                        columna="diascontrato"
-                        )
-
+            verifica_cliente(datos_cliente_confirmado)
             with Clientes() as curetiro:
                 filacliente = curetiro.verifica_existencia(
                     nombrecliente,
@@ -86,6 +95,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 else:
                     proxfecha = False
         else:
+            verifica_cliente(datos_cliente_confirmado)
             proxfecha = True
             ingresoclientes = True
 

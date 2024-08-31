@@ -54,7 +54,7 @@ RUTA_ACTUAL = {
     "direccion":5,
     "comuna":6,
     "telefono":7,
-    "gps":8,
+    "contrato":8,
     "otro":9,
     "ultimoretiro":10,
     "todas":[1,2,3,4,5,6,7,8,9,10]
@@ -73,7 +73,7 @@ RUTAS_BD = {
     "direccion":5,
     "comuna":6,
     "telefono":7,
-    "gps":8,
+    "contrato":8,
     "otro":9,
     "ultimoretiro":10,
     "status":11,
