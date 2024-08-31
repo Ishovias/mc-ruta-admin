@@ -104,7 +104,6 @@ def empaquetador_rutaactual(request: object) -> map:
         else:
             paquete["alerta"] = f"{mensaje_bad}, ingresobd:{ingresobd}, ingresoclientes:{ingresoclientes}, proxfecha{proxfecha}"
 
-        print(f" ingresobd: {ingresobd} \ningresoclientes: {ingresoclientes} \nproxfecha: {proxfecha}")
         return paquete
 
     paquete = {"pagina":"rutas.html","aut":request.args.get("aut"), "nombrePagina":"RUTA EN CURSO"}
