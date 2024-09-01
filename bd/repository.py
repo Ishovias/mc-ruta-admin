@@ -3,15 +3,18 @@ import params
 
 class bdmediclean:
 
-    def __init__(self, hoja: str, otrolibro: str=None) -> None:
+    def __init__(self, hoja: str, otrolibro: str=None, hojadefault: bool=False) -> None:
         if otrolibro:
             self.bd = load_workbook(otrolibro,read_only=False)
             self.libroPorGuardar = otrolibro
         else:   
             self.bd = load_workbook(params.LIBRODATOS,read_only=False)
             self.libroPorGuardar = params.LIBRODATOS
-        self.hoja_actual = hoja
-        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
+        if hoja == "hoja_por_defecto":
+            self.hojabd = self.bd.worksheets[0]
+        else:
+            self.hoja_actual = hoja
+            self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
         self.datosPorGuardar = False
     
@@ -38,13 +41,14 @@ class bdmediclean:
             else:
                 return filas + 2
 
-    def eliminarContenidos(self,cantidadfilas: int, filainicio: int=4) -> bool:
-
+    def eliminarContenidos(self,cantidadfilas: int=100, filainicio: int=0) -> bool:
+        if filainicio == 0:
+             filainicio = self.hoja_actual["filainicial"]
         completado = False
         cantidadfilas += 100
 
         for fila in range(filainicio,cantidadfilas,1):
-            for columna in range(1,10,1):
+            for columna in range(1,20,1):
                 celda = self.hojabd.cell(row=fila,column=columna)
                 celda.value = None
         else:
@@ -131,7 +135,7 @@ class bdmediclean:
         return fila
 
 
-    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False) -> map:
+    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False, solodatos_list: bool=False) -> map:
         """Devuelve todos los datos en una hoja especifica
         o desde la fila especifica hasta el final
 
@@ -155,13 +159,7 @@ class bdmediclean:
             encabezados = self.hoja_actual["encabezados"]
         
         resultados = {}
-
-        # Extraccion de encabezados
-        resultados["encabezados"] = []
-        for campo in columnas:
-            dato = self.hojabd.cell(row=encabezados, column=campo)
-            resultados["encabezados"].append(dato.value)
-
+        
         # Extraccion de datos "filas"
         resultados["datos"] = []
         for fila in range(filainicial,self.maxfilas,1):
@@ -177,6 +175,15 @@ class bdmediclean:
                     else:
                         datafile.append(dato.value)
                 resultados["datos"].append(datafile)
+                if solodatos_list:
+                     return resultados["datos"]
+        
+        # Extraccion de encabezados
+        resultados["encabezados"] = []
+        for campo in columnas:
+            dato = self.hojabd.cell(row=encabezados, column=campo)
+            resultados["encabezados"].append(dato.value)
+            
         return resultados
 
     def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
@@ -253,7 +260,7 @@ class bdmediclean:
 
         return datos
 
-    def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None) -> bool:
+    def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None, retornostr: bool=False) -> bool:
         if identificador:
             row = self.hoja_actual[identificador]["fila"]
             column = self.hoja_actual[identificador]["columna"]
@@ -263,12 +270,18 @@ class bdmediclean:
         
         if columnas:
             if row:
-                datos = self.extraefila(fila=row,columnas=columnas)
+                if retornostr:
+                    datos = self.extraefila(fila=row,columnas=columna,retornostr=True)
+                else:
+                    datos = self.extraefila(fila=row,columnas=columna)
                 return datos
             return None
         else:
             if row:
-                datos = self.extraefila(fila=row,columna=column)
+                if retornostr:
+                    datos = self.extraefila(fila=row,columna=column,retornostr=True)
+                else:
+                    datos = self.extraefila(fila=row,columna=column)
                 return datos[0]
             return None
 

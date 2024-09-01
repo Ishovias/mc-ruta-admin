@@ -1,8 +1,10 @@
+from werkzeug.utils import secure_filename
 from datetime import datetime
 from handlers.clientes import Clientes
-from handlers.rutas import RutaActual, RutaBD, RutaRegistros
+from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar
 from helpers import mensajes, privilegios, priv
 import params
+import os
 
 
 def empaquetador_rutaactual(request: object) -> map:
@@ -287,3 +289,42 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     return paquete
 
+def empaquetador_carga_ruta(request: object) -> map:
+     
+     def fichero_permitido(archivo: str) -> bool:
+          return "." in archivo and archivo.rsplit(".",1)[1].lower() in params.EXTENSIONES_PERMITDAS
+     
+     paquete = {"pagina":"cargaruta.html","aut":request.args.get("aut"), "nombrePagina":"CARGA DE RUTA POR XLSX"}
+     privilegio = privilegios(request, paquete, retornaUser=True)
+     paquete = privilegio["paquete"]
+     usuario = privilegio["usuario"]
+     paquete["usuario"] = usuario
+     
+     if "upload" in request.form:
+          if "archivo" not in  request.files:
+               paquete["alerta"] = "ERROR, por fevor, reintente"
+               return paquete
+          file = request.files["archivo"]
+          if file.filename == "":
+               paquete["alerta"] = "ERROR no se ha ingresado un archivo"
+               return paquete
+          if file and fichero_permitido(file.filename):
+               filename = secure_filename(file.filename)
+               archivo_cargado = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+               file.save(archivo_cargado)
+               with RutaImportar(archivo_cargado) as ri:
+                    datos = ri.extrae_ruta()
+               with RutaRegistro() as rr:
+                    if not rr.registra_importacion(datos)
+                         paquete["alerta"] = "ERROR fecha de ruta ya esta ocupada"
+                         return paquete
+               with RutaActual() as ra:
+                    if not ra.importar(datos):
+                         paquete["alerta"] = "ERROR al intentar importar los datos extraidos del archivo"
+                         return paquete
+               paquete["alerta"] = "Archivo cargado con exito"
+          else:
+               paquete["alerta"] = "Tipo de archivo no permitido"
+     
+     return paquete
+     

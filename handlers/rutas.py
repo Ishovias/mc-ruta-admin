@@ -48,9 +48,21 @@ class RutaActual(bdmediclean):
                return False
           else:
                return True
+     
+     def importar(self, datos: map) -> bool:
+          super().putDato(dato=datos["rutaencurso"],identificador="rutaencurso")
+          super().putDato(dato=datos["nombreruta"],identificador="nombreruta")
+          super().eliminarContenidos()
+          filaubicacion = self.hoja_actual["filainicial"]
+          for fila in datos["datos"]:
+               super().putDato(datos=fila,fila=filaubicacion,columna=1)
+               filaubicacion += 1
+          else:
+               return True
+          return False
 
 class RutaRegistros(bdmediclean):
-
+     
      def __init__(self) -> None:
           super().__init__(params.RUTAS_REGISTROS)
 
@@ -71,6 +83,12 @@ class RutaRegistros(bdmediclean):
           else: 
                return False
      
+     def registra_importacion(self, datos: map) -> bool:
+          if not super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha"):
+               super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],columna="fecha")
+               return True
+          return False
+
 class RutaBD(bdmediclean):
 
      def __init__(self) -> None:
@@ -88,3 +106,15 @@ class RutaBD(bdmediclean):
                return False
           else:
                return True
+
+class RutaImportar(bdmediclean):
+     def __init__(self, archivo: str) -> None:
+          super().__init__("hoja_por_defecto", otrolibro=str(archivo))
+          self.hoja_actual = params.RUTA_ACTUAL
+
+     def extrae_ruta(self) -> map:
+          return {
+               "rutaencurso": super().getDato(identificador="rutaencurso", retornostr=True),
+               "nombreruta": super().getDato(identificador="nombreruta", retornostr=True),
+               "datos":super().listar(retornostr=True, solodatos_list=True)
+          }

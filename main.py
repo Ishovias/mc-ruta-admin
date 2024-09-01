@@ -4,9 +4,11 @@ from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_todo import empaquetador_todo
-from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
+from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login, fichero_permitido
+from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = RUTA_IMPORTACION
 coder = codexpy2()
 sesion = SessionSingleton()
 
@@ -90,6 +92,15 @@ def codex2() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
      datos = empaquetador_codex2(coder, request)
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/uploadRuta', methods=['POST'])
+def uploadRuta() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
+     
+     datos = empaquetador_codex2(coder, request)
+     
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':

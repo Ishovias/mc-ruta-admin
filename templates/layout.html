@@ -44,6 +44,9 @@
             <form method="post" action="{{ url_for('codex2', aut=datos.aut) }}">
                 <button class="botonanimado" name="codex2">Codex2</button>
             </form>
+            <form method="post" action="{{ url_for('uploadRuta', aut=datos.aut) }}">
+                <button class="botonanimado" name="uploadRuta">Upload Ruta</button>
+            </form>
         {% endif %}
         <form method="post" action="{{ url_for('logout', aut=datos.aut) }}">
             <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>

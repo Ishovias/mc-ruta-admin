@@ -173,3 +173,4 @@ def empaquetador_codex1(request: object) -> map:
      else:
           paquete["resultado"] = ""
      return paquete
+
