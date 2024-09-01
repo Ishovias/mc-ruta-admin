@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Administrador de ruta</h2>
+     <h2>({{ datos.nombrePagina }})</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+     <form class="formularioIngreso" method="post" action="{{ url_for('uploadRuta', aut=datos.aut) }}">
+          <label for="Archivo de ruta">Rut:
+               <input name="archivo" type="file" enctype="multipart/form-data">
+          <button type="submit" name="upload" value="upload">Cargar ruta</button>
+     </form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}
