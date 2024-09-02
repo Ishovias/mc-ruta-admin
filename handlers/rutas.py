@@ -84,7 +84,11 @@ class RutaRegistros(bdmediclean):
                return False
      
      def registra_importacion(self, datos: map) -> bool:
-          if not super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha"):
+          finalizada = True
+          existente = super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha")
+          if existente:
+               finalizada = super().getDato(fila=existente,columna="otros")
+          if not existente or not finalizada:
                super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],columna="fecha")
                return True
           return False

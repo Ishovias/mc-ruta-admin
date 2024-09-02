@@ -1,10 +1,10 @@
 from flask import Flask, redirect, request, render_template, url_for
 from coder.codexpy2 import codexpy2
 from empaquetadores.pack_clientes import empaquetador_clientes
-from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual
+from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_todo import empaquetador_todo
-from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login, fichero_permitido
+from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
 app = Flask(__name__)
@@ -98,9 +98,7 @@ def codex2() -> render_template:
 def uploadRuta() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
-     
-     datos = empaquetador_codex2(coder, request)
-     
+     datos = empaquetador_carga_ruta(request,app)
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':
