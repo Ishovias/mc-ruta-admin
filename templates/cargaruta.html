@@ -9,8 +9,8 @@
 {% block body_a %}
      <form class="formularioIngreso" method="post" action="{{ url_for('uploadRuta', aut=datos.aut) }}" enctype="multipart/form-data">
           <label for="archivo">Archivo de ruta:
-               <input type="file" name="archivo">
-               <input type="submit" value="upload">
+               <input type="file" name="archivo" style="width: 200px">
+               <input type="submit" value="upload" style="width: 200px">
      </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->

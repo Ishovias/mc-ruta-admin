@@ -55,7 +55,7 @@ class RutaActual(bdmediclean):
           super().eliminarContenidos()
           filaubicacion = self.hoja_actual["filainicial"]
           for fila in datos["datos"]:
-               super().putDato(datos=fila,fila=filaubicacion,columna=1)
+               super().putDato(datos=fila,fila=filaubicacion,columna="fecha")
                filaubicacion += 1
           else:
                return True

@@ -300,7 +300,8 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
     usuario = privilegio["usuario"]
     paquete["usuario"] = usuario
     
-    if "archivo" in request.form:
+    if "archivo" in request.files:
+        print("EnProceso")
         if "archivo" not in request.files:
             paquete["alerta"] = "ERROR 1, por favor, reintente"
             return paquete
@@ -314,6 +315,7 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
             file.save(archivo_cargado)
             with RutaImportar(archivo_cargado) as ri:
                 datos = ri.extrae_ruta()
+            os.system(f"rm {archivo_cargado}")
             with RutaRegistros() as rr:
                 if not rr.registra_importacion(datos):
                     paquete["alerta"] = "ERROR fecha de ruta ya esta ocupada"
