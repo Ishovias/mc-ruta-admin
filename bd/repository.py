@@ -10,11 +10,8 @@ class bdmediclean:
         else:   
             self.bd = load_workbook(params.LIBRODATOS,read_only=False)
             self.libroPorGuardar = params.LIBRODATOS
-        if hoja == "hoja_por_defecto":
-            self.hojabd = self.bd.worksheets[0]
-        else:
-            self.hoja_actual = hoja
-            self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
+        self.hoja_actual = hoja
+        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
         self.maxfilas = self.contarfilas()
         self.datosPorGuardar = False
     
@@ -134,7 +131,6 @@ class bdmediclean:
             fila = self.buscadato(filainicial,column,dato)
         return fila
 
-
     def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False, solodatos_list: bool=False) -> map:
         """Devuelve todos los datos en una hoja especifica
         o desde la fila especifica hasta el final
@@ -175,8 +171,8 @@ class bdmediclean:
                     else:
                         datafile.append(dato.value)
                 resultados["datos"].append(datafile)
-                if solodatos_list:
-                     return resultados["datos"]
+        if solodatos_list:
+            return resultados["datos"]
         
         # Extraccion de encabezados
         resultados["encabezados"] = []
