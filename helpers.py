@@ -174,3 +174,12 @@ def empaquetador_codex1(request: object) -> map:
           paquete["resultado"] = ""
      return paquete
 
+def cimprime(**kwargs) -> None:
+     if "titulo" in kwargs.keys():
+          print(kwargs["titulo"])
+     else:
+          print("VARIABLES MONITOREADAS")
+     print("--------------------------")
+     for llave in kwargs.keys():
+          print(f"{llave}: {kwargs[llave]}")
+     print("--------------------------\n")

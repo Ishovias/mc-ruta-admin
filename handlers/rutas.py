@@ -1,4 +1,5 @@
 from bd.repository import bdmediclean
+from helpers import cimprime
 import params
 
 class RutaActual(bdmediclean):
@@ -88,7 +89,9 @@ class RutaRegistros(bdmediclean):
           existente = super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha")
           if existente:
                finalizada = super().getDato(fila=existente,columna="otros")
+          cimprime(titulo="variables de registro",existente=existente, finalizada=finalizada)
           if not existente or not finalizada:
+               cimprime(titulo="intentando registrar", datos=[datos["rutaencurso"],datos["nombreruta"]])
                super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],columna="fecha")
                return True
           return False
@@ -113,7 +116,7 @@ class RutaBD(bdmediclean):
 
 class RutaImportar(bdmediclean):
      def __init__(self, archivo: str) -> None:
-          super().__init__("hoja_por_defecto", otrolibro=str(archivo))
+          super().__init__(params.RUTA_ACTUAL, otrolibro=str(archivo))
           self.hoja_actual = params.RUTA_ACTUAL
 
      def extrae_ruta(self) -> map:
