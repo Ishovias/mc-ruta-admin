@@ -89,7 +89,6 @@ class RutaRegistros(bdmediclean):
           existente = super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha")
           if existente:
                finalizada = super().getDato(fila=existente,columna="otros")
-          cimprime(titulo="variables de registro",existente=existente, finalizada=finalizada)
           if not existente or not finalizada:
                fila = super().busca_ubicacion(columna="fecha")
                cimprime(titulo="intentando registrar", datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila)
