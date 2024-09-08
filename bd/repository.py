@@ -222,6 +222,10 @@ class bdmediclean:
     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
         self.datosPorGuardar = True
+        
+    def insertafila(self, filainsercion: int) -> None:
+        self.hojabd.insert_rows(filainsercion)
+        self.datosPorGuardar = True
 
     def idActual(self, filainicial: int, columna: int, encabezado: str) -> int:
         for fila in range(filainicial,self.maxfilas,1):
