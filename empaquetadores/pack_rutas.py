@@ -212,7 +212,7 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
             paquete["confirmarposponer"] = "Confirmar"
             paquete["propConfPos"] = "cliente_ruta_confirmar"
-            paquete["clienteidx"] = confirmacion
+            paquete["clienteidx"] = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
                         fila=confirmacion,
@@ -235,7 +235,7 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Observaciones para cliente pospuesto"
             paquete["confirmarposponer"] = "Posponer"
             paquete["propConfPos"] = "cliente_ruta_posponer"
-            paquete["clienteidx"] = confirmacion
+            paquete["clienteidx"] = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
                         fila=confirmacion,
