@@ -26,8 +26,8 @@
                     {% endfor %}
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
-                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.2 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
-                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.2 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
+                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
+                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
                          </form>
                     </td>
                     </tr>
@@ -37,6 +37,11 @@
           <form name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.finEnabled }}>Finalizar ruta actual</button>
+          </form>
+          <form class="formularioIngreso" name="ordenaRuta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
+               <label for="uboriginal">Numero a mover: <input type="number" name="uboriginal" style="width: 50px;" {{ datos.reubicarEnabled }}></label>
+               <label for="ubdestino">Posicion destino: <input type="number" name="ubdestino" style="width: 50px;" {{ datos.reubicarEnabled }}></label>
+               <button class="botonanimado" name="reubicar" value="reubicar" {{ datos.reubicarEnabled }}>Mover posicion cliente</button>
           </form>
      {% else %}
           <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>

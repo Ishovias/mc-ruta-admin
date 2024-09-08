@@ -91,7 +91,8 @@ priv = {
           "inirutaEnabled":"enabled",
           "newclienteEnabled":"enabled",
           "arutaEnabled":"enabled",
-          "modclienteEnabled":"enabled"
+          "modclienteEnabled":"enabled",
+          "reubicarEnabled":"enabled"
      },
      "mjose":{
           "cpEnabled":"enabled",
@@ -99,7 +100,8 @@ priv = {
           "inirutaEnabled":"disabled",
           "newclienteEnabled":"disabled",
           "arutaEnabled":"disabled",
-          "modclienteEnabled":"disabled"
+          "modclienteEnabled":"disabled",
+          "reubicarEnabled":"enabled"
      },
      "invitado":{
           "cpEnabled":"disabled",
@@ -107,7 +109,8 @@ priv = {
           "inirutaEnabled":"disabled",
           "newclienteEnabled":"disabled",
           "arutaEnabled":"disabled",
-          "modclienteEnabled":"disabled"
+          "modclienteEnabled":"disabled",
+          "reubicarEnabled":"enabled"
      }
 }
 

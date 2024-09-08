@@ -185,11 +185,11 @@ def empaquetador_rutaactual(request: object) -> map:
         posicion_origen = request.form.get("uboriginal")
         posicion_destino = request.form.get("ubdestino")
         with RutaActual() as ra:
-             datos_origen = ra.getDato(fila=posicion_origen, columna="todas")
-             ra.eliminar(posicion_origen)
-             ra.insertarfila(posicion_destino)
-             if not ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha"):
-                  paquete["alerta"] = "Error, no se pudo reubicar"
+            datos_origen = ra.getDato(fila=posicion_origen, columna="todas")
+            ra.eliminar(posicion_origen)
+            ra.insertarfila(posicion_destino)
+            if not ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha"):
+                paquete["alerta"] = "Error, no se pudo reubicar"
     
     elif "cliente_ruta_confirmar" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_confirmar")
@@ -205,15 +205,14 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
             paquete["confirmarposponer"] = "Confirmar"
             paquete["propConfPos"] = "cliente_ruta_confirmar"
-            paquete["clienterut"] = confirmacion
+            paquete["clienteidx"] = confirmacion
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
-                        fila=rutaactual.busca_ubicacion(
-                            dato=confirmacion,
-                            columna="rut"
-                            ),
-                        columna="cliente"
-                        )
+                        fila=confirmacion,
+                        columnas=[
+                            params.RUTA_ACTUAL["columnas"]["rut"],
+                            params.RUTA_ACTUAL["columnas"]["cliente"],
+                        ])
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -242,22 +241,22 @@ def empaquetador_rutaactual(request: object) -> map:
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
         columnasMostrar = [
-             params.RUTA_ACTUAL["columnas"]["id"],
-             params.RUTA_ACTUAL["columnas"]["rut"],
-             params.RUTA_ACTUAL["columnas"]["cliente"],
-             params.RUTA_ACTUAL["columnas"]["direccion"],
-             params.RUTA_ACTUAL["columnas"]["comuna"],
-             params.RUTA_ACTUAL["columnas"]["telefono"],
-             params.RUTA_ACTUAL["columnas"]["otro"],
-             params.RUTA_ACTUAL["columnas"]["contrato"],
-             params.RUTA_ACTUAL["columnas"]["ultimoretiro"]
-             ]
+            params.RUTA_ACTUAL["columnas"]["id"],
+            params.RUTA_ACTUAL["columnas"]["rut"],
+            params.RUTA_ACTUAL["columnas"]["cliente"],
+            params.RUTA_ACTUAL["columnas"]["direccion"],
+            params.RUTA_ACTUAL["columnas"]["comuna"],
+            params.RUTA_ACTUAL["columnas"]["telefono"],
+            params.RUTA_ACTUAL["columnas"]["otro"],
+            params.RUTA_ACTUAL["columnas"]["contrato"],
+            params.RUTA_ACTUAL["columnas"]["ultimoretiro"]
+            ]
         rutaDatos = ractualbd.listar(columnas=columnasMostrar, retornostr=True)
         indice = 1
         rutaDatos["encabezados"].insert(0,"Idx")
         for fila in rutaDatos["datos"]:
-             fila.insert(0,indice)
-             indice += 1
+            fila.insert(0,indice)
+            indice += 1
         if rutaActiva:
             paquete["ruta"] = rutaActiva
         else:
