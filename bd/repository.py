@@ -238,14 +238,16 @@ class bdmediclean:
                     return int(celdaAnterior.value)+1
 
     def extraefila(self, fila: int, columna: str=None, columnas: list=None, retornostr: bool=False) -> list:
-        if type(columna) == str and columna != None:
+        if columna and type(columna) == str:
             ListaColumnas = self.hoja_actual["columnas"][columna]
             if type(ListaColumnas) == list:
                 columnas = ListaColumnas
             else:
                 columnas = [ListaColumnas]
-        elif type(columna) == int and columna != None:
+        elif columna and type(columna) == int:
             columnas = [columna]
+        elif columna and type(columna) == list:
+            columnas = columna
         elif columnas != None:
             pass
         
@@ -266,14 +268,15 @@ class bdmediclean:
             column = self.hoja_actual[identificador]["columna"]
         else:
             row = fila
-            column = self.hoja_actual["columnas"][columna]
+            if columna:
+               column = self.hoja_actual["columnas"][columna]
         
         if columnas:
             if row:
                 if retornostr:
-                    datos = self.extraefila(fila=row,columnas=columna,retornostr=True)
+                    datos = self.extraefila(fila=row,columnas=columnas,retornostr=True)
                 else:
-                    datos = self.extraefila(fila=row,columnas=columna)
+                    datos = self.extraefila(fila=row,columnas=columnas)
                 return datos
             return None
         else:
