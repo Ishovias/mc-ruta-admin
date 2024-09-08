@@ -8,6 +8,8 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
      <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
+          <label for="clienteidx">IDX:</label>
+          <input name="clienteidx" type="number" value="{{ datos.clienteidx }}" readonly>
           <label for="clienterut">Rut:</label>
           <input name="clienterut" type="text" value="{{ datos.clienterut }}" readonly>
           <label for="clientenombre">Cliente:</label>
