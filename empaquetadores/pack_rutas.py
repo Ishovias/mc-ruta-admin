@@ -1,7 +1,7 @@
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from handlers.clientes import Clientes
-from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar
+from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from helpers import mensajes, privilegios, priv
 import params
 import os
@@ -182,13 +182,20 @@ def empaquetador_rutaactual(request: object) -> map:
         return paquete
     
     elif "reubicar" in request.form and priv[usuario]["reubicarEnabled"] == "enabled":
-        posicion_origen = request.form.get("uboriginal")
-        posicion_destino = request.form.get("ubdestino")
+        posicion_origen = int(request.form.get("uboriginal")) + (int(params.RUTA_ACTUAL["filainicial"]) - 1)
+        posicion_destino = int(request.form.get("ubdestino")) + (int(params.RUTA_ACTUAL["filainicial"]) - 1)
         with RutaActual() as ra:
-            datos_origen = ra.getDato(fila=posicion_origen, columna="todas")
+            datos_origen = ra.getDato(fila=posicion_origen, columnas=params.RUTA_ACTUAL["columnas"]["todas"], retornostr=True)
             ra.eliminar(posicion_origen)
-            ra.insertarfila(posicion_destino)
-            if not ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha"):
+            ra.insertafila(posicion_destino)
+            resultado = ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha")
+            cimprime(
+                 datos_origen=datos_origen, 
+                 posicion_origen=posicion_origen, 
+                 posicion_destino=posicion_destino, 
+                 resultado_operacion=resultado
+                 )
+            if not resultado:
                 paquete["alerta"] = "Error, no se pudo reubicar"
     
     elif "cliente_ruta_confirmar" in request.form and priv[usuario]["cpEnabled"] == "enabled":
@@ -209,10 +216,10 @@ def empaquetador_rutaactual(request: object) -> map:
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
                         fila=confirmacion,
-                        columnas=[
-                            params.RUTA_ACTUAL["columnas"]["rut"],
-                            params.RUTA_ACTUAL["columnas"]["cliente"],
-                        ])
+                        columna="cliente")
+                paquete["clienterut"] = rutaactual.getDato(
+                        fila=confirmacion,
+                        columna="rut")
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -228,15 +235,14 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Observaciones para cliente pospuesto"
             paquete["confirmarposponer"] = "Posponer"
             paquete["propConfPos"] = "cliente_ruta_posponer"
-            paquete["clienterut"] = confirmacion
+            paquete["clienteidx"] = confirmacion
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
-                        fila=rutaactual.busca_ubicacion(
-                            dato=confirmacion,
-                            columna="rut"
-                            ),
-                        columna="cliente"
-                        )
+                        fila=confirmacion,
+                        columna="cliente")
+                paquete["clienterut"] = rutaactual.getDato(
+                        fila=confirmacion,
+                        columna="rut")
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
