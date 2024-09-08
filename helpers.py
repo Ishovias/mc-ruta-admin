@@ -181,5 +181,6 @@ def cimprime(**kwargs) -> None:
           print("VARIABLES MONITOREADAS")
      print("--------------------------")
      for llave in kwargs.keys():
-          print(f"{llave}: {kwargs[llave]}")
+          if llave != "titulo":
+               print(f"{llave}: {kwargs[llave]}")
      print("--------------------------\n")

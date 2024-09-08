@@ -6,14 +6,15 @@ LIBRODATOS = "./bd/mediclean_bd.xlsx"
 LIBROTODO = "./bd/todo_bd.xlsx"
 LIBRORUTA= "./bd/ruta.xlsx"
 RUTA_IMPORTACION = "./ruta_import"
-EXTENSIONES_PERMITDAS = {"xlsx","xls"}
 
 # ---------- RUTAS DE PRODUCCION --------------
 #LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx" 
 #LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
-#LIBRORUTA= "/home/iberoiza/medicleans/bd/ruta.xlsx"
+#LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
+#RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
 #UPLOAD_FOLDER = "/home/iberoiza/mediclean/ruta_import"
 
+EXTENSIONES_PERMITDAS = {"xlsx","xls"}
 MAX_FILAS = 10000
 
 CLIENTES = {

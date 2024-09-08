@@ -26,7 +26,7 @@ class RutaActual(bdmediclean):
 
      def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
           verificar = super().busca_datoscliente(datos[0],"rut")
-          if verificar != 0:
+          if verificar:
                return False
           ubicacion = super().busca_ubicacion(None, "cliente")
           idActual = super().idActual(
@@ -91,8 +91,9 @@ class RutaRegistros(bdmediclean):
                finalizada = super().getDato(fila=existente,columna="otros")
           cimprime(titulo="variables de registro",existente=existente, finalizada=finalizada)
           if not existente or not finalizada:
-               cimprime(titulo="intentando registrar", datos=[datos["rutaencurso"],datos["nombreruta"]])
-               super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],columna="fecha")
+               fila = super().busca_ubicacion(columna="fecha")
+               cimprime(titulo="intentando registrar", datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila)
+               super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila,columna="fecha")
                return True
           return False
 

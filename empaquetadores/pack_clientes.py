@@ -22,16 +22,22 @@ def new_cliente(**datos: dict) -> bool:
             return bd.nuevo_cliente(
                 estado="activo",
                 rut=datos["rut"],
-                cliente=datos["cliente"],
+                cliente=datos["nombre"],
                 direccion=datos["direccion"],
                 comuna=datos["comuna"],
                 telefono=datos["telefono"],
                 gps=datos["gps"],
-                otro=datos["otro"],
+                otro=datos["otros"],
                 diascontrato=datos["diascontrato"]
             )
 
 def empaquetador_clientes(request: object) -> map:
+    def buscarcliente(nombre: str) -> list:
+        resultados = ""
+        with Clientes() as clientesbd:
+            resultados = clientesbd.busca_cliente_lista(nombre)
+        return resultados
+    
     paquete = {"pagina":"clientes.html","aut":request.args.get("aut")}
     privilegio = privilegios(request, paquete, retornaUser=True)
     paquete = privilegio["paquete"]
@@ -44,11 +50,8 @@ def empaquetador_clientes(request: object) -> map:
         return resultados
 
     if "buscacliente" in request.form:
-        resultados = ""
-        with Clientes() as clientesbd:
-            nombre = request.form.get("nombre")
-            resultados = clientesbd.busca_cliente_lista(nombre)
-        paquete["listaclientes"] = resultados
+        nombre = request.form.get("nombre")
+        paquete["listaclientes"] = buscarcliente(nombre)
 
     elif "listarclientes" in request.form:
         paquete["listaclientes"] = listadoClientes()
@@ -67,6 +70,8 @@ def empaquetador_clientes(request: object) -> map:
             otros=request.form.get("otros"),
             diascontrato=request.form.get("diascontratocontrato")
         ):
+            nombre = request.form.get("nombre")
+            paquete["listaclientes"] = buscarcliente(nombre)
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO.value
         else:
             paquete["alerta"] = mensajes.CLIENTE_GUARDADO_ERROR.value

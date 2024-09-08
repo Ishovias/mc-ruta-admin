@@ -181,6 +181,16 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["rutanombre"] = rutaactual.getDato(identificador="nombreruta")
         return paquete
     
+    elif "reubicar" in request.form and priv[usuario]["reubicarEnabled"] == "enabled":
+        posicion_origen = request.form.get("uboriginal")
+        posicion_destino = request.form.get("ubdestino")
+        with RutaActual() as ra:
+             datos_origen = ra.getDato(fila=posicion_origen, columna="todas")
+             ra.eliminar(posicion_origen)
+             ra.insertarfila(posicion_destino)
+             if not ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha"):
+                  paquete["alerta"] = "Error, no se pudo reubicar"
+    
     elif "cliente_ruta_confirmar" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_confirmar")
         if confirmacion == "REALIZADO_FORM":
@@ -231,7 +241,23 @@ def empaquetador_rutaactual(request: object) -> map:
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
-        rutaDatos = ractualbd.listar(retornostr=True)
+        columnasMostrar = [
+             params.RUTA_ACTUAL["columnas"]["id"],
+             params.RUTA_ACTUAL["columnas"]["rut"],
+             params.RUTA_ACTUAL["columnas"]["cliente"],
+             params.RUTA_ACTUAL["columnas"]["direccion"],
+             params.RUTA_ACTUAL["columnas"]["comuna"],
+             params.RUTA_ACTUAL["columnas"]["telefono"],
+             params.RUTA_ACTUAL["columnas"]["otro"],
+             params.RUTA_ACTUAL["columnas"]["contrato"],
+             params.RUTA_ACTUAL["columnas"]["ultimoretiro"]
+             ]
+        rutaDatos = ractualbd.listar(columnas=columnasMostrar, retornostr=True)
+        indice = 1
+        rutaDatos["encabezados"].insert(0,"Idx")
+        for fila in rutaDatos["datos"]:
+             fila.insert(0,indice)
+             indice += 1
         if rutaActiva:
             paquete["ruta"] = rutaActiva
         else:
@@ -301,7 +327,6 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
     paquete["usuario"] = usuario
     
     if "archivo" in request.files:
-        print("EnProceso")
         if "archivo" not in request.files:
             paquete["alerta"] = "ERROR 1, por favor, reintente"
             return paquete
@@ -318,7 +343,7 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
             os.system(f"rm {archivo_cargado}")
             with RutaRegistros() as rr:
                 if not rr.registra_importacion(datos):
-                    paquete["alerta"] = "ERROR fecha de ruta ya esta ocupada"
+                    paquete["alerta"] = "ERROR fecha de ruta ya esta trabajada"
                     return paquete
             with RutaActual() as ra:
                 if not ra.importar(datos):
