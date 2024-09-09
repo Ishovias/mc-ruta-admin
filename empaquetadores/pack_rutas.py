@@ -11,8 +11,8 @@ def empaquetador_rutaactual(request: object) -> map:
     
     def verifica_cliente(datos_cliente_confirmado: list) -> bool:
         with Clientes() as cverif:
-            nombrecliente = datos_cliente_confirmado[3]
-            filacliente = cverif.verifica_existencia(nombrecliente, "cliente")
+            rutcliente = datos_cliente_confirmado[2]
+            filacliente = cverif.verifica_existencia(rutcliente, "rut")
             if not filacliente:  # Procedimiento puntual si es que no es encontrado cliente en BD
                 cverif.nuevo_cliente(
                     estado = "activo",
@@ -64,7 +64,7 @@ def empaquetador_rutaactual(request: object) -> map:
         ingresoclientes = False
         fecharetiro = datos_cliente_confirmado[0]
         rutcliente = datos_cliente_confirmado[2]
-        nombrecliente = datos_cliente_confirmado[3]
+        # nombrecliente = datos_cliente_confirmado[3]
 
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
@@ -76,8 +76,8 @@ def empaquetador_rutaactual(request: object) -> map:
             verifica_cliente(datos_cliente_confirmado)
             with Clientes() as curetiro:
                 filacliente = curetiro.verifica_existencia(
-                    nombrecliente,
-                    "cliente",
+                    rutcliente,
+                    "rut",
                     retornafila=True
                     )
                 proxfecharetiro = curetiro.proximo_retiro(
@@ -244,9 +244,10 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:
             num_cltes = len(ra.listar(solodatos_list=True))
+            cimprime(numero_clientes=num_cltes, numero_insertar=(num_cltes + 2))
             datos = [
-                request.form.get("agregaclientemanual"),
-                (num_cltes + 1),
+                ra.getDato(identificador="rutaencurso"),
+                (num_cltes + 2),
                 request.form.get("rut"),
                 request.form.get("cliente"),
                 request.form.get("direccion"),
