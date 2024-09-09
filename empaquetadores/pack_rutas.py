@@ -241,18 +241,20 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="rut")
 
-    elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
-        datos = [
-            request.form.get("agregaclientemanual"),
-            request.form.get("rut"),
-            request.form.get("cliente"),
-            request.form.get("direccion"),
-            request.form.get("comuna"),
-            request.form.get("telefono"),
-            request.form.get("otro"),
-            request.form.get("contrato")
-        ]
+    elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:
+            num_cltes = len(ra.listar(solodatos_list=True))
+            datos = [
+                request.form.get("agregaclientemanual"),
+                (num_cltes + 1),
+                request.form.get("rut"),
+                request.form.get("cliente"),
+                request.form.get("direccion"),
+                request.form.get("comuna"),
+                request.form.get("telefono"),
+                request.form.get("contrato"),
+                request.form.get("otro")
+            ]
             fila_insersion = ra.busca_ubicacion(columna="fecha")
             if ra.putDato(
                 datos=datos,
