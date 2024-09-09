@@ -36,14 +36,14 @@ def empaquetador_rutaactual(request: object) -> map:
             else:
                 return True
     
-    def confpos(cliente_rut: str, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
+    def confpos(ubicacioncliente: int, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
         # buscando datos del cliente y eliminando registro de ruta actual
         datos_cliente_confirmado = []
         with RutaActual() as rutaactualbd:
-            datos_cliente_confirmado = rutaactualbd.busca_datoscliente(cliente_rut,"rut")
+            datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
-            rutaactualbd.eliminar(rutaactualbd.busca_ubicacion(cliente_rut,"rut"))
+            rutaactualbd.eliminar(ubicacioncliente)
             # incremento indicador de clientes realizados o pospuestos
             cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
             if not cantregistrada:
@@ -65,6 +65,7 @@ def empaquetador_rutaactual(request: object) -> map:
         fecharetiro = datos_cliente_confirmado[0]
         rutcliente = datos_cliente_confirmado[2]
         nombrecliente = datos_cliente_confirmado[3]
+
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
         compfecha.insert(4,"-")
@@ -189,12 +190,6 @@ def empaquetador_rutaactual(request: object) -> map:
             ra.eliminar(posicion_origen)
             ra.insertafila(posicion_destino)
             resultado = ra.putDato(datos=datos_origen, fila=posicion_destino, columna="fecha")
-            cimprime(
-                 datos_origen=datos_origen, 
-                 posicion_origen=posicion_origen, 
-                 posicion_destino=posicion_destino, 
-                 resultado_operacion=resultado
-                 )
             if not resultado:
                 paquete["alerta"] = "Error, no se pudo reubicar"
     
@@ -202,7 +197,7 @@ def empaquetador_rutaactual(request: object) -> map:
         confirmacion = request.form.get("cliente_ruta_confirmar")
         if confirmacion == "REALIZADO_FORM":
             confpos(
-                request.form.get("clienterut"),
+                (int(request.form.get("clienteidx")) + (params.RUTA_ACTUAL["filainicial"] - 1)),
                 "REALIZADO", 
                 mensajes.CLIENTE_CONFIRMADO.value, 
                 mensajes.CLIENTE_CONFIRMADO_ERROR.value
@@ -212,20 +207,21 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Confirmar datos de cliente CONFIRMADO"
             paquete["confirmarposponer"] = "Confirmar"
             paquete["propConfPos"] = "cliente_ruta_confirmar"
-            paquete["clienteidx"] = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
+            paquete["clienteidx"] = confirmacion
+            ubicacion_cliente = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
-                        fila=confirmacion,
+                        fila=ubicacion_cliente,
                         columna="cliente")
                 paquete["clienterut"] = rutaactual.getDato(
-                        fila=confirmacion,
+                        fila=ubicacion_cliente,
                         columna="rut")
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
         if confirmacion == "REALIZADO_FORM":
             confpos(
-                request.form.get("clienterut"),
+                (int(request.form.get("clienteidx")) + (params.RUTA_ACTUAL["filainicial"] - 1)),
                 "POSPUESTO", 
                 mensajes.CLIENTE_POSPUESTO.value, 
                 mensajes.CLIENTE_POSPUESTO_ERROR.value
@@ -235,14 +231,38 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["nombrePagina"] = "Observaciones para cliente pospuesto"
             paquete["confirmarposponer"] = "Posponer"
             paquete["propConfPos"] = "cliente_ruta_posponer"
-            paquete["clienteidx"] = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
+            paquete["clienteidx"] = confirmacion
+            ubicacion_cliente = (int(params.RUTA_ACTUAL["filainicial"]) - 1) + (int(confirmacion))
             with RutaActual() as rutaactual:
                 paquete["clientenombre"] = rutaactual.getDato(
-                        fila=confirmacion,
+                        fila=ubicacion_cliente,
                         columna="cliente")
                 paquete["clienterut"] = rutaactual.getDato(
-                        fila=confirmacion,
+                        fila=ubicacion_cliente,
                         columna="rut")
+
+    elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
+        datos = [
+            request.form.get("agregaclientemanual"),
+            request.form.get("rut"),
+            request.form.get("cliente"),
+            request.form.get("direccion"),
+            request.form.get("comuna"),
+            request.form.get("telefono"),
+            request.form.get("otro"),
+            request.form.get("contrato")
+        ]
+        with RutaActual() as ra:
+            fila_insersion = ra.busca_ubicacion(columna="fecha")
+            if ra.putDato(
+                datos=datos,
+                fila=fila_insersion,
+                columna="fecha"
+            ):
+                paquete["alerta"] = "Cliente MANUAL agregado a ruta"
+            else:
+                paquete["alerta"] = "ERROR al intentar ingresar cliente MANUAL"
+
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
@@ -259,7 +279,7 @@ def empaquetador_rutaactual(request: object) -> map:
             ]
         rutaDatos = ractualbd.listar(columnas=columnasMostrar, retornostr=True)
         indice = 1
-        rutaDatos["encabezados"].insert(0,"Idx")
+        rutaDatos["encabezados"].insert(0,"IDX")
         for fila in rutaDatos["datos"]:
             fila.insert(0,indice)
             indice += 1
