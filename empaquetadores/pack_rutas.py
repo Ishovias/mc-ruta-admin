@@ -244,7 +244,6 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:
             num_cltes = len(ra.listar(solodatos_list=True))
-            cimprime(numero_clientes=num_cltes, numero_insertar=(num_cltes + 2))
             datos = [
                 ra.getDato(identificador="rutaencurso"),
                 (num_cltes + 2),
