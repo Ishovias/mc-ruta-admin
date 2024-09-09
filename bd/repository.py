@@ -66,33 +66,45 @@ class bdmediclean:
             else:
                 filalibre += 1
 
-    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion=False) -> int:
-
-        fila = filainicio
-
-        for fila in range(filainicio, self.maxfilas, 1):
-            celda = self.hojabd.cell(row=fila,column=columna)
-            try:
-                valorcelda = str(celda.value) if exacto else str(celda.value).lower()
-                datob = dato if exacto else dato.lower()
-            except:
-                valorcelda = str(celda.value)
-                datob = dato
-            finally:
-                if filtropuntuacion:
-                    if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
-                        return fila
-                    else:
-                        fila += 1
-                else:
-                    if datob == valorcelda:
-                        return fila
-                    else:
-                        fila += 1
-        else:
-            fila = None
-        return fila
+    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False, criterio: str=None) -> int:
+        def buscador(fila: int) -> int:
+             fila = filainicio
+             for fila in range(filainicio, self.maxfilas, 1):
+                 celda = self.hojabd.cell(row=fila,column=columna)
+                 try:
+                     valorcelda = str(celda.value) if exacto else str(celda.value).lower()
+                     datob = dato if exacto else dato.lower()
+                 except:
+                     valorcelda = str(celda.value)
+                     datob = dato
+                 finally:
+                     if filtropuntuacion:
+                         if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
+                             return fila
+                         else:
+                             fila += 1
+                     else:
+                         if datob == valorcelda:
+                             return fila
+                         else:
+                             fila += 1
+             else:
+                 fila = None
+             return fila
         
+        if buscartodo:
+             while(fila <= self.maxfilas):
+                 filas = []
+                 hallado = buscador(fila)
+                 if fila:
+                      filas.append(hallado)
+                 else:
+                      break
+                 fila += 1
+               return filas
+        else:
+             return buscador(fila)
+
     def buscapartedato(self, filainicio:int, columna: int, dato: str) -> list:
 
         fila = filainicio

@@ -107,8 +107,13 @@ def empaquetador_clientes(request: object) -> map:
                 paquete["alerta"] = mensajes.CLIENTE_A_RUTA.value
             else:
                 paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
-
-    elif "darbaja" in request.form:
+    elif "bdretiros" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
+         clienterut = request.form.get("bdretiros")
+         with Clientes() as cl:
+              datos = cl.busca_retiros(clienterut)
+         
+         
+    elif "darbaja" in request.form and :
         dadobaja = False
         guardado = False
         
