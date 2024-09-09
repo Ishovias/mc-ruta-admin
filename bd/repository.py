@@ -66,7 +66,7 @@ class bdmediclean:
             else:
                 filalibre += 1
 
-    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False) -> int:
+    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion=False) -> int:
 
         fila = filainicio
 
@@ -79,10 +79,16 @@ class bdmediclean:
                 valorcelda = str(celda.value)
                 datob = dato
             finally:
-                if datob == valorcelda:
-                    return fila
+                if filtropuntuacion:
+                    if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
+                        return fila
+                    else:
+                        fila += 1
                 else:
-                    fila += 1
+                    if datob == valorcelda:
+                        return fila
+                    else:
+                        fila += 1
         else:
             fila = None
         return fila
