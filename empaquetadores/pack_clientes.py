@@ -1,6 +1,6 @@
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD
-from helpers import mensajes, privilegios, priv
+from helpers import mensajes, privilegios, priv, cimprime
 import params
 
 def new_cliente(**datos: dict) -> bool:
@@ -108,6 +108,7 @@ def empaquetador_clientes(request: object) -> map:
                 paquete["alerta"] = mensajes.CLIENTE_A_RUTA.value
             else:
                 paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
+
     elif "bdretiros" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         clienterut = request.form.get("bdretiros")
         with RutaBD() as rbd:
@@ -116,11 +117,18 @@ def empaquetador_clientes(request: object) -> map:
                 columna=params.RUTAS_BD["columnas"]["rut"],
                 dato=clienterut,
                 filtropuntuacion=True,
-                exacto=True,
                 buscartodo=True
                 )
-            for 
+            datos = []
+            for fila in filasdatos:
+                datos.append(
+                    rbd.getDato(
+                    fila=fila,
+                    columna="todas",
+                    retornostr=True
+                ))
         paquete["listaretiros"] = datos
+        cimprime(lista_retiros=datos, filas_datos=filasdatos)
         
     elif "darbaja" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         dadobaja = False
