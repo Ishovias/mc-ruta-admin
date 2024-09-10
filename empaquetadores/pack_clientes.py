@@ -1,6 +1,7 @@
 from handlers.clientes import Clientes
-from handlers.rutas import RutaActual
+from handlers.rutas import RutaActual, RutaBD
 from helpers import mensajes, privilegios, priv
+import params
 
 def new_cliente(**datos: dict) -> bool:
     """Funcion para agregar nuevos clientes a BD
@@ -108,12 +109,20 @@ def empaquetador_clientes(request: object) -> map:
             else:
                 paquete["alerta"] = mensajes.CLIENTE_EN_RUTA.value
     elif "bdretiros" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
-         clienterut = request.form.get("bdretiros")
-         with Clientes() as cl:
-              datos = cl.busca_retiros(clienterut)
-         
-         
-    elif "darbaja" in request.form and :
+        clienterut = request.form.get("bdretiros")
+        with RutaBD() as rbd:
+            filasdatos = rbd.buscadato(
+                filainicio=params.RUTAS_BD["filainicial"],
+                columna=params.RUTAS_BD["columnas"]["rut"],
+                dato=clienterut,
+                filtropuntuacion=True,
+                exacto=True,
+                buscartodo=True
+                )
+            for 
+        paquete["listaretiros"] = datos
+        
+    elif "darbaja" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         dadobaja = False
         guardado = False
         
