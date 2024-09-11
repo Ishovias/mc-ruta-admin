@@ -1,4 +1,5 @@
 from openpyxl import load_workbook
+from cimprime import cimprime
 import params
 
 class bdmediclean:
@@ -79,21 +80,18 @@ class bdmediclean:
                     datob = dato
                 finally:
                     if filtropuntuacion:
-                        if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
-                            return fila
-                        else:
-                            fila += 1
+                        datob = datob.replace(".","").replace(" ","").replace("-","")
+                        valorcelda = valorcelda.replace(".","").replace(" ","").replace("-","")
+                    if datob == valorcelda:
+                        return fila
                     else:
-                        if datob == valorcelda:
-                            return fila
-                        else:
-                            fila += 1
+                        fila += 1
             else:
                 fila = None
             return fila      
         if buscartodo:
+            filas = []
             while(filainicio <= self.maxfilas):
-                filas = []
                 hallado = buscador(filainicio)
                 if hallado:
                     filas.append(hallado)

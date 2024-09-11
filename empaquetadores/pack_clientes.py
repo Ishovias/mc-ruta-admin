@@ -124,11 +124,10 @@ def empaquetador_clientes(request: object) -> map:
                 datos.append(
                     rbd.getDato(
                     fila=fila,
-                    columna="todas",
+                    columnas=params.RUTAS_BD["columnas"]["todas"],
                     retornostr=True
                 ))
         paquete["listaretiros"] = datos
-        cimprime(lista_retiros=datos, filas_datos=filasdatos)
         
     elif "darbaja" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         dadobaja = False
