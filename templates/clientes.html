@@ -31,7 +31,7 @@
 
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
-{% if "listaclientes" in datos %}
+{% if "listaclientes" in datos and "listaretiros" not in datos %}
      {% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
           <table class="tbresultados">
           <thead>
@@ -66,7 +66,29 @@
      {% endif %}
      <br><hr><br>
 {% endif %}
+{% if "listaretiros" in datos %}
+     <label>Lista de retiros del cliente:</label><br>
+     <label>Rut: {{ datos.bdrut }}</label><br>
+     <label>Nombre: {{ datos.bdnombre }}</label><br>
+     <hr>
+     <table class="tbresultados">
+          <thead>
+               {% for dato in datos.listaretiros.encabezados %}
+               <th>{{ dato }}</th>
+               {% endfor %}
+          </thead>
+          <tbody>
+               {% for fila in datos.listaretiros.datos %}
+               <tr {% if fila.10 == "POSPUESTO" %} style="background-color: pink" {% endif %}>
+                    {% for dato in fila %}
+                    <td>{{ dato }}</td>
+                    {% endfor %}
+               </tr>
+               {% endfor %}
+          </tbody>
+     </table>
 
+{% endif %}
 {% if "modificacion" in datos %}
      <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <label for="nombre">Nombre:</label><br>

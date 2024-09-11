@@ -127,7 +127,14 @@ def empaquetador_clientes(request: object) -> map:
                     columnas=params.RUTAS_BD["columnas"]["todas"],
                     retornostr=True
                 ))
-        paquete["listaretiros"] = datos
+            encabezados = rbd.getDato(
+                 fila=params.RUTAS_BD["encabezados"],
+                 columnas=params.RUTAS_BD["columnas"]["todas"],
+                 retornostr=True
+                 )
+        paquete["listaretiros"] = {"encabezados":encabezados,"datos":datos}
+        paquete["bdrut"] = datos[0][2]
+        paquete["bdnombre"] = datos[0][3]
         
     elif "darbaja" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         dadobaja = False
