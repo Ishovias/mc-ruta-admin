@@ -40,7 +40,7 @@ class bdmediclean:
 
     def eliminarContenidos(self,cantidadfilas: int=100, filainicio: int=0) -> bool:
         if filainicio == 0:
-             filainicio = self.hoja_actual["filainicial"]
+            filainicio = self.hoja_actual["filainicial"]
         completado = False
         cantidadfilas += 100
 
@@ -66,44 +66,43 @@ class bdmediclean:
             else:
                 filalibre += 1
 
-    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False, criterio: str=None) -> int:
-        def buscador(fila: int) -> int:
-             fila = filainicio
-             for fila in range(filainicio, self.maxfilas, 1):
-                 celda = self.hojabd.cell(row=fila,column=columna)
-                 try:
-                     valorcelda = str(celda.value) if exacto else str(celda.value).lower()
-                     datob = dato if exacto else dato.lower()
-                 except:
-                     valorcelda = str(celda.value)
-                     datob = dato
-                 finally:
-                     if filtropuntuacion:
-                         if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
-                             return fila
-                         else:
-                             fila += 1
-                     else:
-                         if datob == valorcelda:
-                             return fila
-                         else:
-                             fila += 1
-             else:
-                 fila = None
-             return fila
-        
+    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False) -> int:
+        def buscador(filainicio: int) -> int:
+            fila = filainicio
+            for fila in range(filainicio, self.maxfilas, 1):
+                celda = self.hojabd.cell(row=fila,column=columna)
+                try:
+                    valorcelda = str(celda.value) if exacto else str(celda.value).lower()
+                    datob = dato if exacto else dato.lower()
+                except:
+                    valorcelda = str(celda.value)
+                    datob = dato
+                finally:
+                    if filtropuntuacion:
+                        if datob.replace(".","").replace(" ","") == valorcelda.replace(".","").replace(" ",""):
+                            return fila
+                        else:
+                            fila += 1
+                    else:
+                        if datob == valorcelda:
+                            return fila
+                        else:
+                            fila += 1
+            else:
+                fila = None
+            return fila      
         if buscartodo:
-             while(fila <= self.maxfilas):
-                 filas = []
-                 hallado = buscador(fila)
-                 if fila:
-                      filas.append(hallado)
-                 else:
-                      break
-                 fila += 1
-               return filas
+            while(filainicio <= self.maxfilas):
+                filas = []
+                hallado = buscador(filainicio)
+                if hallado:
+                    filas.append(hallado)
+                else:
+                    break
+                filainicio = hallado + 1
+            return filas
         else:
-             return buscador(fila)
+            return buscador(filainicio)
 
     def buscapartedato(self, filainicio:int, columna: int, dato: str) -> list:
 
@@ -287,7 +286,7 @@ class bdmediclean:
         else:
             row = fila
             if columna:
-               column = self.hoja_actual["columnas"][columna]
+                column = self.hoja_actual["columnas"][columna]
         
         if columnas:
             if row:
