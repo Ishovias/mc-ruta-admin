@@ -8,3 +8,5 @@ __pycache__/
 bd/mediclean_bd.xlsx
 bd/todo_bd.xlsx
 bd/ruta.xlsx
+empaquetadores/.pack_clientes.py.swp
+
