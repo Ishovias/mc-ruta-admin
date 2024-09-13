@@ -69,7 +69,7 @@ def empaquetador_clientes(request: object) -> map:
             telefono=request.form.get("telefono"),
             gps=request.form.get("gps"),
             otros=request.form.get("otros"),
-            diascontrato=request.form.get("diascontratocontrato")
+            diascontrato=request.form.get("contrato")
         ):
             nombre = request.form.get("nombre")
             paquete["listaclientes"] = buscarcliente(nombre)
