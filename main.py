@@ -101,5 +101,39 @@ def uploadRuta() -> render_template:
      datos = empaquetador_carga_ruta(request,app)
      return render_template(datos["pagina"], datos=datos)
 
+@app.route('/sublitote', methods=['GET','POST'])
+def sublitote() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('sublitote_login'))
+     datos = pack_st(request, coder)
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/sublitote/login', methods=['GET','POST'])
+def sublitote_login() -> render_template:
+     if request.method == 'POST':
+          if not sesion.getAutenticado(request):
+               datos = pack_st_login(coder, request)
+               if "pagina" in datos:
+                    return render_template(datos["pagina"], datos=datos)
+          return redirect(url_for('sublitote', aut=datos["aut"]))
+     else:
+          if sesion.getAutenticado(request):
+               return redirect(url_for('sublitote'))
+          return render_template("st_autorizador.html", datos={"alerta":"Debes iniciar sesion primeramente"})
+
+@app.route('/productos', methods=['GET','POST'])
+def productos() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('sublitote_login'))
+     datos = pack_st(request, coder)
+     return render_template(datos["pagina"], datos=datos)
+
+@app.route('/cotizacion', methods=['GET','POST'])
+def cotizacion() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('sublitote_login'))
+     datos = pack_st(request, coder)
+     return render_template(datos["pagina"], datos=datos)
+
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')
