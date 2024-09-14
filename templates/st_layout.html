@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="shorcut icon" href=""> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <title>Gestor de taller SUBLITOTE</title>
+    <div class="encabezado">
+        <a href="{{ url_for('sublitote', aut=datos.aut) }}"><img src="{{ url_for('static', filename='img/logoSublitote.jpg') }}"></a>
+        <div class="titulosEncabezados">
+            {% block encabezado %}
+            {% endblock %}
+        </div>
+    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+    <nav class="botoneraMenu">
+        <form method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+            <button class="botonanimado" id="produtos" name="productos" value="productos">Productos</button>
+        </form>
+        <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
+            <button class="botonanimado" id="cotizacion" name="cotizacion" value="cotizacion">Cotizacion</button>
+        </form>
+    </nav>
+</head>
+<body>
+    <div class="body_a">
+        {% block body_a %}
+        {% endblock %}
+    </div>
+    <div class="body_b">
+        {% block body_b %}
+        {% endblock %}
+    </div>
+    {% if "alerta" in datos %}
+        <script>alerta("{{ datos.alerta }}")</script>
+    {% endif %}
+</body>
+</html>
