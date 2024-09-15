@@ -4,7 +4,7 @@ from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_todo import empaquetador_todo
-from empaquetadores.pack_st_inicio import pack_st_login
+from empaquetadores.pack_st_inicio import pack_st_login, pack_st_index
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
@@ -102,13 +102,6 @@ def uploadRuta() -> render_template:
      datos = empaquetador_carga_ruta(request,app)
      return render_template(datos["pagina"], datos=datos)
 
-@app.route('/sublitote', methods=['GET','POST'])
-def sublitote() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for('sublitote_login'))
-     datos = pack_st(request, coder)
-     return render_template(datos["pagina"], datos=datos)
-
 @app.route('/sublitote/login', methods=['GET','POST'])
 def sublitote_login() -> render_template:
      if request.method == 'POST':
@@ -122,11 +115,18 @@ def sublitote_login() -> render_template:
                return redirect(url_for('sublitote'))
           return render_template("st_autorizador.html", datos={"alerta":"Debes iniciar sesion primeramente"})
 
+@app.route('/sublitote', methods=['GET','POST'])
+def sublitote() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('sublitote_login'))
+     datos = pack_st_index(request)
+     return render_template(datos["pagina"], datos=datos)
+
 @app.route('/productos', methods=['GET','POST'])
 def productos() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('sublitote_login'))
-     datos = pack_st(request, coder)
+     datos = pack_st(request)
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/cotizacion', methods=['GET','POST'])

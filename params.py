@@ -5,6 +5,7 @@
 LIBRODATOS = "./bd/mediclean_bd.xlsx"
 LIBROTODO = "./bd/todo_bd.xlsx"
 LIBRORUTA= "./bd/ruta.xlsx"
+LIBROST = "./bd/sublitote_bd.xlsx"
 RUTA_IMPORTACION = "./ruta_import"
 
 # ---------- RUTAS DE PRODUCCION --------------
@@ -131,3 +132,34 @@ TODO = {
   }, 
   "encabezados":1
 }
+
+ST_PRODUCTOS = {
+  "nombrehoja":"st_productos", 
+  "filainicial":3,
+  "columnas":{
+    "codigo":1,
+    "descripcion":2,
+    "preciocosto":3,
+    "precioventa":4,
+    "existencias":5,
+    "observaciones":6,
+    "existencias":[1,2,3,4,5,6]
+  }, 
+  "encabezados":2
+} 
+
+ST_COTIZACION = {
+  "nombrehoja":"st_productos", 
+  "filainicial":3,
+  "numcotizacion":{"fila":1,"columna":2},
+  "columnas":{
+    "item":1,
+    "codigo":2,
+    "descripcion":3,
+    "costounitario":4,
+    "cantidad":5,
+    "subtotal":6,
+    "existencias":[1,2,3,4,5,6]
+  }, 
+  "encabezados":2
+} 
