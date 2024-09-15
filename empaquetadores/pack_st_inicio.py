@@ -2,7 +2,7 @@ from helpers import SessionSingleton
 import params
 
 
-def pack_st_login(request: object) -> map:
+def pack_st_login(coder: object, request: object) -> map:
      paquete = {}
      sesion = SessionSingleton()
      resultado = sesion.iniciarSesion(coder,request)

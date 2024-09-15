@@ -4,6 +4,7 @@ from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_todo import empaquetador_todo
+from empaquetadores.pack_st_inicio import pack_st_login
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
