@@ -187,3 +187,10 @@ def cimprime(**kwargs) -> None:
           if llave != "titulo":
                print(f"{llave}: {kwargs[llave]}")
      print("--------------------------\n")
+
+def constructor_paquete(request: object, pagina: str, nombrePagina: str=None) -> map:
+     paquete = {"pagina":pagina,"aut":request.args.get("aut"), "nombrePagina":nombrePagina}
+     privilegio = privilegios(request, paquete, retornaUser=True)
+     paquete = privilegio["paquete"]
+     paquete["usuario"] = privilegio["usuario"]
+     return paquete

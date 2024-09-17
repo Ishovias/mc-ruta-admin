@@ -4,82 +4,82 @@ import params
 
 class SublitoteProductos(bdmediclean):
 
-    def __init__(self) -> None:
-        super().__init__(
-             hoja=params.ST_PRODUCTOS,
-             otrolibro=params.LIBROST
-             )
+     def __init__(self) -> None:
+          super().__init__(
+               hoja=params.ST_PRODUCTOS,
+               otrolibro=params.LIBROST
+               )
 
-    def listar_productos(self) -> map:
-        resultados = super().listar()
-        idx = 1
-        for fila in resultados["datos"]:
-            fila.insert(0,idx)
-            idx += 1
-        return resultados
+     def listar_productos(self) -> map:
+          resultados = super().listar()
+          idx = 1
+          for fila in resultados["datos"]:
+               fila.insert(0,idx)
+               idx += 1
+          return resultados
 
-    def nuevo_codigo(self, retornostr: bool=False) -> int:
-        ultimo_codigo = super().getDato(
-            fila=self.maxfilas,
-            columna=self.hoja_actual["columnas"]["codigo"]
-        )
-        if ultimo_codigo:
-            codigo = int(ultimo_codigo) + 1
-        else:
-            codigo = 1000
-        return codigo
+     def nuevo_codigo(self) -> int:
+          ultimo_codigo = super().getDato(
+               fila=self.maxfilas,
+               columna=self.hoja_actual["columnas"]["codigo"]
+          )
+          if ultimo_codigo:
+               codigo = int(ultimo_codigo) + 1
+          else:
+               codigo = 1000
+          return codigo
 
-    def nuevo_producto(self, retornaFila: bool=False, retornaCodigo: bool=False, **data) -> bool:
-        existencia = super().busca_ubicacion(data["producto"],"producto")
-        if existencia:
-            return False
-        fila = super().busca_ubicacion(columna="codigo")
-        codigo = self.nuevo_codigo()
-        data["codigo"] = codigo
-        for dato in data.keys():
-            super().putDato(
-                 dato=data[dato], 
-                 fila=fila, 
-                 columna=str(dato)
-                 )
-        if retornaFila and retornaCodigo:
-            return [fila, codigo]
-        elif retornaFila:
-            return fila
-        elif retornaFila:
-            return codigo
-        return True
-        
-    def modifica_producto(self, codigo: str, **data) -> bool:
-        fila = super().busca_ubicacion(codigo,"codigo")
-        if not fila:
-             print("ERROR METODO MODIFICA_PRODUCTO: No existe codigo indicado")
-             return False
-        try:
-            for dato in data.keys():
-            super().putDato(
-                 dato=data[dato], 
-                 fila=fila, 
-                 columna=str(dato)
-                 )
-        except Exception e:
-            print(f"ERROR METODO MODIFICA_PRODUCTO: {e}")
-            return False
-        else:
-            return True
-            
+     def nuevo_producto(self, retornaFila: bool=False, retornaCodigo: bool=False, **data) -> bool:
+          existencia = super().busca_ubicacion(data["producto"],"producto")
+          if existencia:
+               return False
+          fila = super().busca_ubicacion(columna="codigo")
+          codigo = self.nuevo_codigo()
+          data["codigo"] = codigo
+          for dato in data.keys():
+               super().putDato(
+                    dato=data[dato], 
+                    fila=fila, 
+                    columna=str(dato)
+                    )
+          if retornaFila and retornaCodigo:
+               return [fila, codigo]
+          elif retornaFila:
+               return fila
+          elif retornaFila:
+               return codigo
+          return True
+          
+     def modifica_producto(self, codigo: str, **data) -> bool:
+          fila = super().busca_ubicacion(codigo,"codigo")
+          if not fila:
+               print("ERROR METODO MODIFICA_PRODUCTO: No existe codigo indicado")
+               return False
+          try:
+               for dato in data.keys():
+                    super().putDato(
+                         dato=data[dato], 
+                         fila=fila, 
+                         columna=str(dato)
+                         )
+          except Exception as e:
+               print(f"ERROR METODO MODIFICA_PRODUCTO: {e}")
+               return False
+          else:
+               return True
+          
      def elimina_producto(self, codigo: str) -> bool:
-        fila = super().busca_ubicacion(codigo,"codigo")
-        if not fila:
-             print("ERROR METODO ELIMINA_PRODUCTO: No existe codigo indicado")
-             return False
-        try:
-             super().eliminar(fila)
-        except Exception e:
-            print(f"ERROR METODO MODIFICA_PRODUCTO: {e}")
-            return False
-        else:
-            return True
+          fila = super().busca_ubicacion(codigo,"codigo")
+          if not fila:
+               print("ERROR METODO ELIMINA_PRODUCTO: No existe codigo indicado")
+               return False
+          try:
+               super().eliminar(fila)
+          except Exception as e:
+               print(f"ERROR METODO MODIFICA_PRODUCTO: {e}")
+               return False
+          else:
+               return True
 
 class SublitoteCotizacion(bdmediclean):
      
@@ -138,8 +138,8 @@ class SublitoteCotizacionesBD(bdmediclean):
                          datosremanentes = super().getDato(fila=f,columna="idcotizacion")
                          if str(datosremanentes) == str(idcotizacion):
                               super().eliminar(f)
-          except Exception e:
-               print(f"ERROR METODO GUARDAR_COTIZACION: Error al intentar guardar datos")
+          except Exception as e:
+               print(f"ERROR METODO GUARDAR_COTIZACION: Error al intentar guardar datos {e}")
                return False
           else:
                return True

@@ -1,6 +1,4 @@
-from helpers import SessionSingleton, privilegios
-import params
-
+from helpers import SessionSingleton, privilegios, constructor_paquete
 
 def pack_st_login(coder: object, request: object) -> map:
      paquete = {}
@@ -21,9 +19,9 @@ def pack_st_login(coder: object, request: object) -> map:
      return paquete
 
 def pack_st_index(request: object) -> map:
-     paquete = {"pagina":"st_index.html","aut":request.args.get("aut"), "nombrePagina":"Bienvenid@"}
-     privilegio = privilegios(request, paquete, retornaUser=True)
-     paquete = privilegio["paquete"]
-     paquete["usuario"] = privilegio["usuario"]
-
-     return paquete
+     return constructor_paquete(
+          request=request,
+          pagina="st_index.html",
+          nombrePagina="Bienvenid@"
+     )
+     
