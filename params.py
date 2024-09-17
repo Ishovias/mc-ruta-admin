@@ -138,7 +138,7 @@ ST_PRODUCTOS = {
   "filainicial":3,
   "columnas":{
     "codigo":1,
-    "descripcion":2,
+    "producto":2,
     "preciocosto":3,
     "precioventa":4,
     "existencias":5,
@@ -149,7 +149,7 @@ ST_PRODUCTOS = {
 } 
 
 ST_COTIZACION = {
-  "nombrehoja":"st_productos", 
+  "nombrehoja":"st_cotizacion", 
   "filainicial":3,
   "numcotizacion":{"fila":1,"columna":2},
   "columnas":{
@@ -160,6 +160,22 @@ ST_COTIZACION = {
     "cantidad":5,
     "subtotal":6,
     "existencias":[1,2,3,4,5,6]
+  }, 
+  "encabezados":2
+} 
+
+ST_BD_COTIZACIONES = {
+  "nombrehoja":"st_bd_cotizaciones", 
+  "filainicial":3,
+  "columnas":{
+    "idcotizacion":1,
+    "codigo":2,
+    "producto":3,
+    "preciocosto":4,
+    "precioventa":5,
+    "existencias":6,
+    "observaciones":7,
+    "existencias":[1,2,3,4,5,6,7]
   }, 
   "encabezados":2
 } 
