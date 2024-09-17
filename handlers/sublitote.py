@@ -6,15 +6,24 @@ class SublitoteProductos(bdmediclean):
     def __init__(self) -> None:
         super().__init__(params.ST_PRODUCTOS)
 
-    def listar_productos(self, nombre: str) -> map:
-        filainicio = self.hoja_actual["filainicial"]
-        columna = self.hoja_actual["columnas"]["codigo"]
-        col = self.hoja_actual["columnas"]["todas"]
+    def listar_productos(self) -> map:
         resultados = super().listar()
+        idx = 1
         for fila in resultados["datos"]:
-            data = super().extraefila(fila=fila,columnas=col)
-            resultados["datos"].append(data)
+            fila.insert(0,idx)
+            idx += 1
         return resultados
+
+    def nuevo_codigo(self, retornostr: bool=False) -> int:
+        ultimo_codigo = super().getDato(
+            fila=self.maxfilas,
+            columna=self.hoja_actual["columnas"]["codigo"]
+        )
+        if ultimo_codigo:
+            codigo = int(ultimo_codigo) + 1
+        else:
+            codigo = 1000
+        return codigo
 
     def nuevo_cliente(self, retornoFila: bool=False, **data) -> bool:
         existencia = super().busca_ubicacion(dato=data["cliente"])
