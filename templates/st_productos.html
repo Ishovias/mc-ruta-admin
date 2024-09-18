@@ -1,0 +1,31 @@
+{% extends 'st_layout.html' %}
+
+{% block encabezado %}
+        <h1>SUBLITOTE</h1>
+        <h2>Administrador de taller</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<table class="tbresultados">
+        <thead>
+                {% for encabezado in datos.listaproductos.encabezados %}
+                        <th>{{ encabezado }}</th>
+                {% endfor %}
+        </thead>
+        <tbody>
+                {% for producto in datos.listaproductos.datos %}
+                        <tr>
+                                {% for dato in producto %}
+                                        <td>{{ dato }}</td>
+                                {% endfor %}
+                        </tr>
+                {% endfor %}
+        </tbody>
+
+</table>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}

@@ -143,7 +143,7 @@ ST_PRODUCTOS = {
     "precioventa":4,
     "existencias":5,
     "observaciones":6,
-    "existencias":[1,2,3,4,5,6]
+    "todas":[1,2,3,4,5,6]
   }, 
   "encabezados":2
 } 
@@ -159,7 +159,7 @@ ST_COTIZACION = {
     "costounitario":4,
     "cantidad":5,
     "subtotal":6,
-    "existencias":[1,2,3,4,5,6]
+    "todas":[1,2,3,4,5,6]
   }, 
   "encabezados":2
 } 
@@ -175,7 +175,7 @@ ST_BD_COTIZACIONES = {
     "precioventa":5,
     "existencias":6,
     "observaciones":7,
-    "existencias":[1,2,3,4,5,6,7]
+    "todas":[1,2,3,4,5,6,7]
   }, 
   "encabezados":2
 } 
