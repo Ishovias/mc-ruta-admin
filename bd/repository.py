@@ -102,10 +102,15 @@ class bdmediclean:
         else:
             return buscador(filainicio)
 
-    def buscapartedato(self, filainicio:int, columna: int, dato: str) -> list:
+    def buscapartedato(self, filainicio: int=None, columna: int=None, dato: str=None) -> list:
 
-        fila = filainicio
-        
+        if not filainicio:
+            fila = self.hoja_actual["filainicial"]
+        if not columna:
+            columna = 1
+        if not dato:
+            raise ValueError("No se ha ingresado un dato a buscar")
+
         filas = []
         
         for fila in range(filainicio, self.maxfilas, 1):

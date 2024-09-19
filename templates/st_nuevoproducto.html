@@ -1,0 +1,21 @@
+{% extends 'st_layout.html' %}
+
+{% block encabezado %}
+        <h1>SUBLITOTE</h1>
+        <h2>Administrador de taller</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<h3>Formulario nuevo producto</h3>
+<form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+        <label for="codigo">Codigo:</label>
+        <input type="text" name="codigo" value="{{ datos.codigoNuevo }}">
+</form>
+
+
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}

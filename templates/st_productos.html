@@ -7,6 +7,16 @@
 
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
+<form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+        <label for="busqueda">Buscar producto:</label>
+        <input type="text" name="busqueda" placeholder="ej.: carcasa celular">
+        <button name="buscaproducto">Buscar</button>
+        <button name="listartodo">Listar todos</button>
+        <button name="nuevoproducto">Nuevo producto</button>
+</form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
 <table class="tbresultados">
         <thead>
                 {% for encabezado in datos.listaproductos.encabezados %}
@@ -24,8 +34,4 @@
         </tbody>
 
 </table>
-{% endblock %}
-<!-- -------------------------BODY B------------------------------- -->
-{% block body_b %}
-
 {% endblock %}
