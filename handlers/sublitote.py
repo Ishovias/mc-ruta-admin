@@ -1,6 +1,7 @@
 from bd.repository import bdmediclean
 from datetime import datetime
 import params
+from cimprime import cimprime
 
 class SublitoteProductos(bdmediclean):
 
@@ -20,8 +21,8 @@ class SublitoteProductos(bdmediclean):
 
      def nuevo_codigo(self) -> int:
           ultimo_codigo = super().getDato(
-               fila=self.maxfilas,
-               columna=self.hoja_actual["columnas"]["codigo"]
+               fila=self.maxfilas - 3, #numero de ajuste por metodo repository que suma dos a self.maxfilas
+               columna="codigo"
           )
           if ultimo_codigo:
                codigo = int(ultimo_codigo) + 1
@@ -29,12 +30,12 @@ class SublitoteProductos(bdmediclean):
                codigo = 1000
           return codigo
 
-     def nuevo_producto(self, retornaFila: bool=False, retornaCodigo: bool=False, **data) -> bool:
+     def nuevo_producto(self, codigo: str=None, retornaFila: bool=False, retornaCodigo: bool=False, **data) -> bool:
           existencia = super().busca_ubicacion(data["producto"],"producto")
           if existencia:
                return False
           fila = super().busca_ubicacion(columna="codigo")
-          codigo = self.nuevo_codigo()
+          codigo = codigo if codigo else self.nuevo_codigo()
           data["codigo"] = codigo
           for dato in data.keys():
                super().putDato(
@@ -43,7 +44,7 @@ class SublitoteProductos(bdmediclean):
                     columna=str(dato)
                     )
           if retornaFila and retornaCodigo:
-               return [fila, codigo]
+               return {"ubicacion":fila,"codigo":codigo}
           elif retornaFila:
                return fila
           elif retornaFila:

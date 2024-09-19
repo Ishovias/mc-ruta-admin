@@ -10,7 +10,19 @@
 <h3>Formulario nuevo producto</h3>
 <form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
         <label for="codigo">Codigo:</label>
-        <input type="text" name="codigo" value="{{ datos.codigoNuevo }}">
+        <input type="text" name="codigo" value="{{ datos.codigoNuevo }}" required>
+        <label for="producto">Producto:</label>
+        <input type="text" name="producto" placeholder="Descripcion del producto" required="Dale el nombre al producto">
+        <label for="preciocosto">Precio costo:</label>
+        <input type="text" name="preciocosto" placeholder="Costo del producto" required="Ingresa el monto del costo de compra de materia prima">
+        <label for="precioventa">Precio venta:</label>
+        <input type="text" name="precioventa" placeholder="Precio final de venta" required="Debes definir un precio de venta">
+        <label for="existencias">Existencias:</label>
+        <input type="text" name="existencias" placeholder="Existencias en taller" required="Debes ingresar existencias">
+        <label for="observaciones">Observaciones:</label>
+        <input type="text" name="observaciones" placeholder="Observaciones del producto (opcional)">
+        <br><br>
+        <button type="submit" name="guardaproducto">Guardar producto</button>
 </form>
 
 

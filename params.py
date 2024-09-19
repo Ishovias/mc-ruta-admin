@@ -155,10 +155,10 @@ ST_COTIZACION = {
   "columnas":{
     "item":1,
     "codigo":2,
-    "descripcion":3,
-    "costounitario":4,
+    "producto":3,
+    "preciounitario":4,
     "cantidad":5,
-    "subtotal":6,
+    "precio":6,
     "todas":[1,2,3,4,5,6]
   }, 
   "encabezados":2
@@ -169,12 +169,12 @@ ST_BD_COTIZACIONES = {
   "filainicial":3,
   "columnas":{
     "idcotizacion":1,
-    "codigo":2,
-    "producto":3,
-    "preciocosto":4,
-    "precioventa":5,
-    "existencias":6,
-    "observaciones":7,
+    "item":2,
+    "codigo":3,
+    "producto":4,
+    "preciounitario":5,
+    "cantidad":6,
+    "precio":7,
     "todas":[1,2,3,4,5,6,7]
   }, 
   "encabezados":2
