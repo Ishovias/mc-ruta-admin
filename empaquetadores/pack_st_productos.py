@@ -12,17 +12,29 @@ def pack_st_productos(request: object) -> map:
     
     if "buscaproducto" in request.form:
         datoBuscado = request.form.get("busqueda")
+        filainicial = params.ST_PRODUCTOS["filainicial"]
         with SublitoteProductos() as stp:
-            ubicacion = stp.buscapartedato(
-                columna=params.ST_PRODUCTOS["columnas"]["producto"],
-                dato=datoBuscado
-            )
-            paquete["listaproductos"] = stp.getDato(
-                fila=ubicacion,
-                columna="todas",
-                retornostr=True
-            )
-    
+            listadoproductos = {
+                "encabezados":stp.getDato(
+                    fila=params.ST_PRODUCTOS["encabezados"],
+                    columnas=params.ST_PRODUCTOS["columnas"]["todas"]
+                ),
+                "datos":[]
+            }
+                ubicaciones = stp.buscapartedato(
+                    filainicio=filainicial,
+                    columna=params.ST_PRODUCTOS["columnas"]["producto"],
+                    dato=datoBuscado
+                )
+                datosproductos = stp.getDato(
+                    fila=ubicacion,
+                    columnas=params.ST_PRODUCTOS["columnas"]["todas"],
+                    retornostr=True
+                )
+                listadoproductos["datos"].append(datosproductos)
+                filainicial = ubicacion + 1
+        paquete["listaproductos"] = listadoproductos
+
     if "nuevoproducto" in request.form:
         with SublitoteProductos() as stp:
             paquete["codigoNuevo"] = stp.nuevo_codigo()

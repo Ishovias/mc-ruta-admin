@@ -105,7 +105,7 @@ class bdmediclean:
     def buscapartedato(self, filainicio: int=None, columna: int=None, dato: str=None) -> list:
 
         if not filainicio:
-            fila = self.hoja_actual["filainicial"]
+            filainicio = self.hoja_actual["filainicial"]
         if not columna:
             columna = 1
         if not dato:

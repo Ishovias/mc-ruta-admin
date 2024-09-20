@@ -24,7 +24,7 @@ class SublitoteProductos(bdmediclean):
                fila=self.maxfilas - 3, #numero de ajuste por metodo repository que suma dos a self.maxfilas
                columna="codigo"
           )
-          if ultimo_codigo:
+          if ultimo_codigo and ultimo_codigo != "CODIGO":
                codigo = int(ultimo_codigo) + 1
           else:
                codigo = 1000
