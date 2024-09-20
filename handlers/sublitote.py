@@ -51,7 +51,7 @@ class SublitoteProductos(bdmediclean):
                return codigo
           return True
           
-     def modifica_producto(self, codigo: str, **data) -> bool:
+     def modifica_producto(self, codigo: str, retornaFila: bool=False, **data) -> bool:
           fila = super().busca_ubicacion(codigo,"codigo")
           if not fila:
                print("ERROR METODO MODIFICA_PRODUCTO: No existe codigo indicado")
@@ -67,6 +67,8 @@ class SublitoteProductos(bdmediclean):
                print(f"ERROR METODO MODIFICA_PRODUCTO: {e}")
                return False
           else:
+               if retornaFila:
+                    return fila
                return True
           
      def elimina_producto(self, codigo: str) -> bool:

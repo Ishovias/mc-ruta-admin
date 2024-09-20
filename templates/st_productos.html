@@ -9,9 +9,12 @@
 {% block body_a %}
 <form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
         <label for="busqueda">Buscar producto:</label>
-        <input type="text" name="busqueda" placeholder="ej.: carcasa celular">
+        <input type="text" name="busqueda" placeholder="ej.: carcasa celular"> 
+        <br>
         <button name="buscaproducto">Buscar</button>
+        <br>
         <button name="listartodo">Listar todos</button>
+        <br>
         <button name="nuevoproducto">Nuevo producto</button>
 </form>
 {% endblock %}
@@ -19,17 +22,31 @@
 {% block body_b %}
 <table class="tbresultados">
         <thead>
+                <th>COTIZAR</th>
                 <th>ITEM</th>
                 {% for encabezado in datos.listaproductos.encabezados %}
                         <th>{{ encabezado }}</th>
                 {% endfor %}
+                <th>ACCIONES</th>
         </thead>
         <tbody>
                 {% for producto in datos.listaproductos.datos %}
                         <tr>
+                                
+                                <td>
+                                     <form method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+                                          <button name="cotizar" value="{{ producto.1 }}" style="height: 60px;">AÑADIR</button>
+                                     </form>
+                                </td>
                                 {% for dato in producto %}
                                         <td>{{ dato }}</td>
                                 {% endfor %}
+                                <td>
+                                     <form method="post" action="{{ url_for('productos', aut=datos.aut) }}" style="display: flex;">
+                                          <button name="modificarproducto" value="{{ producto.1 }}" style="height: 50px;">Modificar</button>
+                                          <button name="eliminarproducto" value="{{ producto.1 }}" style="height: 50px;">Eliminar</button>
+                                     </form>
+                                </td>
                         </tr>
                 {% endfor %}
         </tbody>
