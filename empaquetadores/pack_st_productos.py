@@ -113,28 +113,46 @@ def pack_st_productos(request: object) -> map:
             paquete["listaproductos"] = stp.listar_productos()
 
     if "cotizar" in request.form:
-        codigo = request.form.get("cotizar")
-        with SublitoteCotizacion() as stc:
-            nuevacotizacion = False
-            if not stc.cotizacion_existente():
-                numcotizacion = stc.nueva_cotizacion(retornoid=True)
-                nuevacotizacion = True
-            with SublitoteProductos() as stp:
-                ubicacionProducto = stp.busca_ubicacion(
-                    dato=codigo,
-                    columna="codigo"
-                    )
-                producto = stp.getDato(
-                    fila=ubicacionProducto,
-                    columna=params.ST_PRODUCTOS["columnas"]["todas"]
-                    )
-            producto.insert(0,stc.id_item())
-            if stc.putDato(datos=producto,columna="item"):
-                paquete["alerta"] = f"Producto agregado a nueva cotizacion ({numcotizacion})" if nuevacotizacion else "Producto agregado a cotizacion actual"
-            else:
-                paquete["alerta"] = "Error al intentar ingresar producto en cotizacion"
-            paquete["pagina"] = "st_cotizacion.html"
-
+        codigo = request.form.get("codigo") if request.form.get("codigo") else request.form.get("cotizar")
+        producto = []
+        with SublitoteProductos() as stp:
+            ubicacionProducto = stp.busca_ubicacion(
+                dato=codigo,
+                columna="codigo"
+                )
+            producto = stp.getDato(
+                fila=ubicacionProducto,
+                columnas=[
+                     params.ST_PRODUCTOS["columnas"]["codigo"],
+                     params.ST_PRODUCTOS["columnas"]["producto"],
+                     params.ST_PRODUCTOS["columnas"]["precioventa"],
+                     ]
+                )
+        cimprime(codigo=codigo,producto=producto)
+        if request.form.get("cotizar") == "cotizarenviar":
+             precioventa = request.form.get("precioventa")
+             cantidad = request.form.get("cantidad")
+             precio = request.form.get("precio")
+             with SublitoteCotizacion() as stc:
+                 nuevacotizacion = False
+                 if not stc.cotizacion_existente():
+                     numcotizacion = stc.nueva_cotizacion(retornoid=True)
+                     nuevacotizacion = True
+                 filaCotizacion = stc.busca_ubicacion(columna="item")
+                 producto[2] = precioventa
+                 producto.append(cantidad)
+                 producto.append(precio)
+                 producto.insert(0,stc.id_item())
+                 if stc.putDato(datos=producto,fila=filaCotizacion,columna="item"):
+                     paquete["alerta"] = f"Producto agregado a nueva cotizacion ({numcotizacion})" if nuevacotizacion else "Producto agregado a cotizacion actual"
+                 else:
+                     paquete["alerta"] = "Error al intentar ingresar producto en cotizacion"
+        else:
+             paquete["pagina"] = "st_cotizardetalle.html"
+             paquete["codigo"] = codigo
+             paquete["producto"] = producto[1]
+             paquete["precioventa"] = producto[2]
+             
     return paquete
 
 def pack_st_cotizacion(request: object) -> map:
