@@ -1,0 +1,41 @@
+{% extends 'st_layout.html' %}
+{% block encabezado %}
+        <h1>SUBLITOTE</h1>
+        <h2>Administrador de taller</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<h2>Cotizacion:{% if not datos.numcotizacion %}
+        -- sin cotizacion vigente --
+        <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
+                <button name="creacotizacion">Crea cotizacion</button>
+        </form>
+        {% else %}
+        {{ datos.numcotizacion }}
+        <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
+                <button name="eliminacotizacion">Elimina cotizacion</button>
+                <button name="guardacotizacion">Guarda cotizacion</button>
+        </form>
+        {% endif %}</h2>
+<table class="tbresultados">
+        <thead>
+                {% for encabezado in datos.listacotizacion.encabezados %}
+                        <th>{{ encabezado }}</th>
+                {% endfor %}
+        </thead>
+        <tbody>
+                {% for producto in datos.listacotizacion.datos %}
+                        <tr>
+                                {% for dato in producto %}
+                                        <td>{{ dato }}</td>
+                                {% endfor %}
+                        </tr>
+                {% endfor %}
+        </tbody>
+
+</table>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}
