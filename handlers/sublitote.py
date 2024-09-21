@@ -100,8 +100,7 @@ class SublitoteCotizacion(bdmediclean):
           return False
      
      def idcotizacion(self) -> str:
-          nuevoid = format(datetime.now()).replace(" ","").replace(".","").replace(":","").replace("-","")
-          return 
+          return format(datetime.now()).replace(" ","").replace(".","").replace(":","").replace("-","")
           
      def nueva_cotizacion(self, retornoid: bool=False) -> bool:
           if self.cotizacion_existente():
@@ -114,6 +113,13 @@ class SublitoteCotizacion(bdmediclean):
                return True
           return False
      
+     def id_item(self) -> int:
+          idactual_fila = super().busca_ubicacion(columna="item") - 1
+          idactual = super().getDato(fila=idactual_fila,columna="item")
+          if idactual == "ITEM":
+               return 1
+          return int(idactual) + 1
+
 class SublitoteCotizacionesBD(bdmediclean):
      
      def __init__(self) -> None:

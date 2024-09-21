@@ -3,7 +3,7 @@ from coder.codexpy2 import codexpy2
 from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
-from empaquetadores.pack_st_productos import pack_st_productos
+from empaquetadores.pack_st_productos import pack_st_cotizacion, pack_st_productos
 from empaquetadores.pack_todo import empaquetador_todo
 from empaquetadores.pack_st_inicio import pack_st_login, pack_st_index
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
@@ -134,8 +134,8 @@ def productos() -> render_template:
 def cotizacion() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('sublitote_login'))
-     #datos = pack_st(request, coder)
-     return "Funcionando ruta!... falta empaque" #render_template(datos["pagina"], datos=datos)
+     datos = pack_st_cotizacion(request)
+     return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':
      app.run(debug=True,host='0.0.0.0')

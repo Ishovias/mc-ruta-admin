@@ -34,18 +34,18 @@
                         <tr>
                                 
                                 <td>
-                                     <form method="post" action="{{ url_for('productos', aut=datos.aut) }}">
-                                          <button name="cotizar" value="{{ producto.1 }}" style="height: 60px;">AÑADIR</button>
-                                     </form>
+                                        <form method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+                                                <button name="cotizar" value="{{ producto.1 }}" style="height: 60px;">AÑADIR</button>
+                                        </form>
                                 </td>
                                 {% for dato in producto %}
                                         <td>{{ dato }}</td>
                                 {% endfor %}
                                 <td>
-                                     <form method="post" action="{{ url_for('productos', aut=datos.aut) }}" style="display: flex;">
-                                          <button name="modificarproducto" value="{{ producto.1 }}" style="height: 50px;">Modificar</button>
-                                          <button name="eliminarproducto" value="{{ producto.1 }}" style="height: 50px;">Eliminar</button>
-                                     </form>
+                                        <form method="post" action="{{ url_for('productos', aut=datos.aut) }}" style="display: flex;">
+                                                <button name="modificarproducto" value="{{ producto.1 }}" style="height: 50px;">Modificar</button>
+                                                <button name="eliminarproducto" value="{{ producto.1 }}" style="height: 50px;">Eliminar</button>
+                                        </form>
                                 </td>
                         </tr>
                 {% endfor %}
