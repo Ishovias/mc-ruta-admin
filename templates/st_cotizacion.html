@@ -29,6 +29,11 @@
                                 {% for dato in producto %}
                                         <td>{{ dato }}</td>
                                 {% endfor %}
+                                <td>
+                                     <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
+                                          <button name="eliminaitem" value="{{ producto.0 }}">Eliminar</button>
+                                     </form>
+                                </td>
                         </tr>
                 {% endfor %}
         </tbody>

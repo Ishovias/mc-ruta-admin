@@ -113,7 +113,15 @@ class SublitoteCotizacion(bdmediclean):
                return True
           return False
      
-     def id_item(self) -> int:
+     def id_item(self,reasignartodo: bool=False) -> int:
+          if reasignartodo:
+               item = 0
+               for fila in range(self.hoja_actual["filainicial"], self.maxfilas, 1):
+                    if super().getDato(fila=fila,columna="codigo"):
+                         item += 1
+                         super().putDato(dato=str(item),fila=fila,columna="item")
+                    else:
+                         return None
           idactual_fila = super().busca_ubicacion(columna="item") - 1
           idactual = super().getDato(fila=idactual_fila,columna="item")
           if idactual == "ITEM":

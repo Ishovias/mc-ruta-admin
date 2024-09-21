@@ -177,5 +177,13 @@ def pack_st_cotizacion(request: object) -> map:
             paquete["alerta"] = "Cotizacion eliminada"
             paquete["listacotizacion"] = stc.listar()
             paquete["numcotizacion"] = stc.getDato(identificador="numcotizacion")
-            
+     
+    if "eliminaitem" in request.form:
+          item = request.form.get("eliminaitem")
+          with SublitoteCotizacion() as stc:
+               ubicacion = stc.busca_ubicacion(dato=item,columna="item")
+               stc.eliminar(ubicacion)
+               stc.id_item(reasignartodo=True)
+          paquete["listacotizacion"] = stc.listar()
+     
     return paquete

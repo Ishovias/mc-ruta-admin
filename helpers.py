@@ -42,6 +42,8 @@ class SessionSingleton:
           if result:
                token = coder.gtoken()
                self.__usr[token] = nombre
+               with Usuariosbd() as ubd:
+                    ubd.registra_token(usuario=nombre,token=token)
                return token
           return result
           
@@ -52,6 +54,12 @@ class SessionSingleton:
      def getAutenticado(self, request: object) -> bool:
           token = request.args.get("aut")
           if token in self.__usr:
+               return True
+          elif request.args.get("aut"):
+               with Usuariosbd() as ubd:
+                    usuario = ubd.token_existente(token)
+                    if usuario:
+                         self.__usr[token] = usuario
                return True
           return False
           
@@ -66,6 +74,8 @@ class SessionSingleton:
           return self.__usr
      
      def delUser(self, token: str) -> None:
+          with Usuariosbd() as ubd:
+               ubd.elimina_token(token)
           del(self.__usr[token])
      
      def __exit__(self, exc_type, exc_value, traceback) -> None:
