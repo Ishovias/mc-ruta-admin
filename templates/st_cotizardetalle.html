@@ -1,0 +1,45 @@
+{% extends 'st_layout.html' %}
+
+{% block encabezado %}
+        <h1>SUBLITOTE</h1>
+        <h2>Administrador de taller</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<h3>Agregar producto a cotizacion</h3>
+<form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
+        <label for="codigo">Codigo:</label>
+        <input type="text" name="codigo" value="{{ datos.codigo }}" readonly required>
+        <label for="producto">Producto:</label>
+        <input type="text" name="producto" value="{{ datos.producto }}" readonly required>
+        <label for="precioventa">Precio venta:</label>
+        <input type="number" name="precioventa" id="pventa" value="{{ datos.precioventa }}" required>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cant" value="1" required>
+        <label for="precio">Precio:</label>
+        <input type="number" name="precio" id="precio" value="{{ datos.precioventa }}" readonly>
+        <br><br>
+        <button type="submit" name="cotizar" value="cotizarenviar">Agregar a cotizacion</button>
+</form>
+<script>
+     const preciocosto = document.getElementById("pventa");
+     const cantidad = document.getElementById("cant");
+     const precio = document.getElementById("precio");
+     
+     cantidad.addEventListener("input", calcular);
+     preciocosto.addEventListener("input", calcular);
+     
+     function calcular() {
+          const cant = parseInt(cantidad.value);
+          const pcosto = parseInt(preciocosto.value);
+          const calculo = pcosto * cant;
+          precio.value = calculo;
+     }
+</script>
+
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}
