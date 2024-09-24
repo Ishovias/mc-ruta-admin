@@ -55,12 +55,14 @@ class SessionSingleton:
           token = request.args.get("aut")
           if token in self.__usr:
                return True
-          elif request.args.get("aut"):
+          elif request.args.get("aut"): # Comprobacion token largo plazo
                with Usuariosbd() as ubd:
-                    usuario = ubd.token_existente(token)
+                    usuario = ubd.token_existente(request.args.get("aut"))
                     if usuario:
                          self.__usr[token] = usuario
-               return True
+                         return True
+                    else:
+                         return False
           return False
           
      def getUsuario(self, request: object, token: str=None) -> str:
