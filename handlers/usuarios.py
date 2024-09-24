@@ -17,7 +17,9 @@ class Usuariosbd(bdmediclean):
     
     def elimina_token(self, token: str) -> bool:
         ubicacionUsuario = super().busca_ubicacion(dato=token,columna="token")
-        return super().putDato(dato="",fila=ubicacionUsuario,columna="token")
+        if ubicacionUsuario:
+            return super().putDato(dato="",fila=ubicacionUsuario,columna="token")
+        return False
         
     def token_registrado(self, usuario: str) -> bool:
         ubicacionUsuario = super().busca_ubicacion(dato=usuario,columna="usuario")

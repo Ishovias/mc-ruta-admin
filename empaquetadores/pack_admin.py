@@ -11,10 +11,12 @@ def empaquetador_usersactives(request: object) -> map:
      
      if "elimina" in request.form:
           eliminatoken = request.form.get("elimina")
+          tokenPropio = request.args.get("aut")
      
      with SessionSingleton() as sesion:
           if eliminatoken:
-               sesion.delUser(eliminatoken)
+               if not sesion.delUser(eliminatoken,tokenPropio):
+                    paquete["alerta"] = "No puedes eliminar tu propio token, para eso Cierra Sesion"
           usersMap = sesion.getUsersMap()
           listaUsuarios = []
           for dato in usersMap:

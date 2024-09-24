@@ -49,6 +49,8 @@ class SessionSingleton:
           
      def cierraSesion(self, request: object) -> None:
           token = request.args.get("aut")
+          with Usuariosbd() as ubd:
+               ubd.elimina_token(token)
           del(self.__usr[token])
           
      def getAutenticado(self, request: object) -> bool:
@@ -75,10 +77,13 @@ class SessionSingleton:
      def getUsersMap(self) -> map:
           return self.__usr
      
-     def delUser(self, token: str) -> None:
-          with Usuariosbd() as ubd:
-               ubd.elimina_token(token)
-          del(self.__usr[token])
+     def delUser(self, tokenEliminar: str, tokenUsuarioActual: str) -> bool:
+          if tokenEliminar != tokenUsuarioActual:
+               with Usuariosbd() as ubd:
+                    ubd.elimina_token(tokenEliminar)
+               del(self.__usr[tokenEliminar])
+               return True
+          return False
      
      def __exit__(self, exc_type, exc_value, traceback) -> None:
           pass
