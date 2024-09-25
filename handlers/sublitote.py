@@ -127,6 +127,14 @@ class SublitoteCotizacion(bdmediclean):
           if idactual == "ITEM":
                return 1
           return int(idactual) + 1
+          
+     def obtener_total_cotizacion(self) -> int:
+          total = 0
+          for fila in range(self.hoja_actual["filainicial"],super().getmaxfilas(),1):
+               itemCosto = super().getDato(fila=fila,columna="precio")
+               if itemCosto:
+                    total += int(itemCosto)
+          return total
 
 class SublitoteCotizacionesBD(bdmediclean):
      

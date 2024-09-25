@@ -1,5 +1,5 @@
 from handlers.sublitote import SublitoteCotizacion, SublitoteProductos
-from helpers import constructor_paquete
+from helpers import constructor_paquete, formatear_precio
 from cimprime import cimprime
 import params
 
@@ -128,7 +128,6 @@ def pack_st_productos(request: object) -> map:
                      params.ST_PRODUCTOS["columnas"]["precioventa"],
                      ]
                 )
-        cimprime(codigo=codigo,producto=producto)
         if request.form.get("cotizar") == "cotizarenviar":
              precioventa = request.form.get("precioventa")
              cantidad = request.form.get("cantidad")
@@ -157,33 +156,38 @@ def pack_st_productos(request: object) -> map:
 
 def pack_st_cotizacion(request: object) -> map:
     paquete = constructor_paquete(request, "st_cotizacion.html", "Cotizacion")
-
-    with SublitoteCotizacion() as stc:
+     
+    def mostrar_cotizacion(claseBD: object, paquete: map) -> map:
         paquete["listacotizacion"] = stc.listar()
         paquete["numcotizacion"] = stc.getDato(identificador="numcotizacion")
+        paquete["totalcotizacion"] = formatear_precio(stc.obtener_total_cotizacion())
+        return paquete
+    
+    with SublitoteCotizacion() as stc:
+        paquete = mostrar_cotizacion(stc,paquete)
 
     if "creacotizacion" in request.form:
         with SublitoteCotizacion() as stc:
             nuevaCotizacion = stc.nueva_cotizacion(retornoid=True)
             if nuevaCotizacion:
                 paquete["alerta"] = f"Nueva cotizacion creada: ID - {nuevaCotizacion}"
-                paquete["listacotizacion"] = stc.listar()
-                paquete["numcotizacion"] = stc.getDato(identificador="numcotizacion")
+                paquete = mostrar_cotizacion(stc,paquete)
 
     if "eliminacotizacion" in request.form:
         with SublitoteCotizacion() as stc:
             stc.eliminarContenidos()
             stc.putDato(dato="", identificador="numcotizacion")
             paquete["alerta"] = "Cotizacion eliminada"
-            paquete["listacotizacion"] = stc.listar()
-            paquete["numcotizacion"] = stc.getDato(identificador="numcotizacion")
-     
+            paquete = mostrar_cotizacion(stc,paquete)
+    if "guardacotizacion" in request.form:
+        ncotizacion = request.form.get("guardacotizacion")
+        
     if "eliminaitem" in request.form:
           item = request.form.get("eliminaitem")
           with SublitoteCotizacion() as stc:
                ubicacion = stc.busca_ubicacion(dato=item,columna="item")
                stc.eliminar(ubicacion)
                stc.id_item(reasignartodo=True)
-          paquete["listacotizacion"] = stc.listar()
+               paquete = mostrar_cotizacion(stc,paquete)
      
     return paquete

@@ -211,3 +211,9 @@ def constructor_paquete(request: object, pagina: str, nombrePagina: str=None) ->
      paquete = privilegio["paquete"]
      paquete["usuario"] = privilegio["usuario"]
      return paquete
+     
+def formatear_precio(precio: int) -> int:
+     precio = "{:,}".format(precio)
+     precio = list(precio)
+     precio.insert(0,"$")
+     return "".join(precio)

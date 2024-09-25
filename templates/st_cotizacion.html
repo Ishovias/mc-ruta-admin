@@ -14,9 +14,12 @@
         {{ datos.numcotizacion }}
         <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
                 <button name="eliminacotizacion">Elimina cotizacion</button>
-                <button name="guardacotizacion">Guarda cotizacion</button>
+                <button name="guardacotizacion" value="{{ datos.numcotizacion }}">Guarda cotizacion</button>
         </form>
-        {% endif %}</h2>
+        {% endif %}
+</h2>
+<hr>
+<h3>Total: <strong>{{ datos.totalcotizacion }}</strong></h3>
 <table class="tbresultados">
         <thead>
                 {% for encabezado in datos.listacotizacion.encabezados %}

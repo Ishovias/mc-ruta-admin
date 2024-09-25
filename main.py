@@ -68,6 +68,15 @@ def logout() -> render_template:
      datos = {"alerta":alerta}
      return render_template('autorizador.html', datos=datos)
 
+@app.route('/stlogout', methods=['POST'])
+def stlogout() -> render_template:
+     alerta = "Sesion ya cerrada, debes iniciar sesion nuevamente"
+     if sesion.getAutenticado(request):
+          alerta = f"Sesion de usuario {sesion.getUsuario(request)} cerrada"
+          sesion.cierraSesion(request)
+     datos = {"alerta":alerta}
+     return render_template('st_autorizador.html', datos=datos)
+
 @app.route('/todo', methods=['POST'])
 def todo() -> render_template:
      if not sesion.getAutenticado(request):
