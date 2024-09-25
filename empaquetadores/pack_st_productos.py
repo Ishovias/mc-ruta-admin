@@ -1,4 +1,4 @@
-from handlers.sublitote import SublitoteCotizacion, SublitoteProductos
+from handlers.sublitote import SublitoteCotizacion, SublitoteProductos, SublitoteCotizacionesBD
 from helpers import constructor_paquete, formatear_precio
 from cimprime import cimprime
 import params
@@ -123,44 +123,44 @@ def pack_st_productos(request: object) -> map:
             producto = stp.getDato(
                 fila=ubicacionProducto,
                 columnas=[
-                     params.ST_PRODUCTOS["columnas"]["codigo"],
-                     params.ST_PRODUCTOS["columnas"]["producto"],
-                     params.ST_PRODUCTOS["columnas"]["precioventa"],
-                     ]
+                    params.ST_PRODUCTOS["columnas"]["codigo"],
+                    params.ST_PRODUCTOS["columnas"]["producto"],
+                    params.ST_PRODUCTOS["columnas"]["precioventa"],
+                    ]
                 )
         if request.form.get("cotizar") == "cotizarenviar":
-             precioventa = request.form.get("precioventa")
-             cantidad = request.form.get("cantidad")
-             precio = request.form.get("precio")
-             with SublitoteCotizacion() as stc:
-                 nuevacotizacion = False
-                 if not stc.cotizacion_existente():
-                     numcotizacion = stc.nueva_cotizacion(retornoid=True)
-                     nuevacotizacion = True
-                 filaCotizacion = stc.busca_ubicacion(columna="item")
-                 producto[2] = precioventa
-                 producto.append(cantidad)
-                 producto.append(precio)
-                 producto.insert(0,stc.id_item())
-                 if stc.putDato(datos=producto,fila=filaCotizacion,columna="item"):
-                     paquete["alerta"] = f"Producto agregado a nueva cotizacion ({numcotizacion})" if nuevacotizacion else "Producto agregado a cotizacion actual"
-                 else:
-                     paquete["alerta"] = "Error al intentar ingresar producto en cotizacion"
+            precioventa = request.form.get("precioventa")
+            cantidad = request.form.get("cantidad")
+            precio = request.form.get("precio")
+            with SublitoteCotizacion() as stc:
+                nuevacotizacion = False
+                if not stc.cotizacion_existente():
+                    numcotizacion = stc.nueva_cotizacion(retornoid=True)
+                    nuevacotizacion = True
+                filaCotizacion = stc.busca_ubicacion(columna="item")
+                producto[2] = precioventa
+                producto.append(cantidad)
+                producto.append(precio)
+                producto.insert(0,stc.id_item())
+                if stc.putDato(datos=producto,fila=filaCotizacion,columna="item"):
+                    paquete["alerta"] = f"Producto agregado a nueva cotizacion ({numcotizacion})" if nuevacotizacion else "Producto agregado a cotizacion actual"
+                else:
+                    paquete["alerta"] = "Error al intentar ingresar producto en cotizacion"
         else:
-             paquete["pagina"] = "st_cotizardetalle.html"
-             paquete["codigo"] = codigo
-             paquete["producto"] = producto[1]
-             paquete["precioventa"] = producto[2]
-             
+            paquete["pagina"] = "st_cotizardetalle.html"
+            paquete["codigo"] = codigo
+            paquete["producto"] = producto[1]
+            paquete["precioventa"] = producto[2]
+            
     return paquete
 
 def pack_st_cotizacion(request: object) -> map:
     paquete = constructor_paquete(request, "st_cotizacion.html", "Cotizacion")
-     
+    
     def mostrar_cotizacion(claseBD: object, paquete: map) -> map:
-        paquete["listacotizacion"] = stc.listar()
-        paquete["numcotizacion"] = stc.getDato(identificador="numcotizacion")
-        paquete["totalcotizacion"] = formatear_precio(stc.obtener_total_cotizacion())
+        paquete["listacotizacion"] = claseBD.listar()
+        paquete["numcotizacion"] = claseBD.getDato(identificador="numcotizacion")
+        paquete["totalcotizacion"] = formatear_precio(claseBD.obtener_total_cotizacion())
         return paquete
     
     with SublitoteCotizacion() as stc:
@@ -179,15 +179,23 @@ def pack_st_cotizacion(request: object) -> map:
             stc.putDato(dato="", identificador="numcotizacion")
             paquete["alerta"] = "Cotizacion eliminada"
             paquete = mostrar_cotizacion(stc,paquete)
+    
     if "guardacotizacion" in request.form:
         ncotizacion = request.form.get("guardacotizacion")
-        
+        with SublitoteCotizacion() as stc:
+            datos = stc.listar(solodatos_list=True)
+        with SublitoteCotizacionesBD() as stbd:
+            if stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos):
+                paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
+            else:
+                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion {ncotizacion}"
+
     if "eliminaitem" in request.form:
-          item = request.form.get("eliminaitem")
-          with SublitoteCotizacion() as stc:
-               ubicacion = stc.busca_ubicacion(dato=item,columna="item")
-               stc.eliminar(ubicacion)
-               stc.id_item(reasignartodo=True)
-               paquete = mostrar_cotizacion(stc,paquete)
-     
+        item = request.form.get("eliminaitem")
+        with SublitoteCotizacion() as stc:
+            ubicacion = stc.busca_ubicacion(dato=item,columna="item")
+            stc.eliminar(ubicacion)
+            stc.id_item(reasignartodo=True)
+            paquete = mostrar_cotizacion(stc,paquete)
+    
     return paquete
