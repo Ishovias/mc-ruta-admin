@@ -184,6 +184,9 @@ def pack_st_cotizacion(request: object) -> map:
         ncotizacion = request.form.get("guardacotizacion")
         with SublitoteCotizacion() as stc:
             datos = stc.listar(solodatos_list=True)
+            stc.eliminarContenidos()
+            stc.putDato(dato="", identificador="numcotizacion")
+            paquete = mostrar_cotizacion(stc,paquete)
         with SublitoteCotizacionesBD() as stbd:
             if stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos):
                 paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"

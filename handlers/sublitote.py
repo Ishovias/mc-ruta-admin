@@ -185,4 +185,13 @@ class SublitoteCotizacionesBD(bdmediclean):
                     )
           return listadatos
      
+class SublitoteCotizacionesRegistro(bdmediclean):
      
+     def __init__(self) -> None:
+          super().__init__(
+               hoja=params.ST_REGISTRO_COTIZACIONES,
+               otrolibro=params.LIBROST
+               )
+     
+     def registra_cotizacion(self, numcotizacion: str, descripcion: str, precio: str) -> bool:
+          pass
