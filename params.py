@@ -178,4 +178,17 @@ ST_BD_COTIZACIONES = {
     "todas":[1,2,3,4,5,6,7]
   }, 
   "encabezados":2
-} 
+}
+
+ST_REGISTRO_COTIZACIONES = {
+  "nombrehoja":"st_registro_cotizaciones", 
+  "filainicial":3,
+  "columnas":{
+    "idcotizacion":1,
+    "descripcion":2,
+    "precio":3,
+    "todas":[1,2,3]
+  }, 
+  "encabezados":2
+}
+

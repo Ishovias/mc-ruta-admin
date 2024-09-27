@@ -15,6 +15,7 @@
         <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
                 <button name="eliminacotizacion">Elimina cotizacion</button>
                 <button name="guardacotizacion" value="{{ datos.numcotizacion }}">Guarda cotizacion</button>
+                <label>Descripcion: <input name="descripcion" {% if "descripcion" in datos %}value="{{ datos.descripcion }}"{% endif %}></label>
         </form>
         {% endif %}
 </h2>
