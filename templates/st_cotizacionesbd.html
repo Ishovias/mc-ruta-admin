@@ -7,28 +7,29 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-{% if "rutaLista" in datos %}
+{% if "listaCotizaciones" in datos %}
           <p class="tituloscentrados">Cotizaciones guardadas</p>
           <hr>
           <table class="tbresultados">
           <thead>
-                    <th>DETALLES</th>
-               {% for dato in datos.listaCorizaciones.encabezados %}
+               {% for dato in datos.listaCotizaciones.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
+                    <th>ACCIONES</th>
           </thead>
           <tbody>
                {% for fila in datos.listaCotizaciones.datos %}
                     <tr>
-                    <td>
-                         <form method="post" action="{{ url_for('cotizacionesbd', aut=datos.aut) }}">
-                              <button type="submit" name="modificarcotizacion" value="{{ fila.0 }}" style="width: 95px;">Modifica</button>
-                              <button type="submit" name="borrarcotizacion" value="{{ fila.0 }}" style="width: 95px;">Borrar</button>
-                         </form>
-                    </td>
                     {% for data in fila %}
                          <td>{{ data }}</td>
                     {% endfor %}
+                    <td>
+                         <form method="post" action="{{ url_for('cotizacionesbd', aut=datos.aut) }}">
+                              <button type="submit" name="mostrarcotizacion" value="{{ fila.0 }}" style="width: 95px;">Mostrar</button>
+                              <button type="submit" name="modificarcotizacion" value="{{ fila.0 }}" style="width: 95px;">Modificar</button>
+                              <button type="submit" name="borrarcotizacion" value="{{ fila.0 }}" style="width: 95px;">Borrar</button>
+                         </form>
+                    </td>
                     </tr>
                {% endfor %}
           </tbody>

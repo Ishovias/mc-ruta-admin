@@ -216,8 +216,52 @@ def pack_st_cotizacion(request: object) -> map:
     return paquete
 
 def pack_st_registros_cotizaciones(request: object) -> map:
-    paquete = constructor_paquete(request,"st_cotizacionesbd.html")
+    paquete = constructor_paquete(request,"st_cotizacionesbd.html","registros de cotizaciones")
     with SublitoteCotizacionesReg() as streg:
-        paquete["listaCotizaciones"] = streg.listar()
-
+        datos = streg.listar()
+        for fila in datos["datos"]:
+             fila[-1] = formatear_precio(int(fila[-1]))
+        paquete["listaCotizaciones"] = datos
+     
+    if "mostrarcotizacion" in request.form:
+         idcotizacion = request.form.get("mostrarcotizacion")
+         with SublitoteCotizacionesBD() as stc:
+              filasdatos = stc.buscadato(
+                   filainicio=params.ST_BD_COTIZACIONES["filainicial"],
+                   columna=params.ST_BD_COTIZACIONES["columnas"]["idcotizacion"],
+                   dato=idcotizacion,
+                   buscartodo=True
+                   )
+              datos = []
+              columnas = [
+                   params.ST_BD_COTIZACIONES["columnas"]["item"],
+                   params.ST_BD_COTIZACIONES["columnas"]["codigo"],
+                   params.ST_BD_COTIZACIONES["columnas"]["producto"],
+                   params.ST_BD_COTIZACIONES["columnas"]["preciounitario"],
+                   params.ST_BD_COTIZACIONES["columnas"]["cantidad"],
+                   params.ST_BD_COTIZACIONES["columnas"]["precio"]
+                   ]
+              for fila in filasdatos:
+                   data = stc.getDato(
+                             fila=fila,
+                             columnas=columnas
+                             )
+                   data[-1] = formatear_precio(int(data[-1]))
+                   data[-3] = formatear_precio(int(data[-3]))
+                   datos.append(data)
+              paquete["detallescotizacion"] = {
+                   "encabezados":stc.getDato(
+                        fila=params.ST_BD_COTIZACIONES["encabezados"],
+                        columnas=columnas
+                        ),
+                   "datos":datos
+              }
+    
+    if "modificarcotizacion" in request.form:
+         with SublitoteCotizacion() as stc:
+              cotizacionexistente = stc.getDato(identificador="numcotizacion")
+         if not cotizacionexistente:
+              with SublitoteCotizacionesBD() as stcbd:
+                   
+              
     return paquete
