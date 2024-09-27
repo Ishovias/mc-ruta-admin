@@ -194,11 +194,11 @@ class SublitoteCotizacionesReg(bdmediclean):
                )
      
      def registrar(self, idcotizacion: str, descripcion: str, precio: int) -> bool:
-          ubicacion = super().busca_ubicacion()
+          ubicacion = super().busca_ubicacion(columna="idcotizacion")
           try:
-               super().putDato(dato=idcotizacion, fila=ubicacion, columna"idcotizacion")
-               super().putDato(dato=descripcion, fila=ubicacion, columna"descripcion")
-               super().putDato(dato=precio, fila=ubicacion, columna"precio")
+               super().putDato(dato=idcotizacion, fila=ubicacion, columna="idcotizacion")
+               super().putDato(dato=descripcion, fila=ubicacion, columna="descripcion")
+               super().putDato(dato=precio, fila=ubicacion, columna="precio")
           except Exception as e:
                print(e)
                return False

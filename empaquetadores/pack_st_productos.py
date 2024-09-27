@@ -183,24 +183,27 @@ def pack_st_cotizacion(request: object) -> map:
     if "guardacotizacion" in request.form:
         ncotizacion = request.form.get("guardacotizacion")
         descripcion = request.form.get("descripcion")
+        
         with SublitoteCotizacion() as stc:
             datos = stc.listar(solodatos_list=True)
             precio = stc.obtener_total_cotizacion()
             stc.eliminarContenidos()
             stc.putDato(dato="", identificador="numcotizacion")
             paquete = mostrar_cotizacion(stc,paquete)
+        
         with SublitoteCotizacionesBD() as stbd:
-            guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos):
+            guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos)
+        
         with SublitoteCotizacionesReg() as stcreg:
-             registrado = stcreg.registra(
-                  idcotizacion=ncotizacion,
-                  descripcion=descripcion,
-                  precio=precio
-                  )
-             if guardado and registrado:
+            registrado = stcreg.registrar(
+                idcotizacion=ncotizacion,
+                descripcion=descripcion,
+                precio=precio
+                )
+            if guardado and registrado:
                 paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
             else:
-                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{ncotizacion} REGISTRADO:{registrado}"
+                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{guardado} REGISTRADO:{registrado}"
 
     if "eliminaitem" in request.form:
         item = request.form.get("eliminaitem")
@@ -210,4 +213,11 @@ def pack_st_cotizacion(request: object) -> map:
             stc.id_item(reasignartodo=True)
             paquete = mostrar_cotizacion(stc,paquete)
     
+    return paquete
+
+def pack_st_registros_cotizaciones(request: object) -> map:
+    paquete = constructor_paquete(request,"st_cotizacionesbd.html")
+    with SublitoteCotizacionesReg() as streg:
+        paquete["listaCotizaciones"] = streg.listar()
+
     return paquete

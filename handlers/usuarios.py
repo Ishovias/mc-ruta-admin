@@ -28,7 +28,7 @@ class Usuariosbd(bdmediclean):
     def token_existente(self, tokenDado: str) -> str: # nuevo metodo
         ubicacion = super().busca_ubicacion(dato=tokenDado,columna="token") 
         if ubicacion:
-             return super().getDato(fila=ubicacion,columna="usuario")
+            return super().getDato(fila=ubicacion,columna="usuario")
         return None
         
     def registra_token(self, usuario: str, token: str) -> bool:

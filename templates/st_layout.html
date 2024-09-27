@@ -23,6 +23,9 @@
         <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
             <button class="botonanimado" id="cotizacion" name="cotizacion" value="cotizacion">Cotizacion</button>
         </form>
+        <form method="post" action="{{ url_for('cotizacionesbd', aut=datos.aut) }}"></form>
+            <button class="botonanimado" id="cotizacionesbd" name="cotizacionesbd" value="cotizacionesbd">BD Cotizaciones</button>
+        </form>
         <form method="post" action="{{ url_for('stlogout', aut=datos.aut) }}">
             <button class="botonanimado" id="logout" name="cerrarsesion" value="cerrarsesion">Cerrar Sesion</button>
         </form>
