@@ -1,4 +1,4 @@
-from handlers.sublitote import SublitoteCotizacion, SublitoteProductos, SublitoteCotizacionesBD
+from handlers.sublitote import SublitoteCotizacion, SublitoteCotizacionesReg, SublitoteProductos, SublitoteCotizacionesBD
 from helpers import constructor_paquete, formatear_precio
 from cimprime import cimprime
 import params
@@ -182,16 +182,25 @@ def pack_st_cotizacion(request: object) -> map:
     
     if "guardacotizacion" in request.form:
         ncotizacion = request.form.get("guardacotizacion")
+        descripcion = request.form.get("descripcion")
         with SublitoteCotizacion() as stc:
             datos = stc.listar(solodatos_list=True)
+            precio = stc.obtener_total_cotizacion()
             stc.eliminarContenidos()
             stc.putDato(dato="", identificador="numcotizacion")
             paquete = mostrar_cotizacion(stc,paquete)
         with SublitoteCotizacionesBD() as stbd:
-            if stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos):
+            guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos):
+        with SublitoteCotizacionesReg() as stcreg:
+             registrado = stcreg.registra(
+                  idcotizacion=ncotizacion,
+                  descripcion=descripcion,
+                  precio=precio
+                  )
+             if guardado and registrado:
                 paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
             else:
-                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion {ncotizacion}"
+                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{ncotizacion} REGISTRADO:{registrado}"
 
     if "eliminaitem" in request.form:
         item = request.form.get("eliminaitem")

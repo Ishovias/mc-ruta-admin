@@ -185,7 +185,7 @@ class SublitoteCotizacionesBD(bdmediclean):
                     )
           return listadatos
      
-class SublitoteCotizacionesRegistro(bdmediclean):
+class SublitoteCotizacionesReg(bdmediclean):
      
      def __init__(self) -> None:
           super().__init__(
@@ -193,5 +193,14 @@ class SublitoteCotizacionesRegistro(bdmediclean):
                otrolibro=params.LIBROST
                )
      
-     def registra_cotizacion(self, numcotizacion: str, descripcion: str, precio: str) -> bool:
-          pass
+     def registrar(self, idcotizacion: str, descripcion: str, precio: int) -> bool:
+          ubicacion = super().busca_ubicacion()
+          try:
+               super().putDato(dato=idcotizacion, fila=ubicacion, columna"idcotizacion")
+               super().putDato(dato=descripcion, fila=ubicacion, columna"descripcion")
+               super().putDato(dato=precio, fila=ubicacion, columna"precio")
+          except Exception as e:
+               print(e)
+               return False
+          else:
+               return True
