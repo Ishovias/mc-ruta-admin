@@ -161,6 +161,10 @@ def pack_st_cotizacion(request: object) -> map:
         paquete["listacotizacion"] = claseBD.listar()
         paquete["numcotizacion"] = claseBD.getDato(identificador="numcotizacion")
         paquete["totalcotizacion"] = formatear_precio(claseBD.obtener_total_cotizacion())
+        with SublitoteCotizacionesReg() as streg:
+            idexistente = streg.busca_ubicacion(dato=paquete["numcotizacion"],columna="idcotizacion")
+            if idexistente:
+                paquete["descripcion"] = streg.getDato(fila=idexistente,columna="descripcion")
         return paquete
     
     with SublitoteCotizacion() as stc:
@@ -191,19 +195,27 @@ def pack_st_cotizacion(request: object) -> map:
             stc.putDato(dato="", identificador="numcotizacion")
             paquete = mostrar_cotizacion(stc,paquete)
         
-        with SublitoteCotizacionesBD() as stbd:
-            guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos)
+        if "modificacion" in request.form:
+            registrado = True
+            with SublitoteCotizacionesBD() as stbd:
+                guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos, modificacion=True)
+            
+        else:
+            
+            with SublitoteCotizacionesBD() as stbd:
+                guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos)
+            
+            with SublitoteCotizacionesReg() as stcreg:
+                registrado = stcreg.registrar(
+                    idcotizacion=ncotizacion,
+                    descripcion=descripcion,
+                    precio=precio
+                    )
         
-        with SublitoteCotizacionesReg() as stcreg:
-            registrado = stcreg.registrar(
-                idcotizacion=ncotizacion,
-                descripcion=descripcion,
-                precio=precio
-                )
-            if guardado and registrado:
-                paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
-            else:
-                paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{guardado} REGISTRADO:{registrado}"
+        if guardado and registrado:
+            paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
+        else:
+            paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{guardado} REGISTRADO:{registrado}"
 
     if "eliminaitem" in request.form:
         item = request.form.get("eliminaitem")
@@ -212,7 +224,7 @@ def pack_st_cotizacion(request: object) -> map:
             stc.eliminar(ubicacion)
             stc.id_item(reasignartodo=True)
             paquete = mostrar_cotizacion(stc,paquete)
-    
+
     return paquete
 
 def pack_st_registros_cotizaciones(request: object) -> map:
@@ -264,11 +276,18 @@ def pack_st_registros_cotizaciones(request: object) -> map:
             if not cotizacionexistente:
                 with SublitoteCotizacionesBD() as stcbd:
                     datos = stcbd.extrae_cotizacion(idcotizacion)
-            stc.putDato(dato=idcotizacion,identificador="numcotizacion")
-            filainsercion = params.ST_COTIZACION["filainicial"]
-            for fila in datos:
-                fila.remove(fila[0]) #elimina idcotizacion del cada dato
-                stc.putDato(datos=fila,fila=filainsercion, columna="item")
-                filainsercion += 1
-        pack_st_cotizacion(request)
+                stc.putDato(dato=idcotizacion,identificador="numcotizacion")
+                filainsercion = params.ST_COTIZACION["filainicial"]
+                for fila in datos:
+                    fila.remove(fila[0]) #elimina idcotizacion del cada dato
+                    stc.putDato(datos=fila,fila=filainsercion, columna="item")
+                    filainsercion += 1
+                with SublitoteCotizacionesReg() as streg:
+                    f = streg.busca_ubicacion(dato=idcotizacion,columna="idcotizacion")
+                    descripcion = streg.getDato(fila=f,columna="descripcion")
+            else:
+                paquete["alerta"] = "No se puede editar, hay una cotizacion sin guardar"
+        if not cotizacionexistente:
+            paquete = pack_st_cotizacion(request)
+            paquete["descripcion"] = descripcion
     return paquete
