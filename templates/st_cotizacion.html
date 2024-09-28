@@ -1,7 +1,7 @@
 {% extends 'st_layout.html' %}
 {% block encabezado %}
         <h1>SUBLITOTE</h1>
-        <h2>Administrador de taller</h2>
+        <h2>Cotizacion</h2>
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
@@ -18,7 +18,7 @@
         </form>
         <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
                 <button name="guardacotizacion" value="{{ datos.numcotizacion }}">Guarda cotizacion</button>
-                <label>Descripcion: <input name="descripcion" {% if "descripcion" in datos %}value="{{ datos.descripcion }}"{% endif %} required></label>
+                <label>Descripcion: <input name="descripcion" {% if "descripcion" in datos %}value="{{ datos.descripcion }}" placeholder="{{ datos.descripcion }}" {% endif %} required></label>
                 {% if "descripcion" in datos %}<input type="text" name="modificacion" value="{{ datos.numcotizacion }}" hidden>{% endif %}
         </form>
         {% endif %}

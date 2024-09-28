@@ -199,7 +199,9 @@ def pack_st_cotizacion(request: object) -> map:
             registrado = True
             with SublitoteCotizacionesBD() as stbd:
                 guardado = stbd.guardar_cotizacion(idcotizacion=ncotizacion, datos=datos, modificacion=True)
-            
+            with SublitoteCotizacionesReg() as streg:
+                f = streg.busca_ubicacion(dato=ncotizacion, columna="idcotizacion")
+                streg.putDato(dato=descripcion,fila=f,columna="descripcion")
         else:
             
             with SublitoteCotizacionesBD() as stbd:
@@ -213,7 +215,7 @@ def pack_st_cotizacion(request: object) -> map:
                     )
         
         if guardado and registrado:
-            paquete["alerta"] = f"Cotizacion {ncotizacion} guardada"
+            paquete["alerta"] = f"Cotizacion guardada: {ncotizacion} - {descripcion}"
         else:
             paquete["alerta"] = f"ERROR no se pudo guardar cotizacion GUARDADO:{guardado} REGISTRADO:{registrado}"
 
@@ -229,12 +231,17 @@ def pack_st_cotizacion(request: object) -> map:
 
 def pack_st_registros_cotizaciones(request: object) -> map:
     paquete = constructor_paquete(request,"st_cotizacionesbd.html","registros de cotizaciones")
-    with SublitoteCotizacionesReg() as streg:
-        datos = streg.listar()
-        for fila in datos["datos"]:
-            fila[-1] = formatear_precio(int(fila[-1]))
-        paquete["listaCotizaciones"] = datos
     
+    def mostrar_registros() -> map:
+        with SublitoteCotizacionesReg() as streg:
+            datos = streg.listar()
+            for fila in datos["datos"]:
+                fila[-1] = formatear_precio(int(fila[-1]))
+            paquete["listaCotizaciones"] = datos
+        return paquete
+    
+    mostrar_registros()
+
     if "mostrarcotizacion" in request.form:
         idcotizacion = request.form.get("mostrarcotizacion")
         with SublitoteCotizacionesBD() as stc:
@@ -290,4 +297,28 @@ def pack_st_registros_cotizaciones(request: object) -> map:
         if not cotizacionexistente:
             paquete = pack_st_cotizacion(request)
             paquete["descripcion"] = descripcion
+    
+    if "borrarcotizacion" in request.form:
+        idcotizacion = request.form.get("borrarcotizacion")
+        
+        with SublitoteCotizacionesBD() as stbd:
+            filasEliminar = stbd.buscadato(
+                filainicio=params.ST_BD_COTIZACIONES["filainicial"],
+                columna=params.ST_BD_COTIZACIONES["columnas"]["idcotizacion"],
+                dato=idcotizacion,
+                buscartodo=True
+            )
+            for fila in filasEliminar:
+                stbd.eliminar(fila)
+        
+        with SublitoteCotizacionesReg() as streg:
+            filaEliminar = stbd.buscadato(
+                filainicio=params.ST_REGISTRO_COTIZACIONES["filainicial"],
+                columna=params.ST_REGISTRO_COTIZACIONES["columnas"]["idcotizacion"],
+                dato=idcotizacion
+            )
+            streg.eliminar(filaEliminar)
+        
+        mostrar_registros()
+
     return paquete
