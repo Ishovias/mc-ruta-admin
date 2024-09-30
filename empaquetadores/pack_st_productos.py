@@ -12,32 +12,33 @@ def pack_st_productos(request: object) -> map:
     
     if "buscaproducto" in request.form:
         datoBuscado = request.form.get("busqueda")
-        with SublitoteProductos() as stp:
-            listadoproductos = {
-                "encabezados":stp.getDato(
-                    fila=params.ST_PRODUCTOS["encabezados"],
-                    columnas=params.ST_PRODUCTOS["columnas"]["todas"]
-                ),
-                "datos":[]
-            }
-            ubicaciones = stp.buscapartedato(
-                filainicio=params.ST_PRODUCTOS["filainicial"],
-                columna=params.ST_PRODUCTOS["columnas"]["producto"],
-                dato=datoBuscado
-            )
-            for fila in ubicaciones:
-                datosproductos = stp.getDato(
-                    fila=fila,
-                    columnas=params.ST_PRODUCTOS["columnas"]["todas"],
-                    retornostr=True
+        if datoBuscado != "":
+            with SublitoteProductos() as stp:
+                listadoproductos = {
+                    "encabezados":stp.getDato(
+                        fila=params.ST_PRODUCTOS["encabezados"],
+                        columnas=params.ST_PRODUCTOS["columnas"]["todas"]
+                    ),
+                    "datos":[]
+                }
+                ubicaciones = stp.buscapartedato(
+                    filainicio=params.ST_PRODUCTOS["filainicial"],
+                    columna=params.ST_PRODUCTOS["columnas"]["producto"],
+                    dato=datoBuscado
                 )
-                listadoproductos["datos"].append(datosproductos)
-            items = 0
-            for fila in listadoproductos["datos"]:
-                items += 1
-                fila.insert(0,items)
-                
-        paquete["listaproductos"] = listadoproductos
+                for fila in ubicaciones:
+                    datosproductos = stp.getDato(
+                        fila=fila,
+                        columnas=params.ST_PRODUCTOS["columnas"]["todas"],
+                        retornostr=True
+                    )
+                    listadoproductos["datos"].append(datosproductos)
+                items = 0
+                for fila in listadoproductos["datos"]:
+                    items += 1
+                    fila.insert(0,items)
+                    
+            paquete["listaproductos"] = listadoproductos
 
     if "nuevoproducto" in request.form:
         with SublitoteProductos() as stp:

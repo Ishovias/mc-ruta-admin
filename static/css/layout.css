@@ -148,6 +148,11 @@ html{
     transition: 1s;
 }
 
+.formularioIngreso #botoneraHorizontal {
+    display: flex;
+    justify-content: space-between;
+}
+
 .tbresultados {
     width: 100%;
     border-collapse: collapse;

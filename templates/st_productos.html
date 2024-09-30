@@ -9,13 +9,13 @@
 {% block body_a %}
 <form class="formularioIngreso" method="post" action="{{ url_for('productos', aut=datos.aut) }}">
         <label for="busqueda">Buscar producto:</label>
-        <input type="text" name="busqueda" placeholder="ej.: carcasa celular"> 
+        <input type="text" name="busqueda" placeholder="ej.: carcasa celular" > 
         <br>
-        <button name="buscaproducto">Buscar</button>
-        <br>
-        <button name="listartodo">Listar todos</button>
-        <br>
-        <button name="nuevoproducto">Nuevo producto</button>
+        <div id="botoneraHorizontal">
+                <button name="buscaproducto">Buscar</button>
+                <button name="listartodo">Listar todos</button>
+                <button name="nuevoproducto">Nuevo producto</button>
+        </div>
 </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->

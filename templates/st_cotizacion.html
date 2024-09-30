@@ -12,6 +12,9 @@
         </form>
         {% else %}
         {{ datos.numcotizacion }}
+        {% endif %}
+</h3>
+{% if "numcotizacion" in datos %}
         <form method="post" action="{{ url_for('cotizacion', aut=datos.aut) }}">
                 <button name="eliminacotizacion">Elimina cotizacion</button>
                 
@@ -21,8 +24,7 @@
                 <label>Descripcion: <input name="descripcion" {% if "descripcion" in datos %}value="{{ datos.descripcion }}" placeholder="{{ datos.descripcion }}" {% endif %} required></label>
                 {% if "descripcion" in datos %}<input type="text" name="modificacion" value="{{ datos.numcotizacion }}" hidden>{% endif %}
         </form>
-        {% endif %}
-</h3>
+{% endif %}
 <hr>
 <h3>Total: <strong>{{ datos.totalcotizacion }}</strong></h3>
 <table class="tbresultados">
