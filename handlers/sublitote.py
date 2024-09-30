@@ -185,6 +185,18 @@ class SublitoteCotizacionesBD(bdmediclean):
                     )
           return listadatos
      
+     def eliminar_cotizacion(self, idcotizacion: str) -> None:
+          completado = False
+          while completado == False:
+               filaHallada = super().busca_ubicacion(dato=idcotizacion, columna="idcotizacion")
+               idHallado = super().getDato(fila=filaHallada,columna="idcotizacion") if filaHallada else None
+               if str(idHallado) == str(idcotizacion):
+                    super().eliminar(filaHallada)
+               elif not idHallado:
+                    completado = True
+
+
+
 class SublitoteCotizacionesReg(bdmediclean):
      
      def __init__(self) -> None:
@@ -204,3 +216,13 @@ class SublitoteCotizacionesReg(bdmediclean):
                return False
           else:
                return True
+          
+     def eliminar_registro(self, idcotizacion: str) -> None:
+          try:
+               super().eliminar(
+                    super().busca_ubicacion(dato=idcotizacion,columna="idcotizacion")
+               )
+          except Exception as e:
+               print("Error eliminar_registro:\n--------------------------")
+               print(f"{e}\n--------------------------")
+               print("Posiblemente no exista ya el registro")

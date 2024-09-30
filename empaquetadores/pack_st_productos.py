@@ -302,22 +302,10 @@ def pack_st_registros_cotizaciones(request: object) -> map:
         idcotizacion = request.form.get("borrarcotizacion")
         
         with SublitoteCotizacionesBD() as stbd:
-            filasEliminar = stbd.buscadato(
-                filainicio=params.ST_BD_COTIZACIONES["filainicial"],
-                columna=params.ST_BD_COTIZACIONES["columnas"]["idcotizacion"],
-                dato=idcotizacion,
-                buscartodo=True
-            )
-            for fila in filasEliminar:
-                stbd.eliminar(fila)
-        
+            stbd.eliminar_cotizacion(idcotizacion)
+
         with SublitoteCotizacionesReg() as streg:
-            filaEliminar = stbd.buscadato(
-                filainicio=params.ST_REGISTRO_COTIZACIONES["filainicial"],
-                columna=params.ST_REGISTRO_COTIZACIONES["columnas"]["idcotizacion"],
-                dato=idcotizacion
-            )
-            streg.eliminar(filaEliminar)
+            streg.eliminar_registro(idcotizacion)
         
         mostrar_registros()
 
