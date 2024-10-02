@@ -43,6 +43,12 @@ def empaquetador_rutaactual(request: object) -> map:
             datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
+            datos_cliente_confirmado.append(request.form.get("farmaco"))
+            datos_cliente_confirmado.append(request.form.get("patologico"))
+            datos_cliente_confirmado.append(request.form.get("contaminado"))
+            datos_cliente_confirmado.append(request.form.get("cortopunzante"))
+            datos_cliente_confirmado.append(request.form.get("otropeligroso"))
+            datos_cliente_confirmado.append(request.form.get("liquidorx"))
             rutaactualbd.eliminar(ubicacioncliente)
             # incremento indicador de clientes realizados o pospuestos
             cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
@@ -216,6 +222,12 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["clienterut"] = rutaactual.getDato(
                         fila=ubicacion_cliente,
                         columna="rut")
+                paquete["clientedireccion"] = rutaactual.getDato(
+                        fila=ubicacion_cliente,
+                        columna="direccion")
+                paquete["clientefono"] = rutaactual.getDato(
+                        fila=ubicacion_cliente,
+                        columna="telefono")
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -240,6 +252,13 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["clienterut"] = rutaactual.getDato(
                         fila=ubicacion_cliente,
                         columna="rut")
+                paquete["clientedireccion"] = rutaactual.getDato(
+                        fila=ubicacion_cliente,
+                        columna="direccion")
+                paquete["clientefono"] = rutaactual.getDato(
+                        fila=ubicacion_cliente,
+                        columna="telefono")
+
 
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:

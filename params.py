@@ -89,7 +89,13 @@ RUTAS_BD = {
     "ultimoretiro":10,
     "status":11,
     "detalleretiro":12,
-    "todas":[1,2,3,4,5,6,7,8,9,10,11,12]  
+    "farmaco":13,
+    "patologico":14,
+    "contaminado":15,
+    "cortopunzante":16,
+    "otropeligroso":17,
+    "liquidorx":18,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]  
   }, 
   "encabezados":1
 }

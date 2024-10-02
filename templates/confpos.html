@@ -14,6 +14,25 @@
           <input name="clienterut" type="text" value="{{ datos.clienterut }}" readonly>
           <label for="clientenombre">Cliente:</label>
           <input name="clientenombre" type="text" value="{{ datos.clientenombre }}" readonly>
+          <label for="clientedireccion">Direccion:</label>
+          <input name="clientedireccion" type="text" value="{{ datos.clientedireccion }}" readonly>
+          <label for="clientefono">Telefono:</label>
+          <input name="clientefono" type="text" value="{{ datos.clientefono }}" readonly>
+          <hr>
+          <!-- Datos modificables -->
+          <label for="farmaco">Farmaco(kg):</label>
+          <input name="farmaco" type="number" value="0" placeholder="kg" required>
+          <label for="patologico">Patologico(kg):</label>
+          <input name="patologico" type="number" value="0" placeholder="kg" required>
+          <label for="contaminado">Contaminados(kg):</label>
+          <input name="contaminado" type="number" value="0" placeholder="kg" required>
+          <label for="cortopunzante">Patologico(kg):</label>
+          <input name="cortopunzante" type="number" value="0" placeholder="kg" required>
+          <label for="otropeligroso">Otro peligroso(kg):</label>
+          <input name="otropeligroso" type="number" value="0" placeholder="kg" required>
+          <label for="liquidorx">Liquidos RX(kg):</label>
+          <input name="liquidorx" type="number" value="0" placeholder="kg" required>
+          <!-- Campo de observaciones -->
           <label for="observacion">Observacion:</label>
                <!-- <input name="observacion" type="text" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro"> -->
           <textarea name="observacion" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro"></textarea><br>
