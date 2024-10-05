@@ -72,6 +72,22 @@ def empaquetador_rutaactual(request: object) -> map:
         rutcliente = datos_cliente_confirmado[2]
         # nombrecliente = datos_cliente_confirmado[3]
 
+        with RutaRegistros() as rr:
+            ubicacion = rr.busca_ubicacion(
+                dato=fecharetiro,
+                columna="fecha"
+            )
+            cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
+            for col in cols:
+                valorActual = rr.getDato(fila=ubicacion,columna=col)
+                valorSumando = request.form.get(col)
+                incremento = (int(valorActual) + int(valorSumando)) if valorActual else valorSumando
+                rr.putDato(
+                    fila=ubicacion,
+                    dato=incremento,
+                    columna=col
+                )
+
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
         compfecha.insert(4,"-")
@@ -259,7 +275,6 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="telefono")
 
-
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:
             num_cltes = len(ra.listar(solodatos_list=True))
@@ -283,7 +298,6 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["alerta"] = "Cliente MANUAL agregado a ruta"
             else:
                 paquete["alerta"] = "ERROR al intentar ingresar cliente MANUAL"
-
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")

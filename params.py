@@ -99,26 +99,26 @@ RUTAS_BD = {
   }, 
   "encabezados":1,
   "encabezados_nombre":[
-       "",
-       "Fecha",
-       "ID",
-       "Rut",
-       "Cliente",
-       "Direccion",
-       "Comuna",
-       "Telefono",
-       "Contrato",
-       "Otro",
-       "Ultimo Retiro",
-       "Status",
-       "Detalle Retiro",
-       "Farmaco",
-       "Patologico",
-       "Contaminado",
-       "Cortopunzante",
-       "Otro (Peligroso)",
-       "Liquido (RX)"
-       ]
+      "",
+      "Fecha",
+      "ID",
+      "Rut",
+      "Cliente",
+      "Direccion",
+      "Comuna",
+      "Telefono",
+      "Contrato",
+      "Otro",
+      "Ultimo Retiro",
+      "Status",
+      "Detalle Retiro",
+      "Farmaco",
+      "Patologico",
+      "Contaminado",
+      "Cortopunzante",
+      "Otro (Peligroso)",
+      "Liquido (RX)"
+      ]
 }
 
 RUTAS_REGISTROS = {
@@ -130,9 +130,29 @@ RUTAS_REGISTROS = {
     "REALIZADO":3,
     "POSPUESTO":4,
     "otros":5,
-    "todas":[1,2,3,4,5]  
+    "farmaco":6,
+    "patologico":7,
+    "contaminado":8,
+    "cortopunzante":9,
+    "otropeligroso":10,
+    "liquidorx":11,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11]  
   }, 
-  "encabezados":1    
+  "encabezados":1,
+  "encabezados_nombre":[
+    "",
+    "Fecha",
+    "Ruta",
+    "REALIZADO",
+    "POSPUESTO",
+    "Otros",
+    "Farmaco",
+    "Patologico",
+    "Contaminado",
+    "Cortopunzante",
+    "Otro (Peligroso)",
+    "Liquido (RX)"
+  ]    
 }
 
 GASTOS_BD = {
