@@ -97,7 +97,28 @@ RUTAS_BD = {
     "liquidorx":18,
     "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]  
   }, 
-  "encabezados":1
+  "encabezados":1,
+  "encabezados_nombre":[
+       "",
+       "Fecha",
+       "ID",
+       "Rut",
+       "Cliente",
+       "Direccion",
+       "Comuna",
+       "Telefono",
+       "Contrato",
+       "Otro",
+       "Ultimo Retiro",
+       "Status",
+       "Detalle Retiro",
+       "Farmaco",
+       "Patologico",
+       "Contaminado",
+       "Cortopunzante",
+       "Otro (Peligroso)",
+       "Liquido (RX)"
+       ]
 }
 
 RUTAS_REGISTROS = {

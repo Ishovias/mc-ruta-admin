@@ -128,11 +128,12 @@ def empaquetador_clientes(request: object) -> map:
                     columnas=ordenColumnas,
                     retornostr=True
                 ))
-            encabezados = rbd.getDato(
-                fila=params.RUTAS_BD["encabezados"],
-                columnas=ordenColumnas,
-                retornostr=True
-                )
+            encabezados = []
+            for columna in ordenColumnas:
+                encabezados.append(
+                     params.RUTAS_BD["encabezados_nombre"][columna]
+                     )
+            
         paquete["listaretiros"] = {"encabezados":encabezados,"datos":datos}
         paquete["bdrut"] = datos[0][2]
         paquete["bdnombre"] = datos[0][3]

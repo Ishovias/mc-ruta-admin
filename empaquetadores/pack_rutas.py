@@ -326,10 +326,8 @@ def empaquetador_registros_rutas(request: object) -> map:
         data: list = []
         
         with RutaBD() as rutabd:
-            encabezados = rutabd.extraefila(
-                fila=params.RUTAS_BD["encabezados"],
-                columnas=params.RUTAS_BD["columnas"]["todas"]
-            )
+            encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
+            encabezados.remove(encabezados[0])
             paquete["encabezados"] = encabezados
             maxfilas = rutabd.getmaxfilas()
             fila = params.RUTAS_BD["filainicial"]
