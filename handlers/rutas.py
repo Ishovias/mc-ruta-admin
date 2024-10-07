@@ -113,6 +113,29 @@ class RutaBD(bdmediclean):
                return False
           else:
                return True
+               
+     def kgtotales(self, fechainicio: str, fechafinal: str) -> str:
+          filainicio = super().busca_ubicacion(dato=str(fechainicio),columna="fecha")
+          filafinal = super().busca_ubicacion(dato=str(fechafinal),columna="fecha")
+          for i in range(filafinal, super().getmaxfilas(),1):
+               dato = super().getDato(fila=i,columna="fecha")
+               if str(dato) != str(fechafinal):
+                    filafinal = i
+                    break
+          items = {
+               "farmaco":0,
+               "patologico":0,
+               "contaminado":0,
+               "cortopunzante":0,
+               "otropeligroso":0,
+               "liquidorx":0
+          }
+          for item in items:
+               for f in range(filainicio,filafinal,1):
+                    dato = super().getDato(fila=f,columna=item)
+                    if dato:
+                         items[item] += int(dato)
+          return items
 
 class RutaImportar(bdmediclean):
      def __init__(self, archivo: str) -> None:

@@ -37,7 +37,18 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if "rutaResultado" in datos %}
-     {% if datos.fecha %} <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> {% endif %}
+     {% if datos.fecha %}
+     <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> 
+     <p>Kilos totales</p>
+     <ul>
+          <li>Farmaco: {{ datos.itemskg.farmaco }}kg</li>
+          <li>Patologico: {{ datos.itemskg.patologico }}kg</li>
+          <li>Contaminado: {{ datos.itemskg.contaminado }}kg</li>
+          <li>Cortopunzante: {{ datos.itemskg.cortopunzante }}kg</li>
+          <li>Otro Peligroso: {{ datos.itemskg.cortopunzante }}kg</li>
+          <li>Liquido RX: {{ datos.itemskg.liquidorx }}kg</li>
+     </ul>
+     {% endif %}
      <hr>
      <table class="tbresultados">
      <thead>

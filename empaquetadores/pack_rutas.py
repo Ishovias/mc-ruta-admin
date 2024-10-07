@@ -74,19 +74,20 @@ def empaquetador_rutaactual(request: object) -> map:
 
         with RutaRegistros() as rr:
             ubicacion = rr.busca_ubicacion(
-                dato=fecharetiro,
+                dato=str(fecharetiro),
                 columna="fecha"
             )
-            cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
-            for col in cols:
-                valorActual = rr.getDato(fila=ubicacion,columna=col)
-                valorSumando = request.form.get(col)
-                incremento = (int(valorActual) + int(valorSumando)) if valorActual else valorSumando
-                rr.putDato(
-                    fila=ubicacion,
-                    dato=incremento,
-                    columna=col
-                )
+            if ubicacion:
+                 cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
+                 for col in cols:
+                     valorActual = rr.getDato(fila=ubicacion,columna=col)
+                     valorSumando = request.form.get(col)
+                     incremento = (int(valorActual) + int(valorSumando)) if valorActual else valorSumando
+                     rr.putDato(
+                         fila=ubicacion,
+                         dato=incremento,
+                         columna=col
+                     )
 
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
@@ -346,6 +347,7 @@ def empaquetador_registros_rutas(request: object) -> map:
             maxfilas = rutabd.getmaxfilas()
             fila = params.RUTAS_BD["filainicial"]
             filasEncontradas = []
+            paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
             
             while(fila <= maxfilas):
                 filadatos = rutabd.buscadato(
