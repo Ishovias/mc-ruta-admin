@@ -71,12 +71,12 @@ def empaquetador_rutaactual(request: object) -> map:
         fecharetiro = datos_cliente_confirmado[0]
         rutcliente = datos_cliente_confirmado[2]
         # nombrecliente = datos_cliente_confirmado[3]
-
         with RutaRegistros() as rr:
             ubicacion = rr.busca_ubicacion(
                 dato=str(fecharetiro),
                 columna="fecha"
             )
+
             if ubicacion:
                  cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
                  for col in cols:
