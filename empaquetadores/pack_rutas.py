@@ -414,3 +414,4 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
             paquete["alerta"] = "Tipo de archivo no permitido"
     
     return paquete
+     

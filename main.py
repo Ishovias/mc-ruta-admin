@@ -14,6 +14,8 @@ app.config['UPLOAD_FOLDER'] = RUTA_IMPORTACION
 coder = codexpy2()
 sesion = SessionSingleton()
 
+# --------- APP MEDICLEAN RUTA -----------
+
 @app.route('/', methods=['GET','POST'])
 def index() -> render_template:
      if sesion.getAutenticado(request):
@@ -111,6 +113,16 @@ def uploadRuta() -> render_template:
           return redirect(url_for('login'))
      datos = empaquetador_carga_ruta(request,app)
      return render_template(datos["pagina"], datos=datos)
+
+@app.route('/inventarios', methods=['POST'])
+def invetarios() -> render_template:
+     if not sesion.getAutenticado(request):
+          return redirect(url_for('login'))
+     datos = empaquetador_inventarios(request)
+     return render_template(datos["pagina"], datos=datos)
+
+
+# --------- APP SUBLITOTE --------------
 
 @app.route('/sublitote/login', methods=['GET','POST'])
 def sublitote_login() -> render_template:
