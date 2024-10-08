@@ -193,28 +193,30 @@ INVENTARIOS = {
     "alcoholgel":20,
     "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
   }, 
-  "encabezados":1
+  "encabezados":1,
   "encabezados_nombre":[
-          "CAJA ROJA 0,5 LTS (x unidad)",
-          "CAJA ROJA 1 LTS (x unidad)",
-          "CAJA ROJA 1,3 LTS (x unidad)",
-          "CAJA ROJA 1,65 LTS (x unidad)",
-          "CAJA AMARILLA 1 LTS (x unidad)",
-          "CAJA AMARILLA 3 LTS (x unidad)",
-          "CAJA AMARILLA 5 LTS (x unidad)",
-          "CAJA AMARILLA 15 LTRS (x unidad)",
-          "BASURERO AMARILLO 120 LTRS (x unidad)",
-          "BOLSAS ROJAS (x unidad)",
-          "BOLSAS ROJAS FARNACOS (x unidad)",
-          "BOLSAS AMARILLAS (x unidad)",
-          "BIDON 5 LTS (x unidad)",
-          "FRASCO AMALGAMAS (x unidad)",
-          "TALONARIO GUIAS (x unidad)",
-          "PQTE. AMARRAS PLASTICAS",
-          "MASCARILLAS",
-          "GUANTES",
-          "ALCOHOL GEL"
-       ]
+    None,
+    "FECHA",
+    "CAJA ROJA 0,5 LTS (x unidad)",
+    "CAJA ROJA 1 LTS (x unidad)",
+    "CAJA ROJA 1,3 LTS (x unidad)",
+    "CAJA ROJA 1,65 LTS (x unidad)",
+    "CAJA AMARILLA 1 LTS (x unidad)",
+    "CAJA AMARILLA 3 LTS (x unidad)",
+    "CAJA AMARILLA 5 LTS (x unidad)",
+    "CAJA AMARILLA 15 LTRS (x unidad)",
+    "BASURERO AMARILLO 120 LTRS (x unidad)",
+    "BOLSAS ROJAS (x unidad)",
+    "BOLSAS ROJAS FARNACOS (x unidad)",
+    "BOLSAS AMARILLAS (x unidad)",
+    "BIDON 5 LTS (x unidad)",
+    "FRASCO AMALGAMAS (x unidad)",
+    "TALONARIO GUIAS (x unidad)",
+    "PQTE. AMARRAS PLASTICAS",
+    "MASCARILLAS",
+    "GUANTES",
+    "ALCOHOL GEL"
+    ]
 }
 
 

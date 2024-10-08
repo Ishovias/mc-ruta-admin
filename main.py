@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, render_template, url_for
 from coder.codexpy2 import codexpy2
 from empaquetadores.pack_clientes import empaquetador_clientes
+from empaquetadores.pack_inventarios import empaquetador_inventarios
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_st_productos import pack_st_cotizacion, pack_st_productos, pack_st_registros_cotizaciones
@@ -115,7 +116,7 @@ def uploadRuta() -> render_template:
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/inventarios', methods=['POST'])
-def invetarios() -> render_template:
+def inventarios() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
      datos = empaquetador_inventarios(request)

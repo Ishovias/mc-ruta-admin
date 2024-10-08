@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Ingresar inventario</h2>
+     <h2>(Ingreso)</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<p>Ingreso inventario</p>
+<form action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
+     <label for="fecha">Fecha: <input type="date" name="fecha"></label>
+     <label for="cajaroja_3">Cajas rojas 0,5 lts: <input type="number" name="cajaroja_3"></label>
+     <label for="cajaroja_1">Cajas rojas 1 lts: <input type="number" name="cajaroja_1"></label>
+</form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+{% endblock %}

@@ -164,12 +164,21 @@ html{
     padding: 8px;
     text-align: center;
     font-size: 0.7rem;
-
 }
 
 .tbresultados tr:hover {
     background-color: chocolate;
     transition: 300ms;
+}
+
+#inventarioactual {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: start;
+    width: fit-content;
+}
+
+#inventarioactual td{
+    border: 1px dashed;
 }
 
 .resultadoCodexpy {

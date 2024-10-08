@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Gestor de inventarios</h2>
+     <h2>(Registro historicos e inventario actual)</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<p>Stock actual:</p>
+<table id="inventarioactual">
+     <tbody>
+          <tr><td>Fecha</td><td><strong>{{ datos.ultimoinventario.0 }}</strong></td></tr>
+          <tr><td>Cajas rojas 0,5 lts</td><td>{{ datos.ultimoinventario.1 }} unidades</td></tr>
+          <tr><td>Cajas rojas 1 lts</td><td>{{ datos.ultimoinventario.2 }} unidades</td></tr>
+          <tr><td>Cajas rojas 1,3 lts</td><td>{{ datos.ultimoinventario.3 }} unidades</td></tr>
+          <tr><td>Cajas rojas 1,65 lts</td><td>{{ datos.ultimoinventario.4 }} unidades</td></tr>
+          <tr><td>Cajas amarillas 1 lts</td><td>{{ datos.ultimoinventario.5 }} unidades</td></tr>
+          <tr><td>Cajas amarillas 3 lts</td><td>{{ datos.ultimoinventario.6 }} unidades</td></tr>
+          <tr><td>Cajas amarillas 5 lts</td><td>{{ datos.ultimoinventario.7 }} unidades</td></tr>
+          <tr><td>Cajas amarillas 15 lts</td><td>{{ datos.ultimoinventario.8 }} unidades</td></tr>
+          <tr><td>Basurero amarillo 120 lts</td><td>{{ datos.ultimoinventario.9 }} unidades</td></tr>
+          <tr><td>Bolsas rojas</td><td>{{ datos.ultimoinventario.10 }} unidades</td></tr>
+          <tr><td>Bolsas rojas farmacos</td><td>{{ datos.ultimoinventario.11 }} unidades</td></tr>
+          <tr><td>Bolsas amarillas</td><td>{{ datos.ultimoinventario.12 }} unidades</td></tr>
+          <tr><td>Bidon 5 lts</td><td>{{ datos.ultimoinventario.13 }} unidades</td></tr>
+          <tr><td>Frasco amalgamas</td><td>{{ datos.ultimoinventario.14 }} unidades</td></tr>
+          <tr><td>Talonarios de guia</td><td>{{ datos.ultimoinventario.15 }} unidades</td></tr>
+          <tr><td>Paquetes amarras plasticas</td><td>{{ datos.ultimoinventario.16 }} unidades</td></tr>
+          <tr><td>Mascarillas</td><td>{{ datos.ultimoinventario.17 }} unidades</td></tr>
+          <tr><td>Guantes</td><td>{{ datos.ultimoinventario.18 }} unidades</td></tr>
+          <tr><td>Alcohol gel</td><td>{{ datos.ultimoinventario.19 }} unidades</td></tr>
+     </tbody>
+</table>
+<hr>
+<form class="formularioIngreso" action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
+     <button name="nuevoinventario">Nuevo inventario</button>
+</form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+<p>Listado de inventaios</p>
+<table class="tbresultados">
+     <thead>
+          <th>Accion</th>
+          {% for item in datos.listainventarios.encabezados %}
+               <th>{{ item }}</th>
+          {% endfor %}
+     </thead>
+     <tbody>
+          {% for fila in datos.listainventarios.datos %}
+               <tr>
+                    <td>
+                         <form action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
+                              <button name="modificarinventario">Modifica</button>
+                              <button name="eliminainventario">Elimina</button>
+                         </form>
+                    </td>
+                    {% for dato in fila %}
+                         <td>{{ dato }}</td>
+                    {% endfor %}
+               </tr>
+          {% endfor %}
+     </tbody>
+</table>
+{% endblock %}
