@@ -10,8 +10,27 @@
 <p>Ingreso inventario</p>
 <form action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
      <label for="fecha">Fecha: <input type="date" name="fecha"></label>
-     <label for="cajaroja_3">Cajas rojas 0,5 lts: <input type="number" name="cajaroja_3"></label>
-     <label for="cajaroja_1">Cajas rojas 1 lts: <input type="number" name="cajaroja_1"></label>
+     <label for="cajaroja_3">Cajas rojas 0,5 lts: 
+          <input type="number" name="cajaroja_3" id="actual_cajaroja_3">
+          <input type="number" name="sumar_cajaroja_3" id="sumar_cajaroja_3">
+          <button id=suma>+</button>
+          <script>
+               const botonsuma = document.getElementById("suma")
+               botonsuma.addEventListener("suma",calcula_inventario(actual_cajaroja_3,sumar_cajaroja_3))
+          </script>
+     </label>
+     <label for="cajaroja_1">Cajas rojas 1 lts: <input type="number" name="cajaroja_1" id="cajaroja_1"></label>
+     <label for="cajaroja_1.3">Cajas rojas 1,3 lts: <input type="number" name="cajaroja_1.3" id="cajaroja_1.3"></label>
+     <label for="cajaroja_1.65">Cajas rojas 1,65 lts: <input type="number" name="cajaroja_1.65" id="cajaroja_1.65"></label>
+     <label for="cajaamarilla_1">Cajas amarillas 1 lts: <input type="number" name="cajaamarilla_1" id="cajaamarilla_1"></label>
+     <label for="cajaamarilla_3">Cajas amarillas 3 lts: <input type="number" name="cajaamarilla_3" id="cajaamarilla_3"></label>
+     <label for="cajaamarilla_5">Cajas amarillas 5 lts: <input type="number" name="cajaamarilla_5" id="cajaamarilla_5"></label>
+     <label for="cajaamarilla_15">Cajas amarillas 15 lts: <input type="number" name="cajaamarilla_15" id="cajaamarilla_15"></label>
+     <label for="basureroamarillo_120">Basurero amarillo 120 lts: <input type="number" name="basureroamarillo_120" id="basureroamarillo_120"></label>
+     <label for="bolsaroja">Bolsas rojas: <input type="number" name="bolsaroja" id="bolsaroja"></label>
+     <label for="bolsaroja_farmaco">Bolsas rojas farmaco: <input type="number" name="bolsaroja_farmaco" id="bolsaroja_farmaco"></label>
+     <label for="bolsaamarilla">Bolsas amarillas: <input type="number" name="bolsaamarilla" id="bolsaamarilla"></label>
+     <label for="bidon_5">Bidones 5 lts: <input type="number" name="bolsaamarilla" id="bolsaamarilla"></label>
 </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
