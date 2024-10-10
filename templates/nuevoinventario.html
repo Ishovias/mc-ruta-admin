@@ -13,10 +13,11 @@
      <label for="cajaroja_3">Cajas rojas 0,5 lts: 
           <input type="number" name="cajaroja_3" id="actual_cajaroja_3">
           <input type="number" name="sumar_cajaroja_3" id="sumar_cajaroja_3">
-          <button id=suma>+</button>
+          <button id=suma onclick="calcular1()">+</button>
           <script>
-               const botonsuma = document.getElementById("suma")
-               botonsuma.addEventListener("suma",calcula_inventario(actual_cajaroja_3,sumar_cajaroja_3))
+               function calcular1(){
+                    const calcula_inventario("actual_cajaroja_3", "sumar_cajaroja_3");
+               }
           </script>
      </label>
      <label for="cajaroja_1">Cajas rojas 1 lts: <input type="number" name="cajaroja_1" id="cajaroja_1"></label>
