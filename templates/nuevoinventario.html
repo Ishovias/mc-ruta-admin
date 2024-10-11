@@ -8,7 +8,8 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 <p>Ingreso inventario</p>
-<form action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
+<!-- action="{{ url_for('inventarios', aut=datos.aut) }}" method="post" -->
+<form id="formularioinv">
      <label for="fecha">Fecha: <input type="date" name="fecha"></label>
      <label for="cajaroja_3">Cajas rojas 0,5 lts: 
           <input type="number" name="cajaroja_3" id="actual_cajaroja_3">
@@ -16,7 +17,9 @@
           <button id=suma onclick="calcular1()">+</button>
           <script>
                function calcular1(){
-                    const calcula_inventario("actual_cajaroja_3", "sumar_cajaroja_3");
+                    const valoractual = document.getElementById("actual_cajaroja_3");
+                    const sumatoria = calcula_inventario("actual_cajaroja_3", "sumar_cajaroja_3");
+                    valoractual.value = sumatoria;
                }
           </script>
      </label>
@@ -32,6 +35,7 @@
      <label for="bolsaroja_farmaco">Bolsas rojas farmaco: <input type="number" name="bolsaroja_farmaco" id="bolsaroja_farmaco"></label>
      <label for="bolsaamarilla">Bolsas amarillas: <input type="number" name="bolsaamarilla" id="bolsaamarilla"></label>
      <label for="bidon_5">Bidones 5 lts: <input type="number" name="bolsaamarilla" id="bolsaamarilla"></label>
+     <button type="submit">Enviar inventario</button>
 </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
