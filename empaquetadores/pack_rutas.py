@@ -88,6 +88,9 @@ def empaquetador_rutaactual(request: object) -> map:
                          dato=incremento,
                          columna=col
                      )
+            
+            cols = params.INVENTARIOS["columnas"].keys()
+            
 
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))

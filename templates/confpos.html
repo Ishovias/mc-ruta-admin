@@ -32,6 +32,10 @@
           <input name="otropeligroso" type="number" value="0" placeholder="kg" required>
           <label for="liquidorx">Liquidos RX(kg):</label>
           <input name="liquidorx" type="number" value="0" placeholder="kg" required>
+          {% for insumo, nombre in datos.insumos.items() %}
+               <label for="{{ insumo }}">{{ nombre }}:</label>
+               <input name="{{ insumo }}" type="number" value="0" placeholder="unidades" required>
+          {% endfor %}
           <!-- Campo de observaciones -->
           <label for="observacion">Observacion:</label>
                <!-- <input name="observacion" type="text" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro"> -->
