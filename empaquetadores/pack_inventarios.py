@@ -34,12 +34,15 @@ def empaquetador_inventarios(request: object) -> map:
      elif "enviarinventario" in request.form:
           with Inventario() as inv:
                nuevaUbicacion = inv.busca_ubicacion(columna="fecha")
+               actualizacionInv = {}
                for columna in params.INVENTARIOS["columnas"].keys():
                     if columna == "todas":
                          break
                     dato = request.form.get(columna)
                     inv.putDato(dato=dato,fila=nuevaUbicacion,columna=columna)
-     
+                    actualizacionInv[columna] = dato
+               if inv.actualizarStock(actualizacionInv):
+                    paquete["alerta"] = "Inventario grabado y Stock actualizado"
      
      paquete = defaultPage(paquete)
      

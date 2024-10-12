@@ -2,6 +2,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
+from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, priv
 import params
 import os
@@ -89,8 +90,19 @@ def empaquetador_rutaactual(request: object) -> map:
                          columna=col
                      )
             
-            cols = params.INVENTARIOS["columnas"].keys()
+        cols = list(params.INVENTARIOS["columnas"].keys())
+        cols.remove(cols[0])
+        cols.remove(cols[-1])
             
+        # Modifica del inventario el stock en base
+        # a lo que se informa al confirmar un cliente
+        with Inventario() as inv:
+            for col in cols:
+                 dato = int(request.form.get(col))
+                 inv.modificaStock(
+                      elemento=col,
+                      modificacion=-(dato)
+                      )
 
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
@@ -248,6 +260,8 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["clientefono"] = rutaactual.getDato(
                         fila=ubicacion_cliente,
                         columna="telefono")
+            with Inventario() as inv:
+                 paquete["insumos"] = inv.getStockActual()
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -278,6 +292,8 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["clientefono"] = rutaactual.getDato(
                         fila=ubicacion_cliente,
                         columna="telefono")
+            with Inventario() as inv:
+                 paquete["insumos"] = inv.getStockActual()
 
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:

@@ -24,7 +24,7 @@ class Inventario(bdmediclean):
                     columna=columna
                )
                i = columnasSeleccionadas.index(columna)
-               datos[nombresColumnas[i]] = dato
+               datos[nombresColumnas[i]] = {"stock":dato,"columna":columna}
 
           return datos
 
@@ -41,3 +41,32 @@ class Inventario(bdmediclean):
                fila=filaStock,
                columna=elemento
           )
+          
+     def actualizarStock(self, inventario: map) -> bool:
+          for columna, valor in inventario.items():
+               super().putDato(
+                    dato=valor,
+                    fila=params.INVENTARIOS["filaStockActual"],
+                    columna=columna
+                    )
+          else:
+               return True
+          return False
+     def obtenerInventario(self, fecha: str) -> map:
+          columnas = list(params.INVENTARIOS["columnas"].keys())
+          del(columnas["todas"])
+          datos = {}
+          ubicacion = super().busca_ubicacion(dato=fecha,columna="fecha")
+          if not ubicacion:
+               return None
+          for columna in columnas:
+               dato = super().getDato(
+                    fila=ubicacion,
+                    columna=columna
+                    )
+               if not dato:
+                    dato = 0
+               datos[columna] = dato
+          else:
+               return datos
+          return None

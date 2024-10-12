@@ -11,7 +11,7 @@
 <table id="inventarioactual">
      <tbody>
           {% for columna, dato in datos.stockActual.items() %}
-               <tr><td>{{ columna }}</td><td>{{ dato }} unidades</td></tr>
+               <tr><td>{{ columna }}</td><td>{{ dato.stock }} unidades</td></tr>
           {% endfor %}
      </tbody>
 </table>
