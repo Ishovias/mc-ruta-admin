@@ -31,7 +31,7 @@ class bdmediclean:
         return self.maxfilas
 
     def contarfilas(self) -> int:
-        filas = 1
+        filas = self.hoja_actual["filainicial"]
         while True:
             celda = self.hojabd.cell(row=filas,column=1)
             if celda.value != None:
