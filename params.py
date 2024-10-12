@@ -168,8 +168,9 @@ GASTOS_BD = {
 }
 
 INVENTARIOS = {
-  "nombrehoja":"inventarios", 
-  "filainicial":2,
+  "nombrehoja":"inventarios",
+  "filaStockActual":2,
+  "filainicial":4,
   "columnas":{
     "fecha":1,
     "cajaroja_3":2,
@@ -207,7 +208,7 @@ INVENTARIOS = {
     "CAJA AMARILLA 15 LTRS (x unidad)",
     "BASURERO AMARILLO 120 LTRS (x unidad)",
     "BOLSAS ROJAS (x unidad)",
-    "BOLSAS ROJAS FARNACOS (x unidad)",
+    "BOLSAS ROJAS FARMACOS (x unidad)",
     "BOLSAS AMARILLAS (x unidad)",
     "BIDON 5 LTS (x unidad)",
     "FRASCO AMALGAMAS (x unidad)",
