@@ -261,7 +261,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="telefono")
             with Inventario() as inv:
-                 paquete["insumos"] = inv.getStockActual()
+                paquete["insumos"] = inv.getStockActual(columnas=inv.getListaItems("cajaroja_3","frascoamalgama"))
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -293,7 +293,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="telefono")
             with Inventario() as inv:
-                 paquete["insumos"] = inv.getStockActual()
+                paquete["insumos"] = inv.getStockActual()
 
     elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
         with RutaActual() as ra:

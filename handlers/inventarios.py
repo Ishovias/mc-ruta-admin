@@ -7,16 +7,34 @@ class Inventario(bdmediclean):
      def __init__(self) -> None:
           super().__init__(params.INVENTARIOS)
 
-     def getStockActual(self) -> map:
+     def getListaItems(self, nombreDesde: str, nombreHasta: str) -> list:
+          desde = False
+          listaItems = []
+          for elemento in self.hoja_actual["columnas"].keys():
+               if nombreDesde == elemento:
+                    desde = True
+                    listaItems.append(elemento)
+               elif nombreHasta == elemento:
+                    listaItems.append(elemento)
+                    break
+               elif desde:
+                    listaItems.append(elemento)
+          return listaItems
+
+     def getStockActual(self, columnas: list=None) -> map:
           datos = {}
           
-          columnasSeleccionadas = list(params.INVENTARIOS["columnas"].keys())
-          columnasSeleccionadas.remove(columnasSeleccionadas[0])
-          columnasSeleccionadas.remove(columnasSeleccionadas[-1])
+          if columnas and type(columnas) == list:
+               columnasSeleccionadas = columnas
+          else:
+               columnasSeleccionadas = list(params.INVENTARIOS["columnas"].keys())
+               columnasSeleccionadas.remove(columnasSeleccionadas[0])
+               columnasSeleccionadas.remove(columnasSeleccionadas[-1])
 
-          nombresColumnas = params.INVENTARIOS["encabezados_nombre"].copy()
-          nombresColumnas.remove(nombresColumnas[0])
-          nombresColumnas.remove(nombresColumnas[0])
+          nombresColumnas = []
+          for columna in columnasSeleccionadas:
+               indice = self.hoja_actual["columnas"][columna]
+               nombresColumnas.append(params.INVENTARIOS["encabezados_nombre"][indice])
           
           for columna in columnasSeleccionadas:
                dato = super().getDato(
