@@ -20,12 +20,18 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr {% if fila.7 == "DEUDA" or fila.7 == "deuda" %} style="background-color: pink;" {% endif %}>
+                    <tr 
+                    {% if fila.7 == "DEUDA" or fila.7 == "deuda" %} 
+                         style="background-color: pink;" 
+                    {% elif "RETIRO EN CAMINO" in fila.7 %}
+                         style="background-color: lightgreen;" 
+                    {% endif %}>
                     {% for data in fila %}
                          <td>{{ data }}</td>
                     {% endfor %}
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
+                              <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>ENCAM</button>
                               <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
                               <button type="submit" name="cliente_ruta_posponer" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
                          </form>

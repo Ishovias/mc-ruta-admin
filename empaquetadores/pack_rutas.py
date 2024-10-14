@@ -42,6 +42,9 @@ def empaquetador_rutaactual(request: object) -> map:
         datos_cliente_confirmado = []
         with RutaActual() as rutaactualbd:
             datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
+            notas = datos_cliente_confirmado[-2]
+            if "RETIRO EN CAMINO" in notas:
+                 datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
             datos_cliente_confirmado.append(request.form.get("farmaco"))
@@ -90,13 +93,11 @@ def empaquetador_rutaactual(request: object) -> map:
                          columna=col
                      )
             
-        cols = list(params.INVENTARIOS["columnas"].keys())
-        cols.remove(cols[0])
-        cols.remove(cols[-1])
             
         # Modifica del inventario el stock en base
         # a lo que se informa al confirmar un cliente
         with Inventario() as inv:
+            cols = inv.getListaItems("cajaroja_3","frascoamalgama")
             for col in cols:
                  dato = int(request.form.get(col))
                  inv.modificaStock(
@@ -318,6 +319,23 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["alerta"] = "Cliente MANUAL agregado a ruta"
             else:
                 paquete["alerta"] = "ERROR al intentar ingresar cliente MANUAL"
+
+    elif "enCamino" in request.form and priv[usuario]["cpEnabled"] == "enabled":
+         with RutaActual() as ra:
+              filaCliente = int(request.form.get("enCamino")) + 2
+              observacion = ra.getDato(
+                   fila=filaCliente,
+                   columna="otro"
+                   )
+              if "RETIRO EN CAMINO" in observacion:
+                   observacion = observacion.replace(" (RETIRO EN CAMINO)","")
+              else:
+                   observacion += " (RETIRO EN CAMINO)"
+              ra.putDato(
+                   dato=observacion,
+                   fila=filaCliente,
+                   columna="otro"
+                   )
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
