@@ -20,6 +20,7 @@
           <input name="clientefono" type="text" value="{{ datos.clientefono }}" readonly>
           <hr>
           <!-- Datos modificables -->
+          <p>------ Registro pesaje -----</p>
           <label for="farmaco">Farmaco(kg):</label>
           <input name="farmaco" type="number" value="0" placeholder="kg" required>
           <label for="patologico">Patologico(kg):</label>
@@ -32,10 +33,14 @@
           <input name="otropeligroso" type="number" value="0" placeholder="kg" required>
           <label for="liquidorx">Liquidos RX(kg):</label>
           <input name="liquidorx" type="number" value="0" placeholder="kg" required>
+          <hr>
+          <p>------ Registro insumos -----</p>
           {% for nombre, valor in datos.insumos.items() %}
                <label for="{{ valor.columna }}">{{ nombre }}:</label>
                <input name="{{ valor.columna }}" type="number" value="0" placeholder="{{ valor.stock }} Stock" required>
           {% endfor %}
+          <hr>
+          <p>------ OTROS DETALLES -----</p>
           <!-- Campo de observaciones -->
           <label for="observacion">Observacion:</label>
                <!-- <input name="observacion" type="text" placeholder="Ej. retiro 3 cajas de 3 litros, cliente pide caja extra prox retiro"> -->

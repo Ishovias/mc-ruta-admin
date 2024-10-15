@@ -21,17 +21,27 @@
           <tbody>
                {% for fila in datos.rutaLista.datos %}
                     <tr 
-                    {% if fila.7 == "DEUDA" or fila.7 == "deuda" %} 
+                    {% if "DEUDA" in fila.7 or "deuda" in fila.7 %} 
                          style="background-color: pink;" 
                     {% elif "RETIRO EN CAMINO" in fila.7 %}
                          style="background-color: lightgreen;" 
+                    {% elif "APLAZADO" in fila.7 %}
+                         style="background-color: lightgray;" 
                     {% endif %}>
                     {% for data in fila %}
                          <td>{{ data }}</td>
                     {% endfor %}
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
-                              <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>ENCAM</button>
+                              <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>
+                                   {% if "RETIRO EN CAMINO" in fila.7 %}
+                                   APLAZ
+                                   {% elif "APLAZADO" in fila.7 %}
+                                   DESM
+                                   {% else %}
+                                   ENCAM
+                                   {% endif %}
+                              </button>
                               <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
                               <button type="submit" name="cliente_ruta_posponer" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
                          </form>
@@ -85,6 +95,7 @@
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
+{% if datos.ruta %}
 <label class="formularioIngreso" for="clientemanual">Agragar cliente manual</label>
 <form class="formularioIngreso" name="clientemanual" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
      <label for="rut">Rut:</label>
@@ -103,4 +114,5 @@
      <input name="otro" type="text" placeholder="Alguna observacion como horario u otro">
      <button type="submit" name="agregaclientemanual" value="{{ datos.rutaActiva }}" {{ datos.inirutaEnabled }}>Agrega cliente manual</button>
 </form>
+{% endif %}
 {% endblock %}

@@ -262,7 +262,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="telefono")
             with Inventario() as inv:
-                paquete["insumos"] = inv.getStockActual(columnas=inv.getListaItems("cajaroja_3","frascoamalgama"))
+                paquete["insumos"] = inv.getStockActual(columnas=inv.getListaItems("cajaroja_0.5","frascoamalgama"))
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
@@ -329,6 +329,9 @@ def empaquetador_rutaactual(request: object) -> map:
                    )
               if "RETIRO EN CAMINO" in observacion:
                    observacion = observacion.replace(" (RETIRO EN CAMINO)","")
+                   observacion += " (RETIRO APLAZADO)"
+              elif "APLAZADO" in observacion:
+                   observacion = observacion.replace(" (RETIRO APLAZADO)","")
               else:
                    observacion += " (RETIRO EN CAMINO)"
               ra.putDato(
@@ -336,6 +339,8 @@ def empaquetador_rutaactual(request: object) -> map:
                    fila=filaCliente,
                    columna="otro"
                    )
+              if "EN CAMIMO" in observacion:
+                   paquete["alerta"] = "Cliente marcado como en camimo a retirar"
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
