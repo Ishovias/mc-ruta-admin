@@ -20,13 +20,14 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr 
-                    {% if "DEUDA" in fila.7 or "deuda" in fila.7 %} 
-                         style="background-color: pink;" 
-                    {% elif "RETIRO EN CAMINO" in fila.7 %}
-                         style="background-color: lightgreen;" 
-                    {% elif "APLAZADO" in fila.7 %}
-                         style="background-color: lightgray;" 
+                    <tr {% if "DEUDA" in fila.7 or "deuda" in fila.7 or "RETIRO EN CAMINO" in fila.7 or "APLAZADO" in fila.7 %} 
+                         {% if "RETIRO EN CAMINO" in fila.7 %}
+                              style="background-color: lightgreen;" 
+                         {% elif "APLAZADO" in fila.7 %}
+                              style="background-color: cornflowerblue;" 
+                         {% else %}
+                              style="background-color: pink;" 
+                         {% endif %}
                     {% endif %}>
                     {% for data in fila %}
                          <td>{{ data }}</td>
@@ -35,11 +36,11 @@
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
                               <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>
                                    {% if "RETIRO EN CAMINO" in fila.7 %}
-                                   APLAZ
+                                        APLAZ
                                    {% elif "APLAZADO" in fila.7 %}
-                                   DESM
+                                        DESM
                                    {% else %}
-                                   ENCAM
+                                        ENCAM
                                    {% endif %}
                               </button>
                               <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>

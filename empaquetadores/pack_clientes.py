@@ -131,8 +131,8 @@ def empaquetador_clientes(request: object) -> map:
             encabezados = []
             for columna in ordenColumnas:
                 encabezados.append(
-                     params.RUTAS_BD["encabezados_nombre"][columna]
-                     )
+                    params.RUTAS_BD["encabezados_nombre"][columna]
+                    )
             
         paquete["listaretiros"] = {"encabezados":encabezados,"datos":datos}
         paquete["bdrut"] = datos[0][2]

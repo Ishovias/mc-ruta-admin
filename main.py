@@ -48,11 +48,13 @@ def clientes() -> render_template:
      datos = empaquetador_clientes(request)
      return render_template(datos["pagina"], datos=datos)
 
-@app.route('/rutaactual', methods=['POST'])
+@app.route('/rutaactual', methods=['POST','GET'])
 def rutaactual() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
      datos = empaquetador_rutaactual(request)
+     if "redireccionar" in datos:
+          return redirect(url_for(datos["redireccionar"], aut=datos["aut"]))
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/rutas', methods=['POST'])

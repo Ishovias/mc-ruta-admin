@@ -44,7 +44,7 @@ def empaquetador_rutaactual(request: object) -> map:
             datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
             notas = datos_cliente_confirmado[-2]
             if "RETIRO EN CAMINO" in notas:
-                 datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
+                datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
             datos_cliente_confirmado.append(request.form.get("farmaco"))
@@ -82,16 +82,16 @@ def empaquetador_rutaactual(request: object) -> map:
             )
 
             if ubicacion:
-                 cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
-                 for col in cols:
-                     valorActual = rr.getDato(fila=ubicacion,columna=col)
-                     valorSumando = request.form.get(col)
-                     incremento = (int(valorActual) + int(valorSumando)) if valorActual else valorSumando
-                     rr.putDato(
-                         fila=ubicacion,
-                         dato=incremento,
-                         columna=col
-                     )
+                cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
+                for col in cols:
+                    valorActual = rr.getDato(fila=ubicacion,columna=col)
+                    valorSumando = request.form.get(col)
+                    incremento = (int(valorActual) + int(valorSumando)) if valorActual else valorSumando
+                    rr.putDato(
+                        fila=ubicacion,
+                        dato=incremento,
+                        columna=col
+                    )
             
             
         # Modifica del inventario el stock en base
@@ -99,11 +99,11 @@ def empaquetador_rutaactual(request: object) -> map:
         with Inventario() as inv:
             cols = inv.getListaItems("cajaroja_3","frascoamalgama")
             for col in cols:
-                 dato = int(request.form.get(col))
-                 inv.modificaStock(
-                      elemento=col,
-                      modificacion=-(dato)
-                      )
+                dato = int(request.form.get(col))
+                inv.modificaStock(
+                    elemento=col,
+                    modificacion=-(dato)
+                    )
 
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
@@ -321,26 +321,25 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["alerta"] = "ERROR al intentar ingresar cliente MANUAL"
 
     elif "enCamino" in request.form and priv[usuario]["cpEnabled"] == "enabled":
-         with RutaActual() as ra:
-              filaCliente = int(request.form.get("enCamino")) + 2
-              observacion = ra.getDato(
-                   fila=filaCliente,
-                   columna="otro"
-                   )
-              if "RETIRO EN CAMINO" in observacion:
-                   observacion = observacion.replace(" (RETIRO EN CAMINO)","")
-                   observacion += " (RETIRO APLAZADO)"
-              elif "APLAZADO" in observacion:
-                   observacion = observacion.replace(" (RETIRO APLAZADO)","")
-              else:
-                   observacion += " (RETIRO EN CAMINO)"
-              ra.putDato(
-                   dato=observacion,
-                   fila=filaCliente,
-                   columna="otro"
-                   )
-              if "EN CAMIMO" in observacion:
-                   paquete["alerta"] = "Cliente marcado como en camimo a retirar"
+        with RutaActual() as ra:
+            filaCliente = int(request.form.get("enCamino")) + 2
+            observacion = ra.getDato(
+                fila=filaCliente,
+                columna="otro"
+                )
+            if "RETIRO EN CAMINO" in observacion:
+                observacion = observacion.replace(" (RETIRO EN CAMINO)","")
+                observacion += " (RETIRO APLAZADO)"
+            elif "APLAZADO" in observacion:
+                observacion = observacion.replace(" (RETIRO APLAZADO)","")
+            else:
+                observacion += " (RETIRO EN CAMINO)"
+            ra.putDato(
+                dato=observacion,
+                fila=filaCliente,
+                columna="otro"
+                )
+            paquete["redireccionar"] = "rutaactual"
 
     with RutaActual() as ractualbd:
         rutaActiva = ractualbd.getDato(identificador="rutaencurso")
