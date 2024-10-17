@@ -92,12 +92,12 @@
 {% if "modificacion" in datos %}
      <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <label for="nombre">Nombre:</label><br>
-          <input name="nombre" value="{{ datos.modificacion.2 }}" required>
+          <input name="nombre" value="{{ datos.modificacion.0 }}" required>
           <label for="rut">RUT:</label><br>
           <input name="rut" value="{{ datos.modificacion.1 }}" required>
           <label for="estado">ESTADO:</label><br>
           <select name="estado">
-               <option value="default">{{ datos.modificacion.0 }}</option>
+               <option value="default">{{ datos.modificacion.2 }}</option>
                <option value="activo">Activo</option>
                <option value="de baja">De Baja</option>
                <option value="suspendido">Suspendido</option>

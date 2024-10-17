@@ -44,7 +44,7 @@ class Clientes(bdmediclean):
             return True
         return False
     
-    def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
+    def busca_datoscliente(self, nombre: str, filtro: str="cliente", columnasSeleccionadas: list=None) -> list:
         ubicacion = super().buscadato(
             self.hoja_actual["filainicial"],
             self.hoja_actual["columnas"][filtro],
@@ -52,9 +52,7 @@ class Clientes(bdmediclean):
             )
         if ubicacion == 0:
             return 0
-        datos = super().extraefila(
-            fila=ubicacion,
-            columnas=[
+        columnas=[
                 self.hoja_actual["columnas"]["rut"],
                 self.hoja_actual["columnas"]["cliente"],
                 self.hoja_actual["columnas"]["direccion"],
@@ -62,7 +60,8 @@ class Clientes(bdmediclean):
                 self.hoja_actual["columnas"]["telefono"],
                 self.hoja_actual["columnas"]["diascontrato"],
                 self.hoja_actual["columnas"]["otro"]
-            ])
+            ] if not columnasSeleccionadas else columnasSeleccionadas 
+        datos = super().extraefila(fila=ubicacion,columnas=columnas)
         return datos
     
     def estado_cliente(self, rut: str, estado: str) -> bool:
@@ -101,7 +100,7 @@ class Clientes(bdmediclean):
         fecharetiro = date.fromisoformat(fecharetiro)
         proxretiro = date.isoformat(fecharetiro + lapso)
         return proxretiro
-        
+
     def guardar_modificacion(self, rut: str, data: list) -> bool:
         fila = super().busca_ubicacion(rut,"rut")
         try:

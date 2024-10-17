@@ -81,8 +81,17 @@ def empaquetador_clientes(request: object) -> map:
         resultados = ""
         with Clientes() as clientesbd:
             identificador = request.form.get("modificaCliente")
-            resultados = clientesbd.busca_datoscliente(identificador,"rut")
-            cimprime(datos=resultados)
+            ordenColumnas = [
+                params.CLIENTES["columnas"]["cliente"],
+                params.CLIENTES["columnas"]["rut"],
+                params.CLIENTES["columnas"]["estado"],
+                params.CLIENTES["columnas"]["direccion"],
+                params.CLIENTES["columnas"]["comuna"],
+                params.CLIENTES["columnas"]["telefono"],
+                params.CLIENTES["columnas"]["diascontrato"],
+                params.CLIENTES["columnas"]["otro"]
+            ]
+            resultados = clientesbd.busca_datoscliente(identificador,"rut",ordenColumnas)
         paquete["modificacion"] = resultados
     
     elif "aRuta" in request.form  and priv[usuario]["arutaEnabled"] == "enabled":
