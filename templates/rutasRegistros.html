@@ -10,6 +10,12 @@
 {% if "rutaLista" in datos %}
           <p class="tituloscentrados">{{ datos.ruta }}</p>
           <hr>
+          <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
+               <button name="lista_eliminacion" value="lista_eliminacion">Lista eliminacion</button>
+               <button name="eliminar_desechos" value="eliminar_desechos">Eliminar desechos</button>
+               <button name="cancelar_eliminacion" value="cancelar_eliminacion">Cancelar eliminacion</button>
+          </form>
+          <hr>
           <table class="tbresultados">
           <thead>
                     <th>DETALLES</th>
@@ -55,13 +61,25 @@
           {% for dato in datos.encabezados %}
                <th>{{ dato }}</th>
           {% endfor %}
+          <th>IDX</th>
+          <th>Acciones</th>
      </thead>
      <tbody>
           {% for fila in datos.rutaResultado %}
-               <tr {% if fila.10 == "POSPUESTO" %} style="background-color: red;" {% endif %}>
+               <tr 
+               {% if fila.10 == "POSPUESTO" %} 
+                    style="background-color: red;" 
+               {% elif fila.8 == "FASE_ELIMINACION" %}
+                    style="background-color: yellow;" 
+               {% endif %}>
                {% for data in fila %}
                     <td>{{ data }}</td>
                {% endfor %}
+                    <td>
+                         <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
+                              <button name="agrega_eliminacion" value="{{ fila.18 }}">ELIM</button>
+                         </form>
+                    </td>
                </tr>
           {% endfor %}
      </tbody>

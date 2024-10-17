@@ -1,9 +1,9 @@
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from datetime import datetime, date
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, priv
+from helpers import mensajes, privilegios, priv, constructor_paquete
 import params
 import os
 
@@ -377,18 +377,14 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")
-        paquete["fecha"] = fecha
-        
         data: list = []
         
         with RutaBD() as rutabd:
             encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
             encabezados.remove(encabezados[0])
-            paquete["encabezados"] = encabezados
             maxfilas = rutabd.getmaxfilas()
             fila = params.RUTAS_BD["filainicial"]
             filasEncontradas = []
-            paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
             
             while(fila <= maxfilas):
                 filadatos = rutabd.buscadato(
@@ -407,10 +403,67 @@ def empaquetador_registros_rutas(request: object) -> map:
                         fila=f,
                         columnas=params.RUTAS_BD["columnas"]["todas"]
                         )
+                recopilado.append(f)
                 data.append(recopilado)
-
+                
+        paquete["encabezados"] = encabezados
+        paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
+        paquete["fecha"] = fecha
         paquete["rutaResultado"] = data
-            
+
+    elif "agrega_eliminacion" in request.form:
+         with RutaBD() as rbd:     
+              ubicacionCliente = request.form.get("agrega_eliminacion")
+              rbd.putDato(
+                   fila=int(ubicacionCliente),
+                   dato="FASE_ELIMINACION",
+                   columna="otro"
+                   )
+     
+    elif "lista_eliminacion" in request.form:
+         encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
+         encabezados.remove(encabezados[0])
+         
+         with RutaBD() as rbd:
+              filashalladas = rbd.buscadato(
+                   filainicio=rbd.hoja_actual["filainicial"], 
+                   columna=rbd.hoja_actual["columnas"]["otro"], 
+                   dato="FASE_ELIMINACION", 
+                   exacto=True, 
+                   buscartodo=True
+                   )
+              data = []
+              for fila in filashalladas:
+                   recopilado = rbd.extraefila(
+                        fila=fila,
+                        columnas=params.RUTAS_BD["columnas"]["todas"]
+                        )
+                   data.append(recopilado)
+                   rbd.kgtotales(filaCliente=fila)
+              totalKilos = rbd.getKilos()
+              paquete["itemskg"] = totalKilos.copy()
+              rbd.eliminaKilosRegistrados()
+
+         paquete["encabezados"] = encabezados
+         paquete["fecha"] = "Objetos en fase de eliminacion"
+         paquete["rutaResultado"] = data
+
+    elif "eliminar_desechos" in request.form:
+         with RutaBD() as rbd:
+              listaFilas = rbd.buscadato(
+                   filainicio=rbd.hoja_actual["filainicial"], 
+                   columna=rbd.hoja_actual["columnas"]["otro"], 
+                   dato="FASE_ELIMINACION", 
+                   buscartodo=True
+                   )
+              for fila in listaFilas:
+                   rbd.putDato(
+                        dato=f"ELIMINADO-{date.isoformat(date.today())}",
+                        fila=fila,
+                        columna="otro"
+                        )
+              
+         
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
 
@@ -455,4 +508,4 @@ def empaquetador_carga_ruta(request: object, app: object) -> map:
             paquete["alerta"] = "Tipo de archivo no permitido"
     
     return paquete
-     
+

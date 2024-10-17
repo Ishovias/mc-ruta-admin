@@ -93,7 +93,16 @@ class RutaRegistros(bdmediclean):
           return False
 
 class RutaBD(bdmediclean):
-
+     
+     kilosItems = {
+          "farmaco":0,
+          "patologico":0,
+          "contaminado":0,
+          "cortopunzante":0,
+          "otropeligroso":0,
+          "liquidorx":0
+          }
+     
      def __init__(self) -> None:
           super().__init__(params.RUTAS_BD)
 
@@ -110,28 +119,47 @@ class RutaBD(bdmediclean):
           else:
                return True
                
-     def kgtotales(self, fechainicio: str, fechafinal: str) -> str:
-          filainicio = super().busca_ubicacion(dato=str(fechainicio),columna="fecha")
-          filafinal = super().busca_ubicacion(dato=str(fechafinal),columna="fecha")
-          for i in range(filafinal, super().getmaxfilas(),1):
-               dato = super().getDato(fila=i,columna="fecha")
-               if str(dato) != str(fechafinal):
-                    filafinal = i
-                    break
+     def kgtotales(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
           items = {
-               "farmaco":0,
-               "patologico":0,
-               "contaminado":0,
-               "cortopunzante":0,
-               "otropeligroso":0,
-               "liquidorx":0
-          }
-          for item in items:
-               for f in range(filainicio,filafinal,1):
-                    dato = super().getDato(fila=f,columna=item)
+                    "farmaco":0,
+                    "patologico":0,
+                    "contaminado":0,
+                    "cortopunzante":0,
+                    "otropeligroso":0,
+                    "liquidorx":0
+               }
+          if fechainicio and fechafinal:
+               filainicio = super().busca_ubicacion(dato=str(fechainicio),columna="fecha")
+               filafinal = super().busca_ubicacion(dato=str(fechafinal),columna="fecha")
+               for i in range(filafinal, super().getmaxfilas(),1):
+                    dato = super().getDato(fila=i,columna="fecha")
+                    if str(dato) != str(fechafinal):
+                         filafinal = i
+                         break
+               for item in items:
+                    for f in range(filainicio,filafinal,1):
+                         dato = super().getDato(fila=f,columna=item)
+                         if dato:
+                              items[item] += int(dato)
+                              self.kilosItems[item] += int(dato)
+               return items
+          
+          if filaCliente:
+               for item in items:
+                    dato = super().getDato(fila=filaCliente,columna=item)
                     if dato:
                          items[item] += int(dato)
-          return items
+                         self.kilosItems[item] += int(dato)
+               return items
+          
+          return None
+
+     def getKilos(self) -> map:
+          return self.kilosItems
+
+     def eliminaKilosRegistrados(self) -> None:
+          for item in self.kilosItems:
+               self.kilosItems[item] = 0
 
 class RutaImportar(bdmediclean):
      def __init__(self, archivo: str) -> None:
