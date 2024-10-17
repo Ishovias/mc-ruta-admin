@@ -247,12 +247,17 @@ class bdmediclean:
         self.hojabd.insert_rows(filainsercion)
         self.datosPorGuardar = True
 
-    def idActual(self, filainicial: int, columna: int, encabezado: str) -> int:
-        for fila in range(filainicial,self.maxfilas,1):
-            celda = self.hojabd.cell(row=fila,column=columna)
-            celdaAnterior = self.hojabd.cell(row=(fila-1),column=columna)
+    def idActual(self, columna: str) -> int:
+        for fila in range(self.hoja_actual["filainicial"],self.maxfilas,1):
+            col = self.hoja_actual["columnas"][columna]
+            celda = self.hojabd.cell(row=fila,column=col)
+            celdaAnterior = self.hojabd.cell(row=(fila-1),column=col)
+            encabezados = self.getDato(
+                 fila=self.hoja_actual["encabezados"],
+                 columnas=self.hoja_actual["columnas"]["todas"]
+                 )
             if celda.value == None:
-                if celdaAnterior.value == encabezado:
+                if celdaAnterior.value in encabezados:
                     return 1
                 else:
                     return int(celdaAnterior.value)+1

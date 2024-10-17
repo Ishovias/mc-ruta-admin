@@ -82,6 +82,7 @@ def empaquetador_clientes(request: object) -> map:
         with Clientes() as clientesbd:
             identificador = request.form.get("modificaCliente")
             resultados = clientesbd.busca_datoscliente(identificador,"rut")
+            cimprime(datos=resultados)
         paquete["modificacion"] = resultados
     
     elif "aRuta" in request.form  and priv[usuario]["arutaEnabled"] == "enabled":
@@ -98,7 +99,6 @@ def empaquetador_clientes(request: object) -> map:
             cliente = []
             with Clientes() as clientesbd:
                 cliente = clientesbd.busca_datoscliente(identificador,"rut")
-                cliente.remove(cliente[0]) # olculta eliminando el indicador estado del cliente, innecesario para lista de ruta
 
             aruta = False
             with RutaActual() as rutaactualbd:
