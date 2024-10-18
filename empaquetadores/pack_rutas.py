@@ -441,6 +441,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                 buscartodo=True
                 )
             data = []
+            rbd.eliminaKilosRegistrados()
             for fila in filashalladas:
                 recopilado = rbd.extraefila(
                     fila=fila,
@@ -450,7 +451,6 @@ def empaquetador_registros_rutas(request: object) -> map:
                 rbd.kgtotales(filaCliente=fila)
             totalKilos = rbd.getKilos()
             paquete["itemskg"] = totalKilos.copy()
-            rbd.eliminaKilosRegistrados()
 
         paquete["encabezados"] = encabezados
         paquete["fecha"] = "Objetos en fase de eliminacion"
@@ -474,12 +474,20 @@ def empaquetador_registros_rutas(request: object) -> map:
                 clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
 
         with RetirosEliminados() as relim:
+            fila = relim.busca_ubicacion(columna="fecha")
             for eliminado in clientesEliminados:
                 relim.putDato(
                     datos=eliminado, 
-                    fila=relim.busca_ubicacion(columna="fecha"), 
+                    fila=fila, 
                     columna="fecha"
                     )
+                fila += 1
+
+    elif "cancelar_eliminacion"in request.form:
+         with RutaBD() as rbd:
+              rbd.busca_ubicacion(
+                   fila=
+                   )
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
