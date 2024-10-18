@@ -71,6 +71,8 @@
                     style="background-color: red;" 
                {% elif fila.8 == "FASE_ELIMINACION" %}
                     style="background-color: yellow;" 
+               {% elif "ELIMINADO" in fila.8 %}
+                    style="background-color: gray;" 
                {% endif %}>
                {% for data in fila %}
                     <td>{{ data }}</td>

@@ -414,12 +414,19 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     elif "agrega_eliminacion" in request.form:
         with RutaBD() as rbd:     
-            ubicacionCliente = request.form.get("agrega_eliminacion")
-            rbd.putDato(
-                fila=int(ubicacionCliente),
-                dato="FASE_ELIMINACION",
+            ubicacionCliente = int(request.form.get("agrega_eliminacion"))
+            estadoRetiro = rbd.getDato(
+                fila=ubicacionCliente,
                 columna="otro"
-                )
+            )
+            if "ELIMINADO" not in estadoRetiro:
+                rbd.putDato(
+                    fila=int(ubicacionCliente),
+                    dato="FASE_ELIMINACION",
+                    columna="otro"
+                    )
+            else:
+                paquete["alerta"] = "Retiro ya eliminado en disposicion final"
     
     elif "lista_eliminacion" in request.form:
         encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
@@ -467,6 +474,12 @@ def empaquetador_registros_rutas(request: object) -> map:
                 clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
 
         with RetirosEliminados() as relim:
+            for eliminado in clientesEliminados:
+                relim.putDato(
+                    datos=eliminado, 
+                    fila=relim.busca_ubicacion(columna="fecha"), 
+                    columna="fecha"
+                    )
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
