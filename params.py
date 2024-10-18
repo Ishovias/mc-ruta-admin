@@ -222,6 +222,31 @@ INVENTARIOS = {
     ]
 }
 
+RETIROS_ELIMINADOS = {
+  "nombrehoja":"retiros_eliminados", 
+  "filainicial":2,
+  "columnas":{
+    "fecha":1,
+    "id":2,
+    "rut":3,
+    "cliente":4,
+    "direccion":5,
+    "comuna":6,
+    "telefono":7,
+    "contrato":8,
+    "otro":9,
+    "ultimoretiro":10,
+    "status":11,
+    "detalleretiro":12,
+    "farmaco":13,
+    "patologico":14,
+    "contaminado":15,
+    "cortopunzante":16,
+    "otropeligroso":17,
+    "liquidorx":18,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+  }
+}
 
 # ----------- APP SUBLITOTE --------------
 

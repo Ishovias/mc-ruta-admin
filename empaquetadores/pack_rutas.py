@@ -1,6 +1,7 @@
 from werkzeug.utils import secure_filename
 from datetime import datetime, date
 from handlers.clientes import Clientes
+from handlers.eliminaciones import RetirosEliminados
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, priv, constructor_paquete
@@ -412,58 +413,61 @@ def empaquetador_registros_rutas(request: object) -> map:
         paquete["rutaResultado"] = data
 
     elif "agrega_eliminacion" in request.form:
-         with RutaBD() as rbd:     
-              ubicacionCliente = request.form.get("agrega_eliminacion")
-              rbd.putDato(
-                   fila=int(ubicacionCliente),
-                   dato="FASE_ELIMINACION",
-                   columna="otro"
-                   )
-     
+        with RutaBD() as rbd:     
+            ubicacionCliente = request.form.get("agrega_eliminacion")
+            rbd.putDato(
+                fila=int(ubicacionCliente),
+                dato="FASE_ELIMINACION",
+                columna="otro"
+                )
+    
     elif "lista_eliminacion" in request.form:
-         encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
-         encabezados.remove(encabezados[0])
-         
-         with RutaBD() as rbd:
-              filashalladas = rbd.buscadato(
-                   filainicio=rbd.hoja_actual["filainicial"], 
-                   columna=rbd.hoja_actual["columnas"]["otro"], 
-                   dato="FASE_ELIMINACION", 
-                   exacto=True, 
-                   buscartodo=True
-                   )
-              data = []
-              for fila in filashalladas:
-                   recopilado = rbd.extraefila(
-                        fila=fila,
+        encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
+        encabezados.remove(encabezados[0])
+        
+        with RutaBD() as rbd:
+            filashalladas = rbd.buscadato(
+                filainicio=rbd.hoja_actual["filainicial"], 
+                columna=rbd.hoja_actual["columnas"]["otro"], 
+                dato="FASE_ELIMINACION", 
+                exacto=True, 
+                buscartodo=True
+                )
+            data = []
+            for fila in filashalladas:
+                recopilado = rbd.extraefila(
+                    fila=fila,
                         columnas=params.RUTAS_BD["columnas"]["todas"]
                         )
-                   data.append(recopilado)
-                   rbd.kgtotales(filaCliente=fila)
-              totalKilos = rbd.getKilos()
-              paquete["itemskg"] = totalKilos.copy()
-              rbd.eliminaKilosRegistrados()
+                data.append(recopilado)
+                rbd.kgtotales(filaCliente=fila)
+            totalKilos = rbd.getKilos()
+            paquete["itemskg"] = totalKilos.copy()
+            rbd.eliminaKilosRegistrados()
 
-         paquete["encabezados"] = encabezados
-         paquete["fecha"] = "Objetos en fase de eliminacion"
-         paquete["rutaResultado"] = data
+        paquete["encabezados"] = encabezados
+        paquete["fecha"] = "Objetos en fase de eliminacion"
+        paquete["rutaResultado"] = data
 
     elif "eliminar_desechos" in request.form:
-         with RutaBD() as rbd:
-              listaFilas = rbd.buscadato(
-                   filainicio=rbd.hoja_actual["filainicial"], 
-                   columna=rbd.hoja_actual["columnas"]["otro"], 
-                   dato="FASE_ELIMINACION", 
-                   buscartodo=True
-                   )
-              for fila in listaFilas:
-                   rbd.putDato(
-                        dato=f"ELIMINADO-{date.isoformat(date.today())}",
-                        fila=fila,
-                        columna="otro"
-                        )
-              
-         
+        with RutaBD() as rbd:
+            listaFilas = rbd.buscadato(
+                filainicio=rbd.hoja_actual["filainicial"], 
+                columna=rbd.hoja_actual["columnas"]["otro"], 
+                dato="FASE_ELIMINACION", 
+                buscartodo=True
+                )
+            clientesEliminados = []
+            for fila in listaFilas:
+                rbd.putDato(
+                    dato=f"ELIMINADO-{date.isoformat(date.today())}",
+                    fila=fila,
+                    columna="otro"
+                    )
+                clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
+
+        with RetirosEliminados() as relim:
+
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
 
