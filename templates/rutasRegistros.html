@@ -66,13 +66,15 @@
      </thead>
      <tbody>
           {% for fila in datos.rutaResultado %}
-               <tr 
-               {% if fila.10 == "POSPUESTO" %} 
-                    style="background-color: red;" 
-               {% elif fila.8 == "FASE_ELIMINACION" %}
-                    style="background-color: yellow;" 
-               {% elif "ELIMINADO" in fila.8 %}
-                    style="background-color: gray;" 
+               <tr
+               {% if fila.8 != None %} 
+                    {% if fila.10 == "POSPUESTO" %} 
+                         style="background-color: red;" 
+                    {% elif fila.8 == "FASE_ELIMINACION" %}
+                         style="background-color: yellow;" 
+                    {% elif "ELIMINADO" in fila.8 %}
+                         style="background-color: gray;" 
+                    {% endif %}
                {% endif %}>
                {% for data in fila %}
                     <td>{{ data }}</td>

@@ -484,10 +484,16 @@ def empaquetador_registros_rutas(request: object) -> map:
                 fila += 1
 
     elif "cancelar_eliminacion"in request.form:
-         with RutaBD() as rbd:
-              rbd.busca_ubicacion(
-                   fila=
-                   )
+        with RutaBD() as rbd:
+            for f in range(rbd.hoja_actual["filainicial"],rbd.getmaxfilas(),1):
+                celda = rbd.getDato(fila=f,columna="otro")
+                if "FASE_ELIMINACION" in celda:
+                    celda = celda.replace("FASE_ELIMINACION", "")
+                    rbd.putDato(
+                        dato=celda,
+                        fila=f,
+                        columna="otro"
+                    )
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
