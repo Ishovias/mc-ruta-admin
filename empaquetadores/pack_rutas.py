@@ -1,7 +1,7 @@
 from werkzeug.utils import secure_filename
 from datetime import datetime, date
 from handlers.clientes import Clientes
-from handlers.eliminaciones import RetirosEliminados
+from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, priv, constructor_paquete
@@ -465,13 +465,21 @@ def empaquetador_registros_rutas(request: object) -> map:
                 buscartodo=True
                 )
             clientesEliminados = []
+            fechaEliminacion = date.isoformat(date.today())
             for fila in listaFilas:
                 rbd.putDato(
-                    dato=f"ELIMINADO-{date.isoformat(date.today())}",
+                    dato=f"ELIMINADO-{fechaEliminacion}",
                     fila=fila,
                     columna="otro"
                     )
                 clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
+            with EliminacionRegistros() as rege:
+                    mensajeRegistro = rege.obtener_fechas_eliminadas(clientesEliminados)
+                    datosRegistro = {
+                         "fecha":fechaEliminacion,
+                         "observacion":mensajeRegistro,
+                    }
+                    rbd.
 
         with RetirosEliminados() as relim:
             fila = relim.busca_ubicacion(columna="fecha")
@@ -487,13 +495,15 @@ def empaquetador_registros_rutas(request: object) -> map:
         with RutaBD() as rbd:
             for f in range(rbd.hoja_actual["filainicial"],rbd.getmaxfilas(),1):
                 celda = rbd.getDato(fila=f,columna="otro")
+                if not celda:
+                    continue
                 if "FASE_ELIMINACION" in celda:
                     celda = celda.replace("FASE_ELIMINACION", "")
                     rbd.putDato(
                         dato=celda,
                         fila=f,
                         columna="otro"
-                    )
+                        )
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)

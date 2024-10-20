@@ -248,6 +248,34 @@ RETIROS_ELIMINADOS = {
   }
 }
 
+REGISTRO_ELIMINACIONES = {
+  "nombrehoja":"registro_eliminaciones",
+  "filainicial":2,
+  "columnas":{
+    "fechaeliminacion":1,
+    "observacion":2,
+    "fecha":3,
+    "id":4,
+    "rut":5,
+    "cliente":6,
+    "direccion":7,
+    "comuna":8,
+    "telefono":9,
+    "contrato":10,
+    "otro":11,
+    "ultimoretiro":12,
+    "status":13,
+    "detalleretiro":14,
+    "farmaco":15,
+    "patologico":16,
+    "contaminado":17,
+    "cortopunzante":18,
+    "otropeligroso":19,
+    "liquidorx":20,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+  }
+}
+
 # ----------- APP SUBLITOTE --------------
 
 TODO = {
