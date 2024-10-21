@@ -22,6 +22,7 @@
                {% for dato in datos.rutaLista.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
+                    <th>DISPOSICION FINAL</th>
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
@@ -35,6 +36,11 @@
                          <td>{{ data }}</td>
                     {% endfor %}
                     </tr>
+                    <td>
+                         <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
+                              <button type="submit" name="eliminar_ruta" value="{{ fila.0 }}" style="width: 95px;">Eliminacion</button>
+                         </form>
+                    </td>
                {% endfor %}
           </tbody>
           </table>

@@ -476,10 +476,13 @@ def empaquetador_registros_rutas(request: object) -> map:
             with EliminacionRegistros() as rege:
                     mensajeRegistro = rege.obtener_fechas_eliminadas(clientesEliminados)
                     datosRegistro = {
-                         "fecha":fechaEliminacion,
-                         "observacion":mensajeRegistro,
+                        "fecha":fechaEliminacion,
+                        "observacion":mensajeRegistro,
                     }
-                    rbd.
+                    kilos = rbd.getKilos()
+                    for elemento, valor in kilos.items():
+                        datosRegistro[elemento] = valor
+                    rege.registra_eliminacion(datosRegistro)
 
         with RetirosEliminados() as relim:
             fila = relim.busca_ubicacion(columna="fecha")
@@ -491,7 +494,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                     )
                 fila += 1
 
-    elif "cancelar_eliminacion"in request.form:
+    elif "cancelar_eliminacion" in request.form:
         with RutaBD() as rbd:
             for f in range(rbd.hoja_actual["filainicial"],rbd.getmaxfilas(),1):
                 celda = rbd.getDato(fila=f,columna="otro")
@@ -504,6 +507,23 @@ def empaquetador_registros_rutas(request: object) -> map:
                         fila=f,
                         columna="otro"
                         )
+
+    elif "eliminar_ruta" in request.form:
+        with RutaBD() as rbd:
+            fechaRuta = request.form.get("eliminar_ruta")
+            ubicaciones = rbd.buscadato(
+                filainicio = rbd.hoja_actual["filainicial"], 
+                columna=rbd.hoja_actual["columnas"]["fecha"], 
+                dato=fechaRuta,
+                buscartodo=True
+                )
+            for fila in ubicaciones:
+                rbd.putDato(
+                    fila=fila,
+                    dato="FASE_ELIMINACION",
+                    columna="otro"
+                )
+
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
