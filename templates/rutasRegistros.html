@@ -27,20 +27,22 @@
           <tbody>
                {% for fila in datos.rutaLista.datos %}
                     <tr {% if fila.0 == datos.fecha %} style="background-color: yellowgreen;" {% endif %}>
-                    <td>
-                         <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
-                              <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
-                         </form>
-                    </td>
-                    {% for data in fila %}
-                         <td>{{ data }}</td>
-                    {% endfor %}
+                         <td>
+                              <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
+                                   <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
+                              </form>
+                         </td>
+                         {% for data in fila %}
+                              <td>
+                                   {{ data }}
+                              </td>
+                         {% endfor %}
+                         <td>
+                              <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
+                                   <button type="submit" name="eliminar_ruta" value="{{ fila.0 }}" style="width: 95px;">Eliminacion</button>
+                              </form>
+                         </td>
                     </tr>
-                    <td>
-                         <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
-                              <button type="submit" name="eliminar_ruta" value="{{ fila.0 }}" style="width: 95px;">Eliminacion</button>
-                         </form>
-                    </td>
                {% endfor %}
           </tbody>
           </table>

@@ -458,12 +458,22 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     elif "eliminar_desechos" in request.form:
         with RutaBD() as rbd:
+            with EliminacionRegistros() as rege:
+                    mensajeRegistro = rege.obtener_fechas_eliminadas(clientesEliminados)
+                    datosRegistro = {
+                        "fecha":fechaEliminacion,
+                        "observacion":mensajeRegistro,
+                    }
+                    kilos = rbd.recuentoKgEliminar()
+                    for elemento, valor in kilos.items():
+                        datosRegistro[elemento] = valor
+                    rege.registra_eliminacion(datosRegistro)
             listaFilas = rbd.buscadato(
-                filainicio=rbd.hoja_actual["filainicial"], 
-                columna=rbd.hoja_actual["columnas"]["otro"], 
-                dato="FASE_ELIMINACION", 
-                buscartodo=True
-                )
+               filainicio=rbd.hoja_actual["filainicial"], 
+               columna=rbd.hoja_actual["columnas"]["otro"], 
+               dato="FASE_ELIMINACION", 
+               buscartodo=True
+               )
             clientesEliminados = []
             fechaEliminacion = date.isoformat(date.today())
             for fila in listaFilas:
@@ -473,16 +483,6 @@ def empaquetador_registros_rutas(request: object) -> map:
                     columna="otro"
                     )
                 clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
-            with EliminacionRegistros() as rege:
-                    mensajeRegistro = rege.obtener_fechas_eliminadas(clientesEliminados)
-                    datosRegistro = {
-                        "fecha":fechaEliminacion,
-                        "observacion":mensajeRegistro,
-                    }
-                    kilos = rbd.getKilos()
-                    for elemento, valor in kilos.items():
-                        datosRegistro[elemento] = valor
-                    rege.registra_eliminacion(datosRegistro)
 
         with RetirosEliminados() as relim:
             fila = relim.busca_ubicacion(columna="fecha")
