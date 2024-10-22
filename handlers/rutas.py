@@ -157,7 +157,7 @@ class RutaBD(bdmediclean):
      def recuentoKgEliminar(self) -> map:
           self.eliminaKilosRegistrados()
           filasHalladas = super().buscadato(
-               filainicio=self.hoja_actual["filanicial"], 
+               filainicio=self.hoja_actual["filainicial"], 
                columna=self.hoja_actual["columnas"]["otro"], 
                dato="FASE_ELIMINACION", 
                buscartodo=True
@@ -168,7 +168,7 @@ class RutaBD(bdmediclean):
                          fila=fila,
                          columna=elemento
                          )
-                    self.kilosItems[elemento] += cantRegistrada
+                    self.kilosItems[elemento] += int(cantRegistrada) if cantRegistrada else 0
           return self.kilosItems
 
      def getKilos(self) -> map:

@@ -458,24 +458,27 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     elif "eliminar_desechos" in request.form:
         with RutaBD() as rbd:
-            with EliminacionRegistros() as rege:
-                    mensajeRegistro = rege.obtener_fechas_eliminadas(clientesEliminados)
-                    datosRegistro = {
-                        "fecha":fechaEliminacion,
-                        "observacion":mensajeRegistro,
-                    }
-                    kilos = rbd.recuentoKgEliminar()
-                    for elemento, valor in kilos.items():
-                        datosRegistro[elemento] = valor
-                    rege.registra_eliminacion(datosRegistro)
+            fechaEliminacion = date.isoformat(date.today())
             listaFilas = rbd.buscadato(
                filainicio=rbd.hoja_actual["filainicial"], 
                columna=rbd.hoja_actual["columnas"]["otro"], 
                dato="FASE_ELIMINACION", 
                buscartodo=True
                )
+            with EliminacionRegistros() as rege:
+                    fechasEliminadas = []
+                    for fila in listaFilas:
+                         fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
+                    mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
+                    datosRegistro = {
+                        "fechaeliminacion":fechaEliminacion,
+                        "observacion":mensajeRegistro,
+                    }
+                    kilos = rbd.recuentoKgEliminar()
+                    for elemento, valor in kilos.items():
+                        datosRegistro[elemento] = valor
+                    rege.registra_eliminacion(datosRegistro)
             clientesEliminados = []
-            fechaEliminacion = date.isoformat(date.today())
             for fila in listaFilas:
                 rbd.putDato(
                     dato=f"ELIMINADO-{fechaEliminacion}",
