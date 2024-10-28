@@ -7,7 +7,7 @@ from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_st_productos import pack_st_cotizacion, pack_st_productos, pack_st_registros_cotizaciones
 from empaquetadores.pack_todo import empaquetador_todo
 from empaquetadores.pack_st_inicio import pack_st_login, pack_st_index
-from empaquedatores.pack_eliminaciones import empaquetador_eliminaciones
+from empaquetadores.pack_eliminaciones import empaquetador_eliminaciones
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
