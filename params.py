@@ -224,6 +224,7 @@ INVENTARIOS = {
 
 RETIROS_ELIMINADOS = {
   "nombrehoja":"retiros_eliminados", 
+  "encabezados":1,
   "filainicial":2,
   "columnas":{
     "fecha":1,
@@ -250,6 +251,7 @@ RETIROS_ELIMINADOS = {
 
 REGISTRO_ELIMINACIONES = {
   "nombrehoja":"registro_eliminaciones",
+  "encabezados":1,
   "filainicial":2,
   "columnas":{
     "fechaeliminacion":1,

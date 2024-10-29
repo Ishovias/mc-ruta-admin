@@ -16,7 +16,7 @@
                {% endfor %}
           </thead>
           <tbody>
-               {% for fila in datos.rutaLista.datos %}
+               {% for fila in datos.registrosEliminaciones.datos %}
                     <tr>
                          <td>
                               <form method="post" action="{{ url_for('eliminaciones', aut=datos.aut) }}">
