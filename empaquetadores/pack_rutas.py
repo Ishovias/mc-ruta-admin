@@ -44,8 +44,9 @@ def empaquetador_rutaactual(request: object) -> map:
         with RutaActual() as rutaactualbd:
             datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
             notas = datos_cliente_confirmado[-2]
-            if "RETIRO EN CAMINO" in notas:
-                datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
+            if notas:
+                if "RETIRO EN CAMINO" in notas:
+                    datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
             datos_cliente_confirmado.append(request.form.get("farmaco"))
