@@ -466,19 +466,20 @@ def empaquetador_registros_rutas(request: object) -> map:
                dato="FASE_ELIMINACION", 
                buscartodo=True
                )
-            with EliminacionRegistros() as rege:
-                    fechasEliminadas = []
-                    for fila in listaFilas:
-                         fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
-                    mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
-                    datosRegistro = {
-                        "fechaeliminacion":fechaEliminacion,
-                        "observacion":mensajeRegistro,
-                    }
-                    kilos = rbd.recuentoKgEliminar()
-                    for elemento, valor in kilos.items():
-                        datosRegistro[elemento] = valor
-                    rege.registra_eliminacion(datosRegistro)
+               fechasEliminadas = []
+               for fila in listaFilas:
+                    fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
+               kilos = rbd.recuentoKgEliminar()
+        with EliminacionRegistros() as rege:
+               datosRegistro = {
+                   "fechaeliminacion":fechaEliminacion,
+                   "observacion":mensajeRegistro,
+               }
+               mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
+               for elemento, valor in kilos.items():
+                   datosRegistro[elemento] = valor
+               rege.registra_eliminacion(datosRegistro)
+        with RutaBD() as rbd:    
             clientesEliminados = []
             for fila in listaFilas:
                 rbd.putDato(
@@ -527,7 +528,6 @@ def empaquetador_registros_rutas(request: object) -> map:
                     dato="FASE_ELIMINACION",
                     columna="otro"
                 )
-
 
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
