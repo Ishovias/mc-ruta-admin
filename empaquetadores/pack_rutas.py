@@ -460,25 +460,26 @@ def empaquetador_registros_rutas(request: object) -> map:
     elif "eliminar_desechos" in request.form:
         with RutaBD() as rbd:
             fechaEliminacion = date.isoformat(date.today())
+            fechaEliminacion = fechaEliminacion.replace("-","")
             listaFilas = rbd.buscadato(
-               filainicio=rbd.hoja_actual["filainicial"], 
-               columna=rbd.hoja_actual["columnas"]["otro"], 
-               dato="FASE_ELIMINACION", 
-               buscartodo=True
-               )
-               fechasEliminadas = []
-               for fila in listaFilas:
-                    fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
-               kilos = rbd.recuentoKgEliminar()
+            filainicio=rbd.hoja_actual["filainicial"], 
+            columna=rbd.hoja_actual["columnas"]["otro"], 
+            dato="FASE_ELIMINACION", 
+            buscartodo=True
+            )
+            fechasEliminadas = []
+            for fila in listaFilas:
+                fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
+            kilos = rbd.recuentoKgEliminar()
         with EliminacionRegistros() as rege:
-               datosRegistro = {
-                   "fechaeliminacion":fechaEliminacion,
-                   "observacion":mensajeRegistro,
-               }
-               mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
-               for elemento, valor in kilos.items():
-                   datosRegistro[elemento] = valor
-               rege.registra_eliminacion(datosRegistro)
+            mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
+            datosRegistro = {
+                "fechaeliminacion":fechaEliminacion,
+                "observacion":mensajeRegistro,
+            }
+            for elemento, valor in kilos.items():
+                datosRegistro[elemento] = valor
+            rege.registra_eliminacion(datosRegistro)
         with RutaBD() as rbd:    
             clientesEliminados = []
             for fila in listaFilas:

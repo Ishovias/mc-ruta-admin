@@ -6,4 +6,7 @@ def empaquetador_eliminaciones(request: object) -> map:
      with EliminacionRegistros() as elimreg:
           paquete["registrosEliminaciones"] = elimreg.listar(retornostr=True)
 
+     if "detalles" in request.form:
+          pass
+
      return paquete
