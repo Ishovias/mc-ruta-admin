@@ -107,6 +107,12 @@ def empaquetador_rutaactual(request: object) -> map:
                     modificacion=-(dato)
                     )
 
+        with RutaBD() as rbd:
+             for col in cols:
+                  dato = request.form.get(col)
+                  rbd.putDato
+
+
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
         compfecha.insert(4,"-")

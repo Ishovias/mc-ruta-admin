@@ -95,7 +95,22 @@ RUTAS_BD = {
     "cortopunzante":16,
     "otropeligroso":17,
     "liquidorx":18,
-    "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]  
+    "cajaroja_0.5":19,
+    "cajaroja_1":20,
+    "cajaroja_1.3":21,
+    "cajaroja_1.65":22,
+    "cajaroja_3":23,
+    "cajaamarilla_1":24,
+    "cajaamarilla_3":25,
+    "cajaamarilla_5":26,
+    "cajaamarilla_15":27,
+    "basureroamarillo_120":28,
+    "bolsaroja":29,
+    "bolsaroja_farmaco":30,
+    "bolsaamarilla":31,
+    "bidon_5":32,
+    "frascoamalgama":33,
+    "todas":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23,23,24,25,26,27,28,29,30,31,32,33]  
   }, 
   "encabezados":1,
   "encabezados_nombre":[
