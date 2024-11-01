@@ -259,7 +259,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ubicacion_cliente,
                         columna="telefono")
             with Inventario() as inv:
-                paquete["insumos"] = inv.getStockActual(columnas=inv.getListaItems("cajaroja_0.5","frascoamalgama"))
+                paquete["insumos"] = inv.getStockActual(columnas=seleccionar_conjunto_elementos(params.INVENTARIOS,"cajaroja_0.5","frascoamalgama"))
 
     elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
         confirmacion = request.form.get("cliente_ruta_posponer")
