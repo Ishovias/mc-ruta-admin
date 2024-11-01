@@ -217,3 +217,18 @@ def formatear_precio(precio: int) -> int:
      precio = list(precio)
      precio.insert(0,"$")
      return "".join(precio)
+
+def seleccionar_conjunto_elementos(hoja: map, nombreDesde: str, nombreHasta: str) -> list:
+     desde = False
+     listaItems = []
+     for elemento in hoja["columnas"].keys():
+          if nombreDesde == elemento:
+               desde = True
+               listaItems.append(elemento)
+          elif nombreHasta == elemento:
+               listaItems.append(elemento)
+               break
+          elif desde:
+               listaItems.append(elemento)
+     return listaItems
+

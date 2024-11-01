@@ -4,7 +4,7 @@ from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, priv, constructor_paquete
+from helpers import mensajes, privilegios, priv, constructor_paquete, seleccionar_conjunto_elementos
 import params
 import os
 
@@ -39,7 +39,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 return True
     
     def confpos(ubicacioncliente: int, realizadopospuesto: str, mensaje_ok: str, mensaje_bad: str) -> bool:
-        # buscando datos del cliente y eliminando registro de ruta actual
+        # buscando datos del cliente y recopilando datos de pagina confpos y eliminando registro de ruta actual
         datos_cliente_confirmado = []
         with RutaActual() as rutaactualbd:
             datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
@@ -49,12 +49,9 @@ def empaquetador_rutaactual(request: object) -> map:
                     datos_cliente_confirmado[-2] = notas.replace(" (RETIRO EN CAMINO)","")
             datos_cliente_confirmado.append(realizadopospuesto)
             datos_cliente_confirmado.append(request.form.get("observacion"))
-            datos_cliente_confirmado.append(request.form.get("farmaco"))
-            datos_cliente_confirmado.append(request.form.get("patologico"))
-            datos_cliente_confirmado.append(request.form.get("contaminado"))
-            datos_cliente_confirmado.append(request.form.get("cortopunzante"))
-            datos_cliente_confirmado.append(request.form.get("otropeligroso"))
-            datos_cliente_confirmado.append(request.form.get("liquidorx"))
+            cols = seleccionar_conjunto_elementos(params.RUTAS_BD,"farmaco", "frascoamalgama")
+            for col in cols:
+                datos_cliente_confirmado.append(request.form.get(col))
             rutaactualbd.eliminar(ubicacioncliente)
             # incremento indicador de clientes realizados o pospuestos
             cantregistrada = rutaactualbd.getDato(identificador=realizadopospuesto)
@@ -82,7 +79,6 @@ def empaquetador_rutaactual(request: object) -> map:
                 dato=str(fecharetiro),
                 columna="fecha"
             )
-
             if ubicacion:
                 cols = ["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"]
                 for col in cols:
@@ -95,24 +91,17 @@ def empaquetador_rutaactual(request: object) -> map:
                         columna=col
                     )
             
-            
         # Modifica del inventario el stock en base
         # a lo que se informa al confirmar un cliente
+        cols = seleccionar_conjunto_elementos(params.INVENTARIOS,"cajaroja_3","frascoamalgama")
         with Inventario() as inv:
-            cols = inv.getListaItems("cajaroja_3","frascoamalgama")
             for col in cols:
                 dato = int(request.form.get(col))
                 inv.modificaStock(
                     elemento=col,
                     modificacion=-(dato)
                     )
-
-        with RutaBD() as rbd:
-             for col in cols:
-                  dato = request.form.get(col)
-                  rbd.putDato
-
-
+                
         # isoformateo de fecha para registro y calculo de sgte fecha
         compfecha = list(str(fecharetiro))
         compfecha.insert(4,"-")

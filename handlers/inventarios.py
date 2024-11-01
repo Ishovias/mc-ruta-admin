@@ -7,20 +7,6 @@ class Inventario(bdmediclean):
      def __init__(self) -> None:
           super().__init__(params.INVENTARIOS)
 
-     def getListaItems(self, nombreDesde: str, nombreHasta: str) -> list:
-          desde = False
-          listaItems = []
-          for elemento in self.hoja_actual["columnas"].keys():
-               if nombreDesde == elemento:
-                    desde = True
-                    listaItems.append(elemento)
-               elif nombreHasta == elemento:
-                    listaItems.append(elemento)
-                    break
-               elif desde:
-                    listaItems.append(elemento)
-          return listaItems
-
      def getStockActual(self, columnas: list=None) -> map:
           datos = {}
           
