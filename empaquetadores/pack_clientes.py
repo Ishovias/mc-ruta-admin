@@ -144,8 +144,8 @@ def empaquetador_clientes(request: object) -> map:
                     )
             
         paquete["listaretiros"] = {"encabezados":encabezados,"datos":datos}
-        paquete["bdrut"] = datos[0][2]
-        paquete["bdnombre"] = datos[0][3]
+        paquete["bdrut"] = datos[0][2] if datos else None
+        paquete["bdnombre"] = datos[0][3] if datos else None
         
     elif "darbaja" in request.form and priv[usuario]["modclienteEnabled"] == "enabled":
         dadobaja = False

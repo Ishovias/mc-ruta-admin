@@ -132,7 +132,22 @@ RUTAS_BD = {
       "Contaminado",
       "Cortopunzante",
       "Otro (Peligroso)",
-      "Liquido (RX)"
+      "Liquido (RX)",
+      "CAJA ROJA 0,5 LTS (x unidad)",
+      "CAJA ROJA 1 LTS (x unidad)",
+      "CAJA ROJA 1,3 LTS (x unidad)",
+      "CAJA ROJA 1,65 LTS (x unidad)",
+      "CAJA ROJA 3 LTS (x unidad)",
+      "CAJA AMARILLA 1 LTS (x unidad)",
+      "CAJA AMARILLA 3 LTS (x unidad)",
+      "CAJA AMARILLA 5 LTS (x unidad)",
+      "CAJA AMARILLA 15 LTRS (x unidad)",
+      "BASURERO AMARILLO 120 LTRS (x unidad)",
+      "BOLSAS ROJAS (x unidad)",
+      "BOLSAS ROJAS FARMACOS (x unidad)",
+      "BOLSAS AMARILLAS (x unidad)",
+      "BIDON 5 LTS (x unidad)",
+      "FRASCO AMALGAMAS (x unidad)",
       ]
 }
 
