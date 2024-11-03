@@ -40,6 +40,7 @@ class Inventario(bdmediclean):
                fila=filaStock,
                columna=elemento
           )
+          cantidadActual = cantidadActual if cantidadActual else 0
           return super().putDato(
                dato=int(cantidadActual) + modificacion,
                fila=filaStock,
