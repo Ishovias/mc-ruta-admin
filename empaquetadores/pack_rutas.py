@@ -42,7 +42,7 @@ def empaquetador_rutaactual(request: object) -> map:
         # buscando datos del cliente y recopilando datos de pagina confpos y eliminando registro de ruta actual
         datos_cliente_confirmado = []
         with RutaActual() as rutaactualbd:
-            datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas")
+            datos_cliente_confirmado = rutaactualbd.extraefila(fila=ubicacioncliente,columna="todas",retornostr=True)
             notas = datos_cliente_confirmado[-2]
             if notas:
                 if "RETIRO EN CAMINO" in notas:
