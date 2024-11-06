@@ -402,11 +402,23 @@ def empaquetador_registros_rutas(request: object) -> map:
                         )
                 recopilado.append(f)
                 data.append(recopilado)
-                
-        paquete["encabezados"] = encabezados
-        paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
-        paquete["fecha"] = fecha
-        paquete["rutaResultado"] = data
+
+            insumos_usados = rutabd.cuenta_insumos(
+                insumos=seleccionar_conjunto_elementos(
+                    hoja=rutabd.hoja_actual,
+                    nombreDesde="cajaroja_0.5",
+                    nombreHasta="frascoamalgama"
+                ),
+                ubicaciones=filasEncontradas
+            )
+
+            paquete["encabezados"] = encabezados
+            paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
+            paquete["fecha"] = fecha
+            paquete["rutaResultado"] = data
+            paquete["insumos_usados"] = insumos_usados
+            
+        cimprime(insumos_usados=insumos_usados,itemskg=paquete["itemskg"])
 
     elif "agrega_eliminacion" in request.form:
         with RutaBD() as rbd:     

@@ -91,20 +91,6 @@ class RutaRegistros(bdmediclean):
                super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila,columna="fecha")
                return True
           return False
-          
-     def cuenta_insumos(self, insumos: list, ubicaciones: list) -> map:
-          insumos_usados = {}
-          lista_elementos = self.hoja_actual["columnas"].keys()
-          
-          for fila in ubicaciones:
-               for elemento in insumos:
-                    cant = super().getDato(
-                         fila=fila,
-                         columna=elemento
-                         )
-                    
-          return insumos_usados
-
 class RutaBD(bdmediclean):
      
      kilosItems = {
@@ -190,6 +176,27 @@ class RutaBD(bdmediclean):
      def eliminaKilosRegistrados(self) -> None:
           for item in self.kilosItems:
                self.kilosItems[item] = 0
+
+     def cuenta_insumos(self, insumos: list, ubicaciones: list) -> map:
+          insumos_usados = {}
+          for elemento in self.hoja_actual["encabezados_nombre"]:
+               if elemento:
+                    insumos_usados[elemento] = 0
+          lista_elementos = list(self.hoja_actual["columnas"].keys())
+          for fila in ubicaciones:
+               for elemento in insumos:
+                    cant = super().getDato(
+                         fila=fila,
+                         columna=elemento
+                         )
+                    nombre_elemento = self.hoja_actual["encabezados_nombre"][lista_elementos.index(elemento)+1]
+                    if cant:
+                         insumos_usados[nombre_elemento] += int(cant)
+          for elemento in list(insumos_usados):
+               if insumos_usados[elemento] == 0:
+                    del insumos_usados[elemento]
+          return insumos_usados
+
 
 class RutaImportar(bdmediclean):
      def __init__(self, archivo: str) -> None:

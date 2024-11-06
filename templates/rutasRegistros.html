@@ -98,10 +98,10 @@
      </table>
      <hr>
      {% if datos.fecha %}
-          <p>Insumos ocupados en esta ruta:</p><br>
+          <p>Insumos ocupados en esta ruta:</p>
           <ul>
-               {% for elemento, cantidad in datos.insumos_usados.items() %}
-               <li>{{ elemento }}: {{ cantidad }} unidades</li>
+               {% for elemento in datos.insumos_usados %}
+               <li>{{ elemento }}: {{ datos.insumos_usados[elemento] }}un</li>
                {% endfor %}
           </ul>
      {% endif %}
