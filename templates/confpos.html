@@ -36,7 +36,13 @@
           <hr>
           <p>------ Registro insumos -----</p>
           {% for nombre, valor in datos.insumos.items() %}
-               <label for="{{ valor.columna }}">{{ nombre }}:</label>
+               <label for="{{ valor.columna }}"
+               {% if "ROJA" in nombre %}
+               style="background-color: red"
+               {% elif "AMARILL" in nombre %}
+               style="background-color: yellow"
+               {% endif %}
+               >{{ nombre }}:</label>
                <input name="{{ valor.columna }}" type="number" value="0" placeholder="{{ valor.stock }} Stock" required>
           {% endfor %}
           <hr>

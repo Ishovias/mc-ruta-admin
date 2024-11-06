@@ -96,5 +96,14 @@
           {% endfor %}
      </tbody>
      </table>
+     <hr>
+     {% if datos.fecha %}
+          <p>Insumos ocupados en esta ruta:</p><br>
+          <ul>
+               {% for elemento, cantidad in datos.insumos_usados.items() %}
+               <li>{{ elemento }}: {{ cantidad }} unidades</li>
+               {% endfor %}
+          </ul>
+     {% endif %}
 {% endif %}
 {% endblock %}

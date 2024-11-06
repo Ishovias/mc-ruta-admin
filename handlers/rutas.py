@@ -91,6 +91,19 @@ class RutaRegistros(bdmediclean):
                super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila,columna="fecha")
                return True
           return False
+          
+     def cuenta_insumos(self, insumos: list, ubicaciones: list) -> map:
+          insumos_usados = {}
+          lista_elementos = self.hoja_actual["columnas"].keys()
+          
+          for fila in ubicaciones:
+               for elemento in insumos:
+                    cant = super().getDato(
+                         fila=fila,
+                         columna=elemento
+                         )
+                    
+          return insumos_usados
 
 class RutaBD(bdmediclean):
      
