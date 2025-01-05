@@ -52,9 +52,10 @@ class bdmediclean:
                     return fila
      
      def buscadato(self, dato: str, filainicio: int=None, columna: str=None, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False) -> int:
-        def buscador(filainicio: int) -> int:
-            fila = filainicio
-            for fila in range(filainicio, self.maxfilas, 1):
+          def buscador(filainicio: int) -> int:
+               maxfilas = self.maxfilas + 1
+               fila = filainicio
+               for fila in range(filainicio, maxfilas, 1):
                 celda = self.hojabd.cell(row=fila,column=columna)
                 try:
                     valorcelda = str(celda.value) if exacto else str(celda.value).lower()
@@ -70,10 +71,10 @@ class bdmediclean:
                         return fila
                     else:
                         fila += 1
-            else:
+               else:
                 fila = None
-            return fila      
-        if buscartodo:
+               return fila      
+          if buscartodo:
             filas = []
             while(filainicio <= self.maxfilas):
                 hallado = buscador(filainicio)
@@ -83,7 +84,7 @@ class bdmediclean:
                     break
                 filainicio = hallado + 1
             return filas
-        else:
+          else:
             return buscador(filainicio)
      
      def buscapartedato(self, filainicio: int=None, columna: int=None, dato: str=None) -> list:
