@@ -4,70 +4,54 @@ import params
 
 class bdmediclean:
 
-    def __init__(self, hoja: str, otrolibro: str=None, hojadefault: bool=False) -> None:
-        if otrolibro:
-            self.bd = load_workbook(otrolibro,read_only=False)
-            self.libroPorGuardar = otrolibro
-        else:   
-            self.bd = load_workbook(params.LIBRODATOS,read_only=False)
-            self.libroPorGuardar = params.LIBRODATOS
-        self.hoja_actual = hoja
-        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
-        self.maxfilas = self.contarfilas()
-        self.datosPorGuardar = False
-    
-    def __enter__(self) -> object:
-        return self
-
-    def sethoja(self, hoja: str) -> None:
-        self.hoja_actual = hoja
-        self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
-    
-    def setmaxfilas(self) -> None:
-        self.maxfilas = self.contarfilas()
-
-    def getmaxfilas(self) -> int:
-        self.maxfilas = self.contarfilas()
-        return self.maxfilas
-
-    def contarfilas(self) -> int:
-        filas = self.hoja_actual["filainicial"]
-        while True:
-            celda = self.hojabd.cell(row=filas,column=1)
-            if celda.value != None:
-                filas += 1
-            else:
-                return filas + 2
-
-    def eliminarContenidos(self,cantidadfilas: int=100, filainicio: int=0) -> bool:
-        if filainicio == 0:
-            filainicio = self.hoja_actual["filainicial"]
-        completado = False
-        cantidadfilas += 100
-
-        for fila in range(filainicio,cantidadfilas,1):
-            for columna in range(1,20,1):
-                celda = self.hojabd.cell(row=fila,column=columna)
-                celda.value = None
-        else:
-            completado = True
-            self.datosPorGuardar = True
-            return completado
-
-    def buscafila(self, filainicio: int=None, columna: int=1) -> int:
-        if not filainicio:
-            filainicio = self.hoja_actual["filainicial"]
-        
-        filalibre = filainicio
-
-        for fila in range(filainicio,self.maxfilas,1):
-            celda = self.hojabd.cell(row=fila,column=columna)
-            if celda.value == None:
-                return filalibre
-            else:
-                filalibre += 1
-
-    def buscadato(self, filainicio: int, columna: int, dato: str, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False) -> int:
+     def __init__(self, hoja: str, otrolibro: str=None, hojadefault: bool=False) -> None:
+          if otrolibro:
+               self.bd = load_workbook(otrolibro,read_only=False)
+               self.libroPorGuardar = otrolibro
+          else:   
+               self.bd = load_workbook(params.LIBRODATOS,read_only=False)
+               self.libroPorGuardar = params.LIBRODATOS
+          self.hoja_actual = hoja
+          self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
+          self.maxfilas = self.contarfilas()
+          self.datosPorGuardar = False
+     
+     def __enter__(self) -> object:
+          return self
+     
+     def getmaxfilas(self) -> int:
+          self.maxfilas = self.contarfilas()
+          return self.maxfilas
+     
+     def contarfilas(self) -> int:
+          filas = self.hoja_actual["filainicial"]
+          while True:
+               celda = self.hojabd.cell(row=filas,column=1)
+               if celda.value != None:
+                    filas += 1
+               else:
+                    return filas - 1
+     
+     def eliminarContenidos(self) -> None:
+          filainicio = self.hoja_actual["filainicial"]
+          filatermino = self.maxfilas + 1
+          for fila in range(filainicio,filatermino,1):
+               for columna in self.hoja_actual["columnas_todas"]:
+                    celda = self.hojabd.cell(row=fila,column=columna)
+                    celda.value = None
+          self.datosPorGuardar = True
+     
+     def buscafila(self, columna: int=1) -> int:
+          filainicio = self.hoja_actual["filainicial"]
+          filatermino = self.maxfilas + 2
+          if type(columna) == str:
+               columna = self.hoja_actual["columnas"][columna]["num"]
+          for fila in range(filainicio,filatermino,1):
+               celda = self.hojabd.cell(row=fila,column=columna)
+               if celda.value == None:
+                    return fila
+     
+     def buscadato(self, dato: str, filainicio: int=None, columna: str=None, exacto: bool=False, filtropuntuacion: bool=False, buscartodo: bool=False) -> int:
         def buscador(filainicio: int) -> int:
             fila = filainicio
             for fila in range(filainicio, self.maxfilas, 1):
@@ -101,16 +85,16 @@ class bdmediclean:
             return filas
         else:
             return buscador(filainicio)
-
-    def buscapartedato(self, filainicio: int=None, columna: int=None, dato: str=None) -> list:
-
+     
+     def buscapartedato(self, filainicio: int=None, columna: int=None, dato: str=None) -> list:
+     
         if not filainicio:
             filainicio = self.hoja_actual["filainicial"]
         if not columna:
             columna = 1
         if not dato:
             raise ValueError("No se ha ingresado un dato a buscar")
-
+     
         filas = []
         
         for fila in range(filainicio, self.maxfilas, 1):
@@ -124,8 +108,8 @@ class bdmediclean:
                 fila += 1
                 
         return filas
-
-    def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
+     
+     def busca_datoscliente(self, nombre: str, filtro: str="cliente") -> list:
         ubicacion = self.buscadato(
             self.hoja_actual["filainicial"],
             self.hoja_actual["columnas"][filtro],
@@ -138,8 +122,8 @@ class bdmediclean:
             columna="todas"
             )
         return datos
-    
-    def busca_ubicacion(self, dato: str=None, columna: str="cliente", filainicio: str="filainicial") -> int:
+     
+     def busca_ubicacion(self, dato: str=None, columna: str="cliente", filainicio: str="filainicial") -> int:
         column = self.hoja_actual["columnas"][columna]
         if type(filainicio) == str:
             filainicial = self.hoja_actual[filainicio]
@@ -150,18 +134,18 @@ class bdmediclean:
         else:
             fila = self.buscadato(filainicial,column,dato)
         return fila
-
-    def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False, solodatos_list: bool=False) -> map:
+     
+     def listar(self, filainicial: int=None, columnas: list=None, encabezados: int=None, retornostr: bool=False, solodatos_list: bool=False) -> map:
         """Devuelve todos los datos en una hoja especifica
         o desde la fila especifica hasta el final
-
+     
         Args:
             columnas (list): lista con las columnas ej. [1,2,3,4]
             de las que se extraeran los datos por cada fila especificada
-
+     
             filainicio(int): numero que identifica la fila por la que se
             iniciara la extraccion de los datos.
-
+     
         Returns:
             map: devuelve un map con dos llaves y sus respectivas listas de datos
             "encabezados" con una lista de los encabezados y
@@ -201,16 +185,16 @@ class bdmediclean:
             resultados["encabezados"].append(dato.value)
             
         return resultados
-
-    def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
-
+     
+     def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
+     
         for dato in datos:
             celdaDato = self.hojabd.cell(row=fila,column=columnainicio)
             celdaDato.value = dato
             columnainicio += 1
         self.datosPorGuardar = True
-
-    def putDato(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
+     
+     def putDato(self, dato: str=None, datos: list=None, fila: int=None, columna: str=None, identificador: str=None) -> bool:
         if identificador:
             row = self.hoja_actual[identificador]["fila"]
             column = self.hoja_actual[identificador]["columna"]
@@ -228,9 +212,9 @@ class bdmediclean:
         else:
             self.datosPorGuardar = True
             return True
-
-
-    def ingresador_columnas(self, fila: int, datos: list, columnas: list) -> None:
+     
+     
+     def ingresador_columnas(self, fila: int, datos: list, columnas: list) -> None:
         
         columna = 0
         for dato in datos:
@@ -238,16 +222,16 @@ class bdmediclean:
             celdaDato.value = dato
             columna += 1
         self.datosPorGuardar = True
-
-    def eliminar(self, fila: int) -> None:        
+     
+     def eliminar(self, fila: int) -> None:        
         self.hojabd.delete_rows(fila)
         self.datosPorGuardar = True
         
-    def insertafila(self, filainsercion: int) -> None:
+     def insertafila(self, filainsercion: int) -> None:
         self.hojabd.insert_rows(filainsercion)
         self.datosPorGuardar = True
-
-    def idActual(self, columna: str) -> int:
+     
+     def idActual(self, columna: str) -> int:
         for fila in range(self.hoja_actual["filainicial"],self.maxfilas,1):
             col = self.hoja_actual["columnas"][columna]
             celda = self.hojabd.cell(row=fila,column=col)
@@ -261,8 +245,8 @@ class bdmediclean:
                     return 1
                 else:
                     return int(celdaAnterior.value)+1
-
-    def extraefila(self, fila: int, columna: str=None, columnas: list=None, retornostr: bool=False) -> list:
+     
+     def extraefila(self, fila: int, columna: str=None, columnas: list=None, retornostr: bool=False) -> list:
         if columna and type(columna) == str:
             ListaColumnas = self.hoja_actual["columnas"][columna]
             if type(ListaColumnas) == list:
@@ -277,17 +261,17 @@ class bdmediclean:
             pass
         
         datos = []
-
+     
         for column in columnas:
             celda = self.hojabd.cell(row=fila, column=column)
             if retornostr:
                 datos.append(str(celda.value))
             else:
                 datos.append(celda.value)
-
+     
         return datos
-
-    def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None, retornostr: bool=False) -> bool:
+     
+     def getDato(self, fila: int=None, columna: str=None, columnas: list=None, identificador: str=None, retornostr: bool=False) -> bool:
         if identificador:
             row = self.hoja_actual[identificador]["fila"]
             column = self.hoja_actual[identificador]["columna"]
@@ -312,20 +296,20 @@ class bdmediclean:
                     datos = self.extraefila(fila=row,columna=column)
                 return datos[0]
             return None
-
-
-    def guardar(self) -> None:
+     
+     
+     def guardar(self) -> None:
         try:
             self.bd.save(self.libroPorGuardar)
         except:
             return False
         else:
             return True
-
-    def cerrar(self) -> None:
+     
+     def cerrar(self) -> None:
         self.bd.close()
-
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+     
+     def __exit__(self, exc_type, exc_value, traceback) -> None:
         if self.datosPorGuardar:
             self.guardar()
         self.cerrar()
