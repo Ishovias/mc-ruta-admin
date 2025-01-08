@@ -125,15 +125,7 @@ class bdmediclean:
 
           return resultados
 
-     def ingresador(self, fila: int, datos: list, columnainicio: int) -> None:
-
-          for dato in datos:
-               celdaDato = self.hojabd.cell(row=fila, column=columnainicio)
-               celdaDato.value = dato
-               columnainicio += 1
-          self.datosPorGuardar = True
-
-     def putDato(self, dato: str = None, datos: list = None, fila: int = None, columna: str = None, identificador: str = None) -> bool:
+     def putDato(self, dato: str = None, datos: list = None, fila: int = None, columna: str = None) -> bool:
           if identificador:
                row = self.hoja_actual[identificador]["fila"]
                column = self.hoja_actual[identificador]["columna"]
