@@ -4,7 +4,7 @@ from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, priv, constructor_paquete, seleccionar_conjunto_elementos
+from helpers import mensajes, privilegios, priv, constructor_paquete
 import params
 import os
 

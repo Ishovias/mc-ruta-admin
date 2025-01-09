@@ -4,9 +4,7 @@ from empaquetadores.pack_clientes import empaquetador_clientes
 from empaquetadores.pack_inventarios import empaquetador_inventarios
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
-from empaquetadores.pack_st_productos import pack_st_cotizacion, pack_st_productos, pack_st_registros_cotizaciones
 from empaquetadores.pack_todo import empaquetador_todo
-from empaquetadores.pack_st_inicio import pack_st_login, pack_st_index
 from empaquetadores.pack_eliminaciones import empaquetador_eliminaciones
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
@@ -74,15 +72,6 @@ def logout() -> render_template:
      datos = {"alerta":alerta}
      return render_template('autorizador.html', datos=datos)
 
-@app.route('/stlogout', methods=['POST'])
-def stlogout() -> render_template:
-     alerta = "Sesion ya cerrada, debes iniciar sesion nuevamente"
-     if sesion.getAutenticado(request):
-          alerta = f"Sesion de usuario {sesion.getUsuario(request)} cerrada"
-          sesion.cierraSesion(request)
-     datos = {"alerta":alerta}
-     return render_template('st_autorizador.html', datos=datos)
-
 @app.route('/todo', methods=['POST'])
 def todo() -> render_template:
      if not sesion.getAutenticado(request):
@@ -130,50 +119,6 @@ def eliminaciones() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
      datos = empaquetador_eliminaciones(request)
-     return render_template(datos["pagina"], datos=datos)
-
-
-# --------- APP SUBLITOTE --------------
-
-@app.route('/sublitote/login', methods=['GET','POST'])
-def sublitote_login() -> render_template:
-     if request.method == 'POST':
-          if not sesion.getAutenticado(request):
-               datos = pack_st_login(coder, request)
-               if "pagina" in datos:
-                    return render_template(datos["pagina"], datos=datos)
-          return redirect(url_for('sublitote', aut=datos["aut"]))
-     else:
-          if sesion.getAutenticado(request):
-               return redirect(url_for('sublitote'))
-          return render_template("st_autorizador.html", datos={"alerta":"Debes iniciar sesion primeramente"})
-
-@app.route('/sublitote', methods=['GET','POST'])
-def sublitote() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for('sublitote_login'))
-     datos = pack_st_index(request)
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/productos', methods=['GET','POST'])
-def productos() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for('sublitote_login'))
-     datos = pack_st_productos(request)
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/cotizacion', methods=['GET','POST'])
-def cotizacion() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for('sublitote_login'))
-     datos = pack_st_cotizacion(request)
-     return render_template(datos["pagina"], datos=datos)
-
-@app.route('/cotizacionesbd', methods=['GET','POST'])
-def cotizacionesbd() -> render_template:
-     if not sesion.getAutenticado(request):
-          return redirect(url_for('sublitote_login'))
-     datos = pack_st_registros_cotizaciones(request)
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':

@@ -11,10 +11,20 @@
 <div class="botoneraFormClientes">
      <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
           <div class="buscadorclientes">
-               <button name="buscacliente" type="submit" value="buscacliente">Buscar</button>
-               <label for="nombre">Indica nombre:
-                    <input name="nombre" placeholder="Indica nombre o parte de nombre" required>
+               <label for="dato">Ingresa una busqueda:
+                    <input name="dato" placeholder="ingresa parte del dato a buscar" required>
                </label>
+               <label for="filtro">Busqueda por:
+                    <select name="filtro">
+                         <option value="cliente" selected>CLIENTE</option>
+                         {% for filtro in datos.filtros_busqueda %}
+                              {% if filtro != "cliente" %}
+                                   <option value="{{ filtro }}">{{ datos["filtros_busqueda"][filtro]["encabezado"] }}</option>
+                              {% endif %}
+                         {% endfor %}
+                    </select>
+               </label>
+               <button name="buscacliente" type="submit" value="buscacliente">Buscar</button>
           </div>
      </form>
           <div class="listaringresarclientes">

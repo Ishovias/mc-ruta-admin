@@ -2,7 +2,6 @@ from openpyxl import load_workbook
 from cimprime import cimprime
 import params
 
-
 class bdmediclean:
 
      def __init__(self, hoja: str, otrolibro: str = None, hojadefault: bool = False) -> None:
@@ -20,6 +19,12 @@ class bdmediclean:
      def __enter__(self) -> object:
           return self
 
+     def get_id(self) -> str:
+          return self.hojabd.cell(
+               row=self.maxfilas, 
+               column=self.hoja_actual["columnas"]["id"]["num"]
+               )
+     
      def getmaxfilas(self) -> int:
           self.maxfilas = self.contarfilas()
           return self.maxfilas
@@ -33,12 +38,14 @@ class bdmediclean:
                else:
                     return filas - 1
 
-     def mapdata(self, fila: int=None) -> dict:
-          columnas = self.hoja_actual["columnas"].keys()
+     def mapdatos(self, fila: int=None, columnas: list=None) -> dict:
+          columnas = self.hoja_actual["columnas"].keys() if not columnas else columnas
           data = {}
           for columna in columnas:
-               data[columna]["encabezado"] = self.hoja_actual["columnas"][columna]["encabezado"]
-               data[columna]["dato"] = None if not fila else self.getDato(fila, columna)
+               data[columna] = {
+                    "encabezado":self.hoja_actual["columnas"][columna]["encabezado"],
+                    "dato":None if not fila else self.getDato(fila, columna)
+                    }
           return data
 
      def eliminarContenidos(self) -> None:
@@ -102,11 +109,16 @@ class bdmediclean:
           else:
                return buscador(filainicio)
 
-     def listar(self, filainicial: int = None, columnas: list = None, encabezados: int = None, solodatos: bool = False) -> map:
+     def listar(self, filainicial: int = None, filas: list=None, columnas: list = None, encabezados: int = None, solodatos: bool = False) -> map:
           if not filainicial:
                filainicial = self.hoja_actual["filainicial"]
           if not columnas:
                columnas = self.hoja_actual["columnas_todas"]
+          else:
+               cols = []
+               for columna in columnas:
+                    cols.append(self.hoja_actual["columnas"][columna]["num"])
+               columnas = cols
           if not encabezados:
                encabezados = self.hoja_actual["encabezados"]
 
@@ -115,10 +127,8 @@ class bdmediclean:
 
           # Extraccion de datos "filas"
           resultados["datos"] = []
-          for fila in range(filainicial, maxfilas, 1):
-               celda = self.hojabd.cell(row=fila, column=columnas[0])
-               if celda.value == None:
-                    break
+          rango = range(filainicial, maxfilas, 1) if not filas else filas
+          for fila in rango:
                datafile = []
                for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)

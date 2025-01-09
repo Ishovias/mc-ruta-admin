@@ -14,7 +14,6 @@ PRIVILEGIOS = {
 LIBRODATOS = "./bd/mediclean_bd.xlsx"
 LIBROTODO = "./bd/todo_bd.xlsx"
 LIBRORUTA = "./bd/ruta.xlsx"
-LIBROST = "./bd/sublitote_bd.xlsx"
 RUTA_IMPORTACION = "./ruta_import"
 
 # ---------- RUTAS DE PRODUCCION --------------
@@ -26,6 +25,7 @@ RUTA_IMPORTACION = "./ruta_import"
 
 EXTENSIONES_PERMITDAS = {"xlsx", "xls"}
 MAX_FILAS = 10000
+FORMATO_FECHA = "%d-%m-%Y"
 
 CLIENTES = {
      "nombrehoja": "clientes",
@@ -33,18 +33,17 @@ CLIENTES = {
      "columnas": {
           "id": {"num": 1, "encabezado": "ID"},
           "estado": {"num": 2, "encabezado": "ESTADO"},
-          "rut": {"num": 3, "encabezado": "RUT"},
-          "cliente": {"num": 4, "encabezado": "CLIENTE"},
-          "direccion": {"num": 5, "encabezado": "DIRECCION"},
-          "comuna": {"num": 6, "encabezado": "COMUNA"},
-          "telefono": {"num": 7, "encabezado": "TELEFONO"},
-          "gps": {"num": 8, "encabezado": "GPS"},
+          "contrato": {"num": 3, "encabezado": "CONTR."},
+          "rut": {"num": 4, "encabezado": "RUT"},
+          "cliente": {"num": 5, "encabezado": "CLIENTE"},
+          "direccion": {"num": 6, "encabezado": "DIRECCION"},
+          "comuna": {"num": 7, "encabezado": "COMUNA"},
+          "telefono": {"num": 8, "encabezado": "TELEFONO"},
           "otro": {"num": 9, "encabezado": "OTRO"},
-          "contrato": {"num": 10, "encabezado": "CONTR."},
-          "ultimoretiro": {"num": 11, "encabezado": "ULT.RETIRO"},
-          "proxretiro": {"num": 12, "encabezado": "PROX.RETIRO"}
+          "ultimoretiro": {"num": 10, "encabezado": "ULT.RETIRO"},
+          "proxretiro": {"num": 11, "encabezado": "PROX.RETIRO"}
      },
-     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
      "encabezados": 1
 }
 
@@ -63,23 +62,27 @@ USUARIO = {
 RUTA_ACTUAL = {
      "nombrehoja": "ruta_actual",
      "filainicial": 3,
-     "rutaencurso": {"fila": 1, "columna": 2},
-     "nombreruta": {"fila": 1, "columna": 3},
-     "REALIZADO": {"fila": 1, "columna": 4},
-     "POSPUESTO": {"fila": 1, "columna": 5},
+     "filadatos": 1,
      "columnas": {
           "fecha": {"num": 1, "encabezado": "FECHA"},
           "indice": {"num": 2, "encabezado": "INDICE"},
           "contrato": {"num": 3, "encabezado": "CONTR."},
-          "rut": {"num": 4, "encabezado": "RUT"},
-          "cliente": {"num": 5, "encabezado": "CLIENTE"},
-          "direccion": {"num": 6, "encabezado": "DIRECCION"},
-          "comuna": {"num": 7, "encabezado": "COMUNA"},
-          "telefono": {"num": 8, "encabezado": "TELEFONO"},
-          "otro": {"num": 9, "encabezado": "OTRO"},
-          "ultimoretiro": {"num": 10, "encabezado": "ULT.RETIRO"}
+          "id": {"num": 4, "encabezado": "ID"},
+          "rut": {"num": 5, "encabezado": "RUT"},
+          "cliente": {"num": 6, "encabezado": "CLIENTE"},
+          "direccion": {"num": 7, "encabezado": "DIRECCION"},
+          "comuna": {"num": 8, "encabezado": "COMUNA"},
+          "telefono": {"num": 9, "encabezado": "TELEFONO"},
+          "otro": {"num": 10, "encabezado": "OTRO"},
+          "ultimoretiro": {"num": 11, "encabezado": "ULT.RETIRO"},
+          # Columnas de datos de la ruta
+          "rutaencurso": {"num": 2, "encabezado": "FECHA"},
+          "nombreruta": {"num": 3, "encabezado": "RUTA"},
+          "realizado": {"num": 4, "encabezado": "REALIZADOS"},
+          "pospuesto": {"num": 5, "encabezado": "POSPUESTOS"},
      },
-     "todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+     "columnas_datos": [2,3,4,5],
      "encabezados": 2
 }
 
