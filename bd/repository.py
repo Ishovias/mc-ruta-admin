@@ -49,7 +49,7 @@ class bdmediclean:
                     celda = self.hojabd.cell(row=fila, column=columna)
                     celda.value = None
           self.datosPorGuardar = True
-     
+
      def eliminar(self, fila: int) -> None:
           self.hojabd.delete_rows(fila)
           self.datosPorGuardar = True
@@ -67,7 +67,7 @@ class bdmediclean:
      def buscadato(self, dato: str, filainicio: int = None, columna: str = None, exacto: bool = False, filtropuntuacion: bool = False, buscartodo: bool = False) -> int:
           def buscador(filainicio: int) -> int:
                for fila in range(filainicio, maxfilas, 1):
-                    celda = self.hojabd.cell(row=fila, column=columna)
+                    celda = self.hojabd.cell(row=fila, column=self.hoja_actual["columnas"][columna]["num"])
                     try:
                          valorcelda = str(celda.value) if exacto else str(celda.value).lower()
                          datob = dato if exacto else dato.lower()
@@ -149,7 +149,7 @@ class bdmediclean:
           self.hojabd.insert_rows(filainsercion)
           self.datosPorGuardar = True
 
-     def getDato(self, fila: int = None, columna: str = None) -> bool:          
+     def getDato(self, fila: int = None, columna: str = None) -> bool:
           if type(fila) != list:
                fila = [fila]
           if type(columna) != list:
@@ -165,11 +165,12 @@ class bdmediclean:
                return datos[0] if len(datos[0]) > 1 else datos[0][0]
           else:
                return datos
-          
+
      def guardar(self) -> None:
           try:
                self.bd.save(self.libroPorGuardar)
-          except:
+          except Exception as e:
+               cimprime(excepcion_guardado=e)
                return False
           else:
                return True

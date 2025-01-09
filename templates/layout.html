@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
     <title>Gestor de ruta MEDICLEAN (Isaias B.)</title>
     <div class="encabezado">
-        <a href="{{ url_for('index', aut=datos.aut) }}"><img src="{{ url_for('static', filename='img/icono.jpg') }}"></a>
+        <a href="{{ url_for('index', aut=datos.aut) }}"><img class="img-icono" src="{{ url_for('static', filename='img/icono.jpg') }}"></a>
         <div class="titulosEncabezados">
             {% block encabezado %}
             {% endblock %}
@@ -16,7 +16,7 @@
     </div>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
-    <nav class="botoneraMenu">
+    <div class="botoneraMenu" id="contenedorBotonera">
         <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
             <button class="botonanimado" id="clientes" name="clientes" value="clientes">Clientes</button>
         </form>
@@ -54,7 +54,7 @@
         <form method="post" action="{{ url_for('logout', aut=datos.aut) }}">
             <button class="botonanimado" id="cierrasesion" name="cierrasesion" value="cierrasesion">Cerrar sesion</button>
         </form>
-    </nav>
+    </div>
 </head>
 <body>
     <div class="body_a">

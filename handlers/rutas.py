@@ -91,6 +91,7 @@ class RutaRegistros(bdmediclean):
                super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila,columna="fecha")
                return True
           return False
+
 class RutaBD(bdmediclean):
      
      kilosItems = {
@@ -197,8 +198,8 @@ class RutaBD(bdmediclean):
                     del insumos_usados[elemento]
           return insumos_usados
 
-
 class RutaImportar(bdmediclean):
+
      def __init__(self, archivo: str) -> None:
           super().__init__(params.RUTA_ACTUAL, otrolibro=str(archivo))
           self.hoja_actual = params.RUTA_ACTUAL
@@ -207,5 +208,5 @@ class RutaImportar(bdmediclean):
           return {
                "rutaencurso": super().getDato(identificador="rutaencurso", retornostr=True),
                "nombreruta": super().getDato(identificador="nombreruta", retornostr=True),
-               "datos":super().listar(retornostr=True, solodatos_list=True)
+               "datos":super().listar(retornostr=True, solodatos=True)
           }

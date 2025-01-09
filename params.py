@@ -1,5 +1,14 @@
 # hoja de parametros generales
 
+# Privilegios usuarios
+PRIVILEGIOS = {
+     "admin": [
+          "iberoiza"
+          ],
+     "user": [
+          "invitado"
+          ]
+}
 
 # ---------- RUTAS DE DESARROLLO --------------
 LIBRODATOS = "./bd/mediclean_bd.xlsx"
@@ -43,9 +52,9 @@ USUARIO = {
      "nombrehoja": "usuarios",
      "filainicial": 2,
      "columnas": {
-          "usuario": 1,
-          "contrasena": 2,
-          "token": 3
+          "usuario": {"num": 1, "encabezado": "USUARIO"},
+          "contrasena": {"num": 2, "encabezado": "CLAVE"},
+          "token": {"num": 3, "encabezado": "TOKEN"}
      },
      "columnas_todas": [1, 2, 3],
      "encabezados": 1

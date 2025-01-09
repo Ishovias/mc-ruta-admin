@@ -7,8 +7,8 @@ class Usuariosbd(bdmediclean):
         super().__init__(params.USUARIO)
 
     def comprueba_usuario(self, nombre: str, contrasena: str) -> bool:
-        dnombre = super().buscadato(self.hoja_actual["filainicial"],1,nombre,exacto=True)
-        dcontrasena = super().buscadato(self.hoja_actual["filainicial"],2,contrasena,exacto=True)
+        dnombre = super().buscadato(dato=nombre,columna="usuario",exacto=True)
+        dcontrasena = super().buscadato(dato=contrasena,columna="contrasena",exacto=True)
         if dnombre != None and dcontrasena != None:
             resultado = True
         else:
@@ -16,21 +16,21 @@ class Usuariosbd(bdmediclean):
         return resultado
     
     def elimina_token(self, token: str) -> bool:
-        ubicacionUsuario = super().busca_ubicacion(dato=token,columna="token")
+        ubicacionUsuario = super().buscadato(dato=token,columna="token")
         if ubicacionUsuario:
-            return super().putDato(dato="",fila=ubicacionUsuario,columna="token")
+            super().putDato(dato="",fila=ubicacionUsuario,columna="token")
         return False
         
     def token_registrado(self, usuario: str) -> bool:
-        ubicacionUsuario = super().busca_ubicacion(dato=usuario,columna="usuario")
+        ubicacionUsuario = super().buscadato(dato=usuario,columna="usuario")
         return super().getDato(fila=ubicacionUsuario,columna="token")
     
     def token_existente(self, tokenDado: str) -> str: # nuevo metodo
-        ubicacion = super().busca_ubicacion(dato=tokenDado,columna="token") 
+        ubicacion = super().buscadato(dato=tokenDado,columna="token") 
         if ubicacion:
             return super().getDato(fila=ubicacion,columna="usuario")
         return None
         
     def registra_token(self, usuario: str, token: str) -> bool:
-        ubicacionUsuario = super().busca_ubicacion(dato=usuario,columna="usuario")
-        return super().putDato(dato=token,fila=ubicacionUsuario,columna="token")
+        ubicacionUsuario = super().buscadato(dato=usuario,columna="usuario")
+        super().putDato(dato=token,fila=ubicacionUsuario,columna="token")
