@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+          <h1>Mediclean Ruta</h1>
+          <h2>Administrador de ruta</h2>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+
+{% block body_a %}
+<form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+     <span class="titulos">Formulario de nuevo cliente</span>
+     {% for campo in datos.form_nuevousuario %}
+          {% if campo == "estado" %}
+               <select name="estado" required>
+                    <option value="">-Selecciona-</option>
+                    <option value="activo" selected>Activo</option>
+                    <option value="de baja">De Baja</option>
+                    <option value="suspendido">Suspendido</option>
+               </select>     
+          {% else %}
+               <div class="form-field">
+                    <label for="{{ campo }}">{{ datos.form_nuevousuario[campo]["encabezado"] }}
+                         <input name="{{ campo }}" placeholder="{{ datos.form_nuevousuario[campo]['encabezado'] }}" 
+                         {% if campo == "contrato" and campo == "cliente" and campo == "rut" and campo == "direccion" %}
+                         required
+                         {% endif %} 
+                         {% if campo == 'id' %} 
+                         {% if datos.form_nuevousuario[campo]['dato'] %} 
+                         value="{{ datos.form_nuevousuario[campo]['dato'] }}"
+                         {% endif %} 
+                         readonly
+                         {% endif %}>
+                    </label>
+               </div>
+          {% endif %}
+     {% endfor %}
+     <button name="nuevocliente" type="submit" value="nuevocliente">Guardar datos</button>
+{% endblock %}
+
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+{% endblock %}

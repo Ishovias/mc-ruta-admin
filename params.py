@@ -33,7 +33,7 @@ CLIENTES = {
      "columnas": {
           "id": {"num": 1, "encabezado": "ID"},
           "estado": {"num": 2, "encabezado": "ESTADO"},
-          "contrato": {"num": 3, "encabezado": "CONTR."},
+          "contrato": {"num": 3, "encabezado": "CONTRATO"},
           "rut": {"num": 4, "encabezado": "RUT"},
           "cliente": {"num": 5, "encabezado": "CLIENTE"},
           "direccion": {"num": 6, "encabezado": "DIRECCION"},

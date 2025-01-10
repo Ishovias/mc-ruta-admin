@@ -15,12 +15,10 @@
                     <input name="dato" placeholder="ingresa parte del dato a buscar" required>
                </label>
                <label for="filtro">Busqueda por:
-                    <select name="filtro">
-                         <option value="cliente" selected>CLIENTE</option>
+                    <select name="filtro" required>
+                         <option value="" selected>-Selecciona-</option>
                          {% for filtro in datos.filtros_busqueda %}
-                              {% if filtro != "cliente" %}
-                                   <option value="{{ filtro }}">{{ datos["filtros_busqueda"][filtro]["encabezado"] }}</option>
-                              {% endif %}
+                              <option value="{{ filtro }}">{{ datos["filtros_busqueda"][filtro]["encabezado"] }}</option>
                          {% endfor %}
                     </select>
                </label>
@@ -28,11 +26,8 @@
           </div>
      </form>
           <div class="listaringresarclientes">
-               <form name="listaclientes" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                    <button name="listarclientes" value="listarclientes">Listar clientes</button>
-               </form>
                <form class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                    <button name="nuevocliente" value="nuevocliente" {{ datos.newclienteEnabled }}>Nuevo cliente</button>
+                    <button name="nuevocliente" value="formulario" style="background: green;"  {{ datos.newclienteEnabled }}>Nuevo cliente</button>
                </form>
           </div>
      </form>
@@ -42,13 +37,17 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if "listaclientes" in datos and "listaretiros" not in datos %}
-     {% if datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
+     {% if datos.listaclientes == "Sin resultados" %}
+          <p class="textosinformativos">>>>>>>>>>>>>>  SIN RESULTADOS <<<<<<<<<<<<<<</p>
+     {% elif datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
+     <div class="tabla-contenedor">
           <table class="tbresultados">
           <thead>
                     <th>Modificar</th>
                {% for dato in datos.listaclientes.encabezados %}
                     <th>{{ dato }}</th>
                {% endfor %}
+                    <th>Acciones</th>
           </thead>
           <tbody>
                {% for fila in datos.listaclientes.datos %}
@@ -71,8 +70,7 @@
                {% endfor %}
           </tbody>
           </table>
-     {% elif datos.listaclientes.datos == 0 or datos.listaclientes.datos == [] %}
-          <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
+     </div>
      {% endif %}
      <br><hr><br>
 {% endif %}

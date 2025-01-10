@@ -23,7 +23,7 @@ class bdmediclean:
           return self.hojabd.cell(
                row=self.maxfilas, 
                column=self.hoja_actual["columnas"]["id"]["num"]
-               )
+               ).value
      
      def getmaxfilas(self) -> int:
           self.maxfilas = self.contarfilas()

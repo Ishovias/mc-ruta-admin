@@ -77,8 +77,8 @@ html {
 }
 
 .botonanimado {
-    width: 100%;
-    min-height: 50px;
+    width: 120px;
+    height: 100px;
     font-size: 0.8rem;
     font-weight: bold;
     border-radius: var(--border-radius);

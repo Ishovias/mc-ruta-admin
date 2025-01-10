@@ -1,5 +1,6 @@
 from bd.repository import bdmediclean
 from datetime import date, timedelta, datetime
+from cimprime import cimprime
 import params
 
 class Clientes(bdmediclean):
@@ -9,7 +10,6 @@ class Clientes(bdmediclean):
      
      def busca_cliente(self, busqueda: str, filtro: str, retornafilas: bool=False) -> map:
           # Devuelve un listado con encabezados y datos al estilo repository.listar
-          filainicio = self.hoja_actual["filainicial"]
           filas = super().buscadato(
                dato=busqueda, 
                columna=filtro,
@@ -17,20 +17,20 @@ class Clientes(bdmediclean):
                buscartodo=True)
           if retornafilas:
                return filas
-          resultados = super().listar(filas=filas)
+          resultados = super().listar(filas=filas) if filas else "Sin resultados"
           return resultados
      
-     def nuevo_cliente(self, datos: map) -> bool:
+     def nuevo_cliente(self, mapdatos: map) -> bool:
           existencia = super().buscadato(
-               dato=datos["id"],
+               dato=mapdatos["id"],
                columna="id",
                exacto=True
                )
           if existencia:
                return False
           fila = super().buscafila(columna="id")
-          for dato in datos.keys():
-               super().putDato(dato=datos[dato], fila=fila, columna=dato)
+          for campo in mapdatos.keys():
+               super().putDato(dato=mapdatos[campo], fila=fila, columna=campo)
           return True
      
      def verifica_existencia(self, dato: str, columna: str="id", retornafila=False) -> bool:
