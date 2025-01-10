@@ -16,7 +16,7 @@ def empaquetador_clientes(request: object) -> map:
           nombre = request.form.get("dato")
           filtro = request.form.get("filtro")
           with Clientes() as cl:
-               paquete["listaclientes"] = cl.busca_cliente(nombre,filtro)
+               paquete["listaclientes"] = cl.busca_cliente(nombre,filtro,idy=True)
           datos_base()
      
      elif "nuevocliente" in request.form: 
@@ -33,14 +33,26 @@ def empaquetador_clientes(request: object) -> map:
                     paquete["form_nuevousuario"] = form_nuevousuario
                     paquete["pagina"] = "clientes_nuevo.html"
           if accion == "nuevocliente":
-               paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id")
+               with Clientes() as cl:
+                    paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id",idy=True)
                datos_base()
      
-     elif "guardanuevocliente" in request.form:
-          pass
-     
-     elif "modificaCliente" in request.form:
-          pass
+     elif "modificacliente" in request.form:
+          ubicacion = request.form.get("modificacliente")
+          with Clientes() as cl:
+               if ubicacion == "formulario_modificado":
+                    datos = cl.mapdatos()
+                    for campo in datos.keys():
+                         datos[campo] = request.form.get(campo)
+                    cl.nuevo_cliente(datos, modificacion=ubicacion)
+               else:
+                    datos = cl.mapdatos(fila=ubicacion)
+                    paquete["form_modcliente"] = datos
+                    paquete["pagina"] = "clientes_modifica.html"
+          if ubicacion == "formulario_modificado":
+               with Clientes() as cl:
+                    paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id",idy=True)
+               datos_base()
      
      elif "aRuta" in request.form:
           pass

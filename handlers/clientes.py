@@ -8,7 +8,7 @@ class Clientes(bdmediclean):
      def __init__(self) -> None:
           super().__init__(params.CLIENTES)
      
-     def busca_cliente(self, busqueda: str, filtro: str, retornafilas: bool=False) -> map:
+     def busca_cliente(self, busqueda: str, filtro: str, retornafilas: bool=False, idy: bool=False) -> map:
           # Devuelve un listado con encabezados y datos al estilo repository.listar
           filas = super().buscadato(
                dato=busqueda, 
@@ -17,18 +17,19 @@ class Clientes(bdmediclean):
                buscartodo=True)
           if retornafilas:
                return filas
-          resultados = super().listar(filas=filas) if filas else "Sin resultados"
+          resultados = super().listar(filas=filas, idy=idy) if filas else "Sin resultados"
           return resultados
      
-     def nuevo_cliente(self, mapdatos: map) -> bool:
-          existencia = super().buscadato(
-               dato=mapdatos["id"],
-               columna="id",
-               exacto=True
-               )
-          if existencia:
-               return False
-          fila = super().buscafila(columna="id")
+     def nuevo_cliente(self, mapdatos: map, modficacion: int=None) -> bool:
+          if not modficacion:
+               existencia = super().buscadato(
+                    dato=mapdatos["id"],
+                    columna="id",
+                    exacto=True
+                    )
+               if existencia:
+                    return False
+          fila = super().buscafila(columna="id") if not modificacion else int(modificacion)
           for campo in mapdatos.keys():
                super().putDato(dato=mapdatos[campo], fila=fila, columna=campo)
           return True

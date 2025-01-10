@@ -45,7 +45,9 @@
           <thead>
                     <th>Modificar</th>
                {% for dato in datos.listaclientes.encabezados %}
-                    <th>{{ dato }}</th>
+                    {% if dato != "idy" %}
+                         <th>{{ dato }}</th>
+                    {% endif %}
                {% endfor %}
                     <th>Acciones</th>
           </thead>
@@ -58,12 +60,14 @@
                               </form>
                          </td>
                     {% for data in fila %}
-                         <td>{{ data }}</td>
+                         {% if data != fila[-1] %}
+                              <td>{{ data }}</td>
+                         {% endif %}
                     {% endfor %}
                          <td>
                               <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="modificaCliente" value="{{ fila.1 }}" {{ datos.modclienteEnabled }}>Modificar datos</button>
-                                   <button type="submit" name="bdretiros" value="{{ fila.1 }}">Retiros</button>
+                                   <button type="submit" name="modificacliente" value="{{ fila[-1] }}" {{ datos.modclienteEnabled }}>Modificar datos</button>
+                                   <button type="submit" name="bdretiros" value="{{ fila[-1] }}">Retiros</button>
                               </form>
                          </td>
                     </tr>

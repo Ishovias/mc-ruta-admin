@@ -20,10 +20,15 @@ class bdmediclean:
           return self
 
      def get_id(self) -> str:
-          return self.hojabd.cell(
+          read_id = self.hojabd.cell(
                row=self.maxfilas, 
                column=self.hoja_actual["columnas"]["id"]["num"]
                ).value
+          try:
+               read_id = int(read_id)
+          except:
+               read_id = "1000"
+          return read_id
      
      def getmaxfilas(self) -> int:
           self.maxfilas = self.contarfilas()
@@ -109,7 +114,7 @@ class bdmediclean:
           else:
                return buscador(filainicio)
 
-     def listar(self, filainicial: int = None, filas: list=None, columnas: list = None, encabezados: int = None, solodatos: bool = False) -> map:
+     def listar(self, filainicial: int = None, filas: list=None, columnas: list = None, encabezados: int = None, solodatos: bool = False, idy: bool=False) -> map:
           if not filainicial:
                filainicial = self.hoja_actual["filainicial"]
           if not columnas:
@@ -133,6 +138,8 @@ class bdmediclean:
                for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)
                     datafile.append(dato.value)
+               if idy:
+                    datafile.append(fila)
                resultados["datos"].append(datafile)
           if solodatos:
                return resultados["datos"]
@@ -144,7 +151,8 @@ class bdmediclean:
           for campo in columnas:
                encabezado = self.hoja_actual["columnas"][cols[campo]]["encabezado"]
                resultados["encabezados"].append(encabezado)
-
+          if idy:
+               resultados["encabezados"].append("idy")
           return resultados
 
      def putDato(self, dato: str = None, fila: int = None, columna: str = None) -> bool:
