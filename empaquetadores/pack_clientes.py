@@ -44,9 +44,9 @@ def empaquetador_clientes(request: object) -> map:
                     datos = cl.mapdatos()
                     for campo in datos.keys():
                          datos[campo] = request.form.get(campo)
-                    cl.nuevo_cliente(datos, modificacion=ubicacion)
+                    cl.nuevo_cliente(datos, modificacion=int(ubicacion))
                else:
-                    datos = cl.mapdatos(fila=ubicacion)
+                    datos = cl.mapdatos(fila=int(ubicacion))
                     paquete["form_modcliente"] = datos
                     paquete["pagina"] = "clientes_modifica.html"
           if ubicacion == "formulario_modificado":
