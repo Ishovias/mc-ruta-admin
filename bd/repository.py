@@ -43,9 +43,9 @@ class bdmediclean:
                else:
                     return filas - 1
 
-     def mapdatos(self, fila: int=None, columnas: list=None) -> dict:
+     def mapdatos(self, fila: int=None, columnas: list=None, idy: bool=False) -> dict:
           columnas = self.hoja_actual["columnas"].keys() if not columnas else columnas
-          data = {}
+          data = {"idy":{"dato":fila}} if idy and fila else {}
           for columna in columnas:
                data[columna] = {
                     "encabezado":self.hoja_actual["columnas"][columna]["encabezado"],

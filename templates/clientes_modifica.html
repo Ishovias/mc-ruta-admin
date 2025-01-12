@@ -12,13 +12,16 @@
      <span class="titulos">Formulario de modificacion cliente</span>
      {% for campo in datos.form_modcliente %}
           {% if campo == "estado" %}
+          <div class="form-field">
+               <label for="estado">Estado del cliente</label>
                <select name="estado" required>
                     <option value="{{ datos.form_modcliente['estado']['dato'] }}" selected>{{ datos.form_modcliente['estado']['dato'] }}</option>
                     <option value="activo">Activo</option>
                     <option value="de baja">De Baja</option>
                     <option value="suspendido">Suspendido</option>
                </select>     
-          {% else %}
+          </div>
+          {% elif campo != "idy" %}
                <div class="form-field">
                     <label for="{{ campo }}">{{ datos.form_modcliente[campo]["encabezado"] }}
                          <input name="{{ campo }}" placeholder="{{ datos.form_modcliente[campo]['encabezado'] }}" 
@@ -35,7 +38,11 @@
                </div>
           {% endif %}
      {% endfor %}
+     <div class="form-field">
+          <input name="idy" value="{{ datos.form_modcliente['idy']['dato'] }}" hidden readonly>
+     </div>
      <button name="modificacliente" type="submit" value="formulario_modificado" style="background: dark-yellow;">Guardar modificacion</button>
+</form>
 {% endblock %}
 
 <!-- -------------------------BODY B------------------------------- -->

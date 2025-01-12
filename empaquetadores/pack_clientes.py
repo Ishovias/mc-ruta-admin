@@ -35,24 +35,26 @@ def empaquetador_clientes(request: object) -> map:
           if accion == "nuevocliente":
                with Clientes() as cl:
                     paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id",idy=True)
-               datos_base()
+          datos_base()
      
      elif "modificacliente" in request.form:
           ubicacion = request.form.get("modificacliente")
           with Clientes() as cl:
-               if ubicacion == "formulario_modificado":
+               if ubicacion == "formulario_modificado" and request.form.get("idy"):
+                    ubicacion = request.form.get("idy")
                     datos = cl.mapdatos()
                     for campo in datos.keys():
                          datos[campo] = request.form.get(campo)
                     cl.nuevo_cliente(datos, modificacion=int(ubicacion))
                else:
-                    datos = cl.mapdatos(fila=int(ubicacion))
+                    datos = cl.mapdatos(fila=int(ubicacion),idy=True)
                     paquete["form_modcliente"] = datos
                     paquete["pagina"] = "clientes_modifica.html"
-          if ubicacion == "formulario_modificado":
+          
+          if request.form.get("modificacliente") == "formulario_modificado":
                with Clientes() as cl:
                     paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id",idy=True)
-               datos_base()
+          datos_base()
      
      elif "aRuta" in request.form:
           pass

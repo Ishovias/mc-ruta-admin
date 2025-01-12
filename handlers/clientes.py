@@ -20,8 +20,8 @@ class Clientes(bdmediclean):
           resultados = super().listar(filas=filas, idy=idy) if filas else "Sin resultados"
           return resultados
      
-     def nuevo_cliente(self, mapdatos: map, modficacion: int=None) -> bool:
-          if not modficacion:
+     def nuevo_cliente(self, mapdatos: map, modificacion: int=None) -> bool:
+          if not modificacion:
                existencia = super().buscadato(
                     dato=mapdatos["id"],
                     columna="id",
