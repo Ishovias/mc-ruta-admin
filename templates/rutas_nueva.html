@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Nueva ruta</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+<span class="titulos">Nueva ruta</span>
+<form class="formularioIngreso" method="post" action="{{ url_for(datos.pagina_respuesta, aut=datos.aut) }}">
+     <div class="form-field">
+          <label for="rutaencurso">Fecha de ruta:</label>
+          <input name="rutaencurso" type="date" required>
+     </div>
+     <div class="form-field">
+          <label for="rutanombre">Nombre de ruta:</label>
+          <input name="rutanombre" type="text" placeholder="Ruta: Osorno-Purranque" required>
+     </div>
+     <button type="submit" name="nuevaruta">Genera ruta</button>
+</form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+{% endblock %}

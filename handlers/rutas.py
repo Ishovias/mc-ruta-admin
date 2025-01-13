@@ -7,20 +7,18 @@ class RutaActual(bdmediclean):
      def __init__(self) -> None:
           super().__init__(params.RUTA_ACTUAL, otrolibro=params.LIBRORUTA)
      
-     def nuevaRuta(self, fecha: str, ruta: str) -> bool:
-          if super().getDato(identificador="rutaencurso") != None:
+     def nueva_ruta(self, fecha: str, ruta: str) -> None:
+          filadatos = self.hoja_actual["filadatos"]
+          if super().getDato(fila=filadatos,columna="rutaencurso") != None:
                return False
-          try:
-               super().ingresador(
-               fila=self.hoja_actual["rutaencurso"]["fila"],
-               datos=[fecha,ruta],
-               columnainicio=self.hoja_actual["rutaencurso"]["columna"]
+          fila = super().buscafila()
+          for dato, columna in [(fecha,"rutaencurso"),(ruta,"nombreruta")]:
+               super().putDato(
+                    dato=dato,
+                    fila=fila,
+                    columna=columna
                )
-          except:
-               return False
-          else: 
-               return True
-     
+
      def getFechaRuta(self) -> str:
           return super().getDato(identificador="rutaencurso")
 

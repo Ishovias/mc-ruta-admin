@@ -1,5 +1,6 @@
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD
+from empaquetadores.pack_rutas import inicia_ruta, ruta_existente
 from helpers import mensajes, constructor_paquete
 from cimprime import cimprime
 import params
@@ -57,7 +58,8 @@ def empaquetador_clientes(request: object) -> map:
           datos_base()
      
      elif "aRuta" in request.form:
-          pass
+          if not ruta_existente():
+               paquete = inicia_ruta(pagina="clientes.html")
      
      elif "bdretiros" in request.form:
           pass

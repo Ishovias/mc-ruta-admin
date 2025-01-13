@@ -1,16 +1,41 @@
 from werkzeug.utils import secure_filename
+from flask import request
 from datetime import datetime, date
 from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, priv, constructor_paquete
+from helpers import mensajes, privilegios, constructor_paquete
 import params
 import os
 
+def inicia_ruta(paquete: map, map=None, pagina: str=None) -> map:
+    if not map:
+        columnas = ["rutaencurso","nombreruta","realizado","pospuesto"]
+        with RutaActual() as ra:
+            paquete["nuevaruta"] = ra.mapdatos(columnas=columnas)
+        paquete["pagina"] = "rutas_nueva.html"
+        paquete["pagina_respuesta"] = pagina
+    else:
+        with RutaActual() as ra:
+            ra.nueva_ruta(
+                fecha=request.form.get("rutaencurso"),
+                ruta=request.form.get("nombreruta")
+            )
+            paquete["alerta"] = "Ruta creada"
+            paquete["pagina"] = pagina if pagina else "rutas.html"
+    return paquete
+
+def ruta_existente() -> str:
+    with RutaActual() as ra:
+        return ra.getDato(
+            fila=ra.hoja_actual["filadatos"],
+            columna="rutaencurso"
+            )
 
 def empaquetador_rutaactual(request: object) -> map:
-    
+    paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
+
     def verifica_cliente(datos_cliente_confirmado: list) -> bool:
         with Clientes() as cverif:
             rutcliente = datos_cliente_confirmado[2]
@@ -145,13 +170,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
         return paquete
 
-    paquete = {"pagina":"rutas.html","aut":request.args.get("aut"), "nombrePagina":"RUTA EN CURSO"}
-    privilegio = privilegios(request, paquete, retornaUser=True)
-    paquete = privilegio["paquete"]
-    usuario = privilegio["usuario"]
-    paquete["usuario"] = usuario
-
-    if "iniciaruta" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":
+    if "iniciaruta" in request.form:
         fecha = request.form.get("fecha").replace("-","")
         ruta = request.form.get("nombreruta")
 
@@ -172,7 +191,7 @@ def empaquetador_rutaactual(request: object) -> map:
         paquete["pagina"] = "clientes.html"
         return paquete
 
-    elif "finalizaRutaActual" in request.form and priv[usuario]["finEnabled"] == "enabled":
+    elif "finalizaRutaActual" in request.form:
         confirmacion = request.form.get("finalizaRutaActual")
         if confirmacion == "REALIZADO_FORM":
             with RutaActual() as rutaactualbd:
@@ -218,7 +237,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["rutanombre"] = rutaactual.getDato(identificador="nombreruta")
         return paquete
     
-    elif "reubicar" in request.form and priv[usuario]["reubicarEnabled"] == "enabled":
+    elif "reubicar" in request.form:
         posicion_origen = int(request.form.get("uboriginal")) + (int(params.RUTA_ACTUAL["filainicial"]) - 1)
         posicion_destino = int(request.form.get("ubdestino")) + (int(params.RUTA_ACTUAL["filainicial"]) - 1)
         with RutaActual() as ra:
@@ -229,7 +248,7 @@ def empaquetador_rutaactual(request: object) -> map:
             if not resultado:
                 paquete["alerta"] = "Error, no se pudo reubicar"
     
-    elif "cliente_ruta_confirmar" in request.form and priv[usuario]["cpEnabled"] == "enabled":
+    elif "cliente_ruta_confirmar" in request.form:
         confirmacion = request.form.get("cliente_ruta_confirmar")
         if confirmacion == "REALIZADO_FORM":
             confpos(
@@ -261,7 +280,7 @@ def empaquetador_rutaactual(request: object) -> map:
             with Inventario() as inv:
                 paquete["insumos"] = inv.getStockActual(columnas=seleccionar_conjunto_elementos(params.INVENTARIOS,"cajaroja_0.5","frascoamalgama"))
 
-    elif "cliente_ruta_posponer" in request.form and priv[usuario]["cpEnabled"] == "enabled":
+    elif "cliente_ruta_posponer" in request.form:
         confirmacion = request.form.get("cliente_ruta_posponer")
         if confirmacion == "REALIZADO_FORM":
             confpos(
@@ -293,7 +312,7 @@ def empaquetador_rutaactual(request: object) -> map:
             with Inventario() as inv:
                 paquete["insumos"] = inv.getStockActual()
 
-    elif "agregaclientemanual" in request.form and priv[usuario]["inirutaEnabled"] == "enabled":       
+    elif "agregaclientemanual" in request.form:
         with RutaActual() as ra:
             num_cltes = len(ra.listar(solodatos_list=True))
             datos = [
@@ -317,7 +336,7 @@ def empaquetador_rutaactual(request: object) -> map:
             else:
                 paquete["alerta"] = "ERROR al intentar ingresar cliente MANUAL"
 
-    elif "enCamino" in request.form and priv[usuario]["cpEnabled"] == "enabled":
+    elif "enCamino" in request.form:
         with RutaActual() as ra:
             filaCliente = int(request.form.get("enCamino")) + 2
             observacion = ra.getDato(
@@ -543,15 +562,10 @@ def empaquetador_registros_rutas(request: object) -> map:
     return paquete
 
 def empaquetador_carga_ruta(request: object, app: object) -> map:
+    paquete = constructor_paquete(request,"cargaruta.html","CARGA DE RUTA POR XLSX")
     
     def fichero_permitido(archivo: str) -> bool:
         return "." in archivo and archivo.rsplit(".",1)[1].lower() in params.EXTENSIONES_PERMITDAS
-    
-    paquete = {"pagina":"cargaruta.html","aut":request.args.get("aut"), "nombrePagina":"CARGA DE RUTA POR XLSX"}
-    privilegio = privilegios(request, paquete, retornaUser=True)
-    paquete = privilegio["paquete"]
-    usuario = privilegio["usuario"]
-    paquete["usuario"] = usuario
     
     if "archivo" in request.files:
         if "archivo" not in request.files:
