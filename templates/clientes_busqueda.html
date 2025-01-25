@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+          <h1>Mediclean Ruta</h1>
+          <h2>Administrador de ruta</h2>
+          <h3>(Resultados de busqueda)</h3>
+{% endblock %}
+
+<!-- ------------------- BODY A ----------------------------- -->
+
+{% block body_a %}
+<span class="titulos">Resultados</span>
+{% endblock %}
+
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+     <div class="tabla-contenedor">
+          <table class="tbresultados">
+          <thead>
+                    <th>Modificar</th>
+               {% for dato in datos.listaclientes.encabezados %}
+                    {% if dato != "idy" %}
+                         <th>{{ dato }}</th>
+                    {% endif %}
+               {% endfor %}
+                    <th>Acciones</th>
+          </thead>
+          <tbody>
+               {% for fila in datos.listaclientes.datos %}
+                    <tr>
+                         <td>
+                              <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+                                   <button type="submit" name="aRuta" value="{{ fila.1 }}" {{ datos.arutaEnabled }}>A Ruta</button>
+                              </form>
+                         </td>
+                    {% for data in fila %}
+                         {% if data != fila[-1] %}
+                              <td>{{ data }}</td>
+                         {% endif %}
+                    {% endfor %}
+                         <td>
+                              <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
+                                   <button type="submit" name="modificacliente" value="{{ fila[-1] }}" {{ datos.modclienteEnabled }}>Modificar datos</button>
+                                   <button type="submit" name="bdretiros" value="{{ fila[-1] }}">Retiros</button>
+                              </form>
+                         </td>
+                    </tr>
+               {% endfor %}
+          </tbody>
+          </table>
+     </div>
+     <br><hr><br>
+{% endblock %}

@@ -19,30 +19,39 @@ class RutaActual(bdmediclean):
                     columna=columna
                )
 
+     def id_ruta(self) -> int:
+          return int(self.maxfilas) - int(self.hoja_actual["filainicial"])
+
      def getFechaRuta(self) -> str:
           return super().getDato(identificador="rutaencurso")
 
-     def agregar_a_ruta(self, fecha: str, datos: list) -> bool:
-          verificar = super().busca_ubicacion(datos[0],"rut")
-          if verificar:
+     def agregar_a_ruta(self, datos: map) -> bool:
+          cliente_existente = super().buscadato(
+               dato=datos["cliente"]["dato"],
+               columna="cliente",
+               exacto=True
+               )
+          rut_existente = super().buscadato(
+               dato=datos["rut"]["dato"],
+               columna="rut",
+               exacto=True
+               )
+          if cliente_existente or rut_existente:
                return False
-          ubicacion = super().busca_ubicacion(columna="cliente")
-          idActual = super().idActual("id")
+          ubicacion = super().buscafila()
+          datos["fecha"] = super().getDato(
+               fila=self.hoja_actual["filadatos"],
+               columna="rutaencurso"
+               )
+          datos["id"] = self.id_ruta() + 1
           
-          datos.insert(0,idActual)
-          datos.insert(0,fecha)
-
-          try:
-               super().ingresador(
-                    ubicacion,
-                    datos,
-                    self.hoja_actual["columnas"]["fecha"]
+          for dato in datos.keys():
+               super().putDato(
+                    dato=datos[dato]["dato"],
+                    fila=ubicacion,
+                    columna=dato
                     )
-          except Exception as e:
-               print (e)
-               return False
-          else:
-               return True
+          return True
      
      def importar(self, datos: map) -> bool:
           super().putDato(dato=datos["rutaencurso"],identificador="rutaencurso")

@@ -1,23 +1,31 @@
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaBD
 from empaquetadores.pack_rutas import inicia_ruta, ruta_existente
-from helpers import mensajes, constructor_paquete
+from helpers import mensajes, constructor_paquete, VariablesCompartidas
 from cimprime import cimprime
 import params
 
 def empaquetador_clientes(request: object) -> map:
      paquete = constructor_paquete(request, "clientes.html", "Clientes mediclean")
+     vc = VariablesCompartidas()
      
      def datos_base():
           campos_filtros = ["id","rut","cliente","direccion","comuna","telefono","otro"]
           with Clientes() as clientesbd:
                paquete["filtros_busqueda"] = clientesbd.mapdatos(columnas=campos_filtros)
      
-     if "buscacliente" in request.form:
-          nombre = request.form.get("dato")
-          filtro = request.form.get("filtro")
+     if "buscacliente" in request.form or "cliente_a_ruta" in vc.variables:
+          busqueda_guardada = False
+          if "cliente_a_ruta" in vc.variables:
+               ubicacion_cliente = vc.get_variable("cliente_a_ruta")
+               busqueda_guardada = True
+               vc.del_variable("cliente_a_ruta")
+          else:
+               nombre = request.form.get("dato")
+               filtro = request.form.get("filtro")
           with Clientes() as cl:
-               paquete["listaclientes"] = cl.busca_cliente(nombre,filtro,idy=True)
+               paquete["listaclientes"] = cl.busca_cliente(nombre,filtro,idy=True) if not busqueda_guardada else cl.listar(filas=[ubicacion_cliente],idy=True)
+               paquete["pagina"] = "clientes_busqueda.html"
           datos_base()
      
      elif "nuevocliente" in request.form: 
@@ -59,8 +67,17 @@ def empaquetador_clientes(request: object) -> map:
      
      elif "aRuta" in request.form:
           if not ruta_existente():
-               paquete = inicia_ruta(pagina="clientes.html")
-     
+               paquete = inicia_ruta(iniciar=True,paquete=paquete,pagina="clientes.html")
+               vc.put_variable(cliente_a_ruta=request.form.get)
+          else:
+               ubicacion_cliente = request.form.get("aRuta")
+               with Clientes() as cl:
+                    datos = cl.mapdatos(fila=ubicacion_cliente)
+               with RutaActual() as ra:
+                    agregado = ra.agregar_a_ruta(datos)
+                    paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
+                    
+          
      elif "bdretiros" in request.form:
           pass
      

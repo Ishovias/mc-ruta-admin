@@ -19,7 +19,7 @@ class bdmediclean:
      def __enter__(self) -> object:
           return self
 
-     def get_id(self) -> str:
+     def get_id(self, id_inicial: str="1000") -> str:
           read_id = self.hojabd.cell(
                row=self.maxfilas, 
                column=self.hoja_actual["columnas"]["id"]["num"]
@@ -27,7 +27,7 @@ class bdmediclean:
           try:
                read_id = int(read_id)
           except:
-               read_id = "1000"
+               read_id = id_inicial
           return read_id
      
      def getmaxfilas(self) -> int:

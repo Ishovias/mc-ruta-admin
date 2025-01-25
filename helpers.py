@@ -218,3 +218,27 @@ def formatear_precio(precio: int) -> int:
      precio.insert(0,"$")
      return "".join(precio)
 
+class VariablesCompartidas:
+     
+     __instance = None
+     variables = {}
+
+     def __new__(cls):
+          if cls.__instance is None:
+               cls.__instance = super().__new__(cls)
+          return cls.__instance
+     
+     def put_variable(self, **variable) -> None:
+          for nombre, valor in variable.items():
+               self.variables[nombre] = valor
+     
+     def get_variable(self, variable: str) -> str:
+          if type(variable) == str and variable in self.variables:
+               return self.variables[variable]
+          return None
+          
+     def del_variable(self, variable: str) -> bool:
+          if variable not in self.variables:
+               return False
+          del(self.variables[variable])
+          

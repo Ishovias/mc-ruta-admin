@@ -7,7 +7,7 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 <span class="titulos">Nueva ruta</span>
-<form class="formularioIngreso" method="post" action="{{ url_for(datos.pagina_respuesta, aut=datos.aut) }}">
+<form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
      <div class="form-field">
           <label for="rutaencurso">Fecha de ruta:</label>
           <input name="rutaencurso" type="date" required>
@@ -16,6 +16,9 @@
           <label for="rutanombre">Nombre de ruta:</label>
           <input name="rutanombre" type="text" placeholder="Ruta: Osorno-Purranque" required>
      </div>
+     {% if datos.pagina_respuesta %}
+          <input type="text" name="pagina_respuesta" value="{{ datos.pagina_respuesta }}" hidden>
+     {% endif %}
      <button type="submit" name="nuevaruta">Genera ruta</button>
 </form>
 {% endblock %}
