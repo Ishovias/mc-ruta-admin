@@ -30,7 +30,7 @@
                     <tr>
                          <td>
                               <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="aRuta" value="{{ fila.1 }}" {{ datos.arutaEnabled }}>A Ruta</button>
+                                   <button type="submit" name="aRuta" value="{{ fila[-1] }}" {{ datos.arutaEnabled }}>A Ruta</button>
                               </form>
                          </td>
                     {% for data in fila %}

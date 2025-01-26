@@ -39,11 +39,11 @@ class RutaActual(bdmediclean):
           if cliente_existente or rut_existente:
                return False
           ubicacion = super().buscafila()
-          datos["fecha"] = super().getDato(
+          datos["fecha"] = {"dato":super().getDato(
                fila=self.hoja_actual["filadatos"],
                columna="rutaencurso"
-               )
-          datos["id"] = self.id_ruta() + 1
+               )}
+          datos["id"] = {"dato":self.id_ruta() + 1}
           
           for dato in datos.keys():
                super().putDato(

@@ -65,7 +65,7 @@ RUTA_ACTUAL = {
      "filadatos": 1,
      "columnas": {
           "fecha": {"num": 1, "encabezado": "FECHA"},
-          "indice": {"nsaum": 2, "encabezado": "INDICE"},
+          "indice": {"num": 2, "encabezado": "INDICE"},
           "contrato": {"num": 3, "encabezado": "CONTR."},
           "id": {"num": 4, "encabezado": "ID"},
           "id_cliente": {"num": 5, "encabezado": "ID"},

@@ -66,18 +66,19 @@ def empaquetador_clientes(request: object) -> map:
           datos_base()
      
      elif "aRuta" in request.form:
+          ubicacion_cliente = int(request.form.get("aRuta"))
           if not ruta_existente():
                paquete = inicia_ruta(iniciar=True,paquete=paquete,pagina="clientes.html")
-               vc.put_variable(cliente_a_ruta=request.form.get)
+               vc.put_variable(cliente_a_ruta=ubicacion_cliente)
           else:
-               ubicacion_cliente = request.form.get("aRuta")
                with Clientes() as cl:
                     datos = cl.mapdatos(fila=ubicacion_cliente)
+                    del(datos["estado"])
+                    del(datos["proxretiro"])
                with RutaActual() as ra:
                     agregado = ra.agregar_a_ruta(datos)
                     paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
-                    
-          
+     
      elif "bdretiros" in request.form:
           pass
      
