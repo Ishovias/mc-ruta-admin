@@ -38,10 +38,10 @@ def empaquetador_rutaactual(request: object) -> map:
 
     if "iniciaruta" in request.form:
         if "pagina_respuesta" in request.form:
-             paginarespuesta = request.form.get("pagina_respuesta")
-             paquete = inicia_ruta(paquete=paquete, pagina=paginarespuesta)
+                paginarespuesta = request.form.get("pagina_respuesta")
+                paquete = inicia_ruta(paquete=paquete, pagina=paginarespuesta)
         else:
-             paquete = inicia_ruta(iniciar=True,paquete=paquete)
+                paquete = inicia_ruta(iniciar=True,paquete=paquete)
         return paquete
 
     elif "finalizaRutaActual" in request.form:
@@ -61,7 +61,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
     elif "enCamino" in request.form:
         pass
-   
+
     return paquete
     
 def empaquetador_registros_rutas(request: object) -> map:

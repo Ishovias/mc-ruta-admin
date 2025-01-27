@@ -72,15 +72,19 @@ def empaquetador_clientes(request: object) -> map:
                vc.put_variable(cliente_a_ruta=ubicacion_cliente)
           else:
                with Clientes() as cl:
-                    datos = cl.mapdatos(fila=ubicacion_cliente)
-                    del(datos["estado"])
-                    del(datos["proxretiro"])
+                    columnas_datos = ["contrato","id_cliente","id","rut","cliente","direccion","comuna","telefono","otro"]
+                    datos = cl.mapdatos(fila=ubicacion_cliente,columnas=columnas_datos)
                with RutaActual() as ra:
                     agregado = ra.agregar_a_ruta(datos)
                     paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
      
      elif "bdretiros" in request.form:
-          pass
+          ubicacion = request.form.get("bdretiros")
+          with Clientes() as cl:
+               codigo_cliente = cl.getDato(fila=ubicacion, columna="id")
+          with RutaBD() as rbd:
+               filas = rbd.buscadato(dato=codigo_cliente,columna="id",exacto=True,buscartodo=True)
+               retiros = rbd.listar(filas=filas,)
      
      elif "darbaja" in request.form:
           pass
