@@ -84,14 +84,16 @@ def empaquetador_clientes(request: object) -> map:
                codigo_cliente = cl.getDato(fila=ubicacion, columna="id")
           with RutaBD() as rbd:
                filas = rbd.buscadato(dato=codigo_cliente,columna="id",exacto=True,buscartodo=True)
-               retiros = rbd.listar(filas=filas,)
+               retiros = rbd.listar(filas=filas,idy=True)
      
      elif "darbaja" in request.form:
-          pass
-     
-     elif "guardamod" in request.form:
-          pass
-     
+          ubicacion = request.form.get("darbaja")
+          with Clientes() as cl:
+               cl.putDato(fila=ubicacion,
+               columna="estado",
+               dato="DE BAJA"
+               )
+               
      else:
           datos_base()
      
