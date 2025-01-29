@@ -33,63 +33,63 @@ def ruta_existente() -> str:
             columna="fecha"
             )
 
-def confpos(paquete: map, datos: map, confpos: str="REALIZADO") -> map:
-     datosruta = ["fecha","nombreruta","realizado","pospuesto"]
-     with RutaBD() as rbd:     
-          ubicacion = rbd.buscafila()
-          for dato in datos.keys():
-               if dato not in datosruta:
-                    rbd.putDato(
-                         fila=ubicacion,
-                         dato=datos[dato],
-                         columna=dato
-                         )
-     with RutaRegistros() as reg:
-          ubicacion = reg.buscadato(
-               dato=datos["fecha"],
-               columna="fecha"
-               )
-          for dato in datosruta:
-               reg.putDato(
-                    dato=datos[dato],
-                    fila=ubicacion,
-                    columna=dato
-                    )
-     return paquete
+def confpos(paquete: map, datos: map, confpos: str="realizado") -> map:
+    datosruta = ["fecha","nombreruta","realizado","pospuesto"]
+    with RutaBD() as rbd:     
+        ubicacion = rbd.buscafila()
+        for dato in datos.keys():
+            if dato not in datosruta:
+                rbd.putDato(
+                        fila=ubicacion,
+                        dato=datos[dato],
+                        columna=dato
+                        )
+        rbd.putDato(
+            fila=rbd.hoja_actual["filadatos"],
+            columna=confpos
+            )
+        
+    return paquete
 
 def empaquetador_rutaactual(request: object) -> map:
-     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
-     
-     if "iniciaruta" in request.form:
-          if "pagina_respuesta" in request.form:
-               paginarespuesta = request.form.get("pagina_respuesta")
-               paquete = inicia_ruta(paquete=paquete, pagina=paginarespuesta)
-          else:
-               paquete = inicia_ruta(iniciar=True,paquete=paquete)
-          return paquete
-     
-     elif "finalizaRutaActual" in request.form:
-          pass
-     
-     elif "reubicar" in request.form:
-          pass          
-          
-     elif "cliente_ruta_confirmar" in request.form:
-          ubicacion = request.form.get("cliente_ruta_confirmar")
-          with RutaActual() as ra:
-               columnas = params.RUTA_ACTUAL["ncolumnas_todas"]
-               datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
-     
-     elif "cliente_ruta_posponer" in request.form:
-          pass
-     
-     elif "agregaclientemanual" in request.form:
-          pass
-     
-     elif "enCamino" in request.form:
-          pass
-     
-     return paquete
+    paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
+    
+    def datos_base():
+        with RutaActual() as ra:
+            paquete["rutaLista"] = ra.listar(idy=True)
+
+    if "iniciaruta" in request.form:
+        if "pagina_respuesta" in request.form:
+            paginarespuesta = request.form.get("pagina_respuesta")
+            paquete = inicia_ruta(paquete=paquete, pagina=paginarespuesta)
+        else:
+            paquete = inicia_ruta(iniciar=True,paquete=paquete)
+            datos_base()
+        return paquete
+    
+    elif "finalizaRutaActual" in request.form:
+        pass
+    
+    elif "reubicar" in request.form:
+        pass          
+        
+    elif "cliente_ruta_confirmar" in request.form:
+        ubicacion = request.form.get("cliente_ruta_confirmar")
+        with RutaActual() as ra:
+            columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
+            datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
+
+    
+    elif "cliente_ruta_posponer" in request.form:
+        pass
+    
+    elif "agregaclientemanual" in request.form:
+        pass
+    
+    elif "enCamino" in request.form:
+        pass
+    
+    return paquete
     
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = {"pagina":"rutasRegistros.html","aut":request.args.get("aut")}
