@@ -35,7 +35,7 @@ def ruta_existente() -> str:
 
 def confpos(datos: map, confpos: str="realizado") -> map:
     datosruta = ["fecha","nombreruta","realizado","pospuesto"]
-    with RutaBD() as rbd:     
+    with RutaBD() as rbd:
         ubicacion = rbd.buscafila()
         for dato in datos.keys():
             if dato not in datosruta:
@@ -49,20 +49,36 @@ def confpos(datos: map, confpos: str="realizado") -> map:
                 fila=rbd.hoja_actual["filadatos"],
                 columna=confpos
                 )
-    
-    with Inventario() as inv:
-        for col in inv.hoja_actual["insumos_ruta"]:
-            inv.modificaStock(
-                    elemento=col,
-                    modificacion=int(f"-{datos[col]}")
-                    )
+    if confpos == "realizado":
+        with Inventario() as inv:
+            for col in inv.hoja_actual["insumos_ruta"]:
+                inv.modificaStock(
+                        elemento=col,
+                        modificacion=int(f"-{datos[col]}")
+                        )
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
-    
+
     def datos_base():
         with RutaActual() as ra:
             paquete["rutaLista"] = ra.listar(idy=True)
+
+    def form_confpos(confpos: str):
+        with Inventario() as inv:
+            inventario_actual = inv.mapdatos(
+                    columnas=params.INVENTARIOS["insumos_ruta"]
+                    )
+        with RutaActual() as ra:
+            columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
+            datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
+            if ubicacion == "formulario_respuesta":
+                for columna in params.INVENTARIOS["insumos_ruta"]:
+                    datos[columna] = request.form.get(columna)
+                confpos(datos=datos, confpos=confpos)
+            else:
+                paquete[f"formulario_{confpos}"] = datos
+
 
     if "iniciaruta" in request.form:
         if "pagina_respuesta" in request.form:
@@ -72,41 +88,29 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete = inicia_ruta(iniciar=True,paquete=paquete)
             datos_base()
         return paquete
-    
+
     elif "finalizaRutaActual" in request.form:
         pass
-    
+
     elif "reubicar" in request.form:
-        pass          
-        
+        pass
+
     elif "cliente_ruta_confirmar" in request.form:
         ubicacion = request.form.get("cliente_ruta_confirmar")
-        with Inventario() as inv:
-            inventario_actual = inv.mapdatos(
-                    
-                    )
-        with RutaActual() as ra:
-            columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
-            datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
-            if ubicacion == "formulario_respuesta": 
-                for columna in params.INVENTARIOS["insumos_ruta"]:
-                    datos[columna] = request.form.get(columna)
-                confpos(datos=datos, confpos="realizado")    
-            else:
-                paquete["formulario_confpos"] = datos
-       
-    
+        form_confpos(confpos="realizado")
+
     elif "cliente_ruta_posponer" in request.form:
-        pass
-    
+        ubicacion = request.form.get("cliente_ruta_posponer")
+        form_confpos(confpos="posponer")
+
     elif "agregaclientemanual" in request.form:
         pass
-    
+
     elif "enCamino" in request.form:
         pass
-    
+
     return paquete
-    
+
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = {"pagina":"rutasRegistros.html","aut":request.args.get("aut")}
     privilegio = privilegios(request, paquete, retornaUser=True)
