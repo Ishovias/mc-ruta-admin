@@ -33,7 +33,7 @@ def ruta_existente() -> str:
             columna="fecha"
             )
 
-def confpos(paquete: map, datos: map, confpos: str="realizado") -> map:
+def confpos(datos: map, confpos: str="realizado") -> map:
     datosruta = ["fecha","nombreruta","realizado","pospuesto"]
     with RutaBD() as rbd:     
         ubicacion = rbd.buscafila()
@@ -44,12 +44,18 @@ def confpos(paquete: map, datos: map, confpos: str="realizado") -> map:
                         dato=datos[dato],
                         columna=dato
                         )
-        rbd.putDato(
-            fila=rbd.hoja_actual["filadatos"],
-            columna=confpos
-            )
-        
-    return paquete
+            rbd.putDato(
+                dato=confpos,
+                fila=rbd.hoja_actual["filadatos"],
+                columna=confpos
+                )
+    
+    with Inventario() as inv:
+        for col in inv.hoja_actual["insumos_ruta"]:
+            inv.modificaStock(
+                    elemento=col,
+                    modificacion=int(f"-{datos[col]}")
+                    )
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -75,10 +81,20 @@ def empaquetador_rutaactual(request: object) -> map:
         
     elif "cliente_ruta_confirmar" in request.form:
         ubicacion = request.form.get("cliente_ruta_confirmar")
+        with Inventario() as inv:
+            inventario_actual = inv.mapdatos(
+                    
+                    )
         with RutaActual() as ra:
             columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
             datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
-
+            if ubicacion == "formulario_respuesta": 
+                for columna in params.INVENTARIOS["insumos_ruta"]:
+                    datos[columna] = request.form.get(columna)
+                confpos(datos=datos, confpos="realizado")    
+            else:
+                paquete["formulario_confpos"] = datos
+       
     
     elif "cliente_ruta_posponer" in request.form:
         pass
