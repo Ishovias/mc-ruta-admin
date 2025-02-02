@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block encabezado %}
+     <h1>Mediclean Ruta</h1>
+     <h2>Administrador de ruta</h2>
+     <h2>({{ datos.nombrePagina }})</h2>
+{% endblock %}
+<!-- ------------------- BODY A ----------------------------- -->
+{% block body_a %}
+    <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
+        {% if "formulario_realizado" in datos %}
+        {% for campo, dato in datos.formulario_realizado.items()  %}
+            <label for="{{ campo }}">{{ dato["encabezado"] }}</label>
+            <input name="{{ campo }}" {% if dato["dato"] %}value="{{ dato['dato'] }}" readonly{% endif %}>
+        {% endfor %}
+        {% elif "formulario_pospuesto" in datos %}
+            
+        {% endif %}
+    </form>
+{% endblock %}
+<!-- -------------------------BODY B------------------------------- -->
+{% block body_b %}
+
+{% endblock %}

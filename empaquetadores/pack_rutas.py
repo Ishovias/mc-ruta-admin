@@ -70,7 +70,10 @@ def empaquetador_rutaactual(request: object) -> map:
                     columnas=params.INVENTARIOS["insumos_ruta"]
                     )
         with RutaActual() as ra:
-            columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
+            if confpos == "realizado":
+                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
+            elif confpos == "pospuesto":
+                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
             datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
             if ubicacion == "formulario_respuesta":
                 for columna in params.INVENTARIOS["insumos_ruta"]:
@@ -78,6 +81,8 @@ def empaquetador_rutaactual(request: object) -> map:
                 confpos(datos=datos, confpos=confpos)
             else:
                 paquete[f"formulario_{confpos}"] = datos
+                paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
+                paquete["pagina"] = "rutas_confpos.html"
 
 
     if "iniciaruta" in request.form:
