@@ -6,6 +6,7 @@ from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, constructor_paquete
+from cimprime import cimprime as cimp
 import params
 import os
 
@@ -70,17 +71,18 @@ def empaquetador_rutaactual(request: object) -> map:
                     columnas=params.INVENTARIOS["insumos_ruta"]
                     )
         with RutaActual() as ra:
-            if confpos == "realizado":
-                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
-            elif confpos == "pospuesto":
-                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
-            datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
             if ubicacion == "formulario_respuesta":
                 for columna in params.INVENTARIOS["insumos_ruta"]:
                     datos[columna] = request.form.get(columna)
                 confpos(datos=datos, confpos=confpos)
             else:
-                paquete[f"formulario_{confpos}"] = datos
+                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
+                datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
+                if confpos == "realizado":
+                    for clave, valor in inventario_actual.items():
+                        datos[clave] = valor 
+                    datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
+                paquete[f"formulario_confpos"] = datos
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
 
@@ -114,6 +116,10 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "enCamino" in request.form:
         pass
 
+    else:
+        datos_base()
+
+    cimp(paquete_rutaactual=paquete)
     return paquete
 
 def empaquetador_registros_rutas(request: object) -> map:

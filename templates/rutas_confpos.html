@@ -8,13 +8,9 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-        {% if "formulario_realizado" in datos %}
-        {% for campo, dato in datos.formulario_realizado.items()  %}
-            <label for="{{ campo }}">{{ dato["encabezado"] }}</label>
-            <input name="{{ campo }}" {% if dato["dato"] %}value="{{ dato['dato'] }}" readonly{% endif %}>
-        {% endfor %}
-        {% elif "formulario_pospuesto" in datos %}
-            
+        {% for campo, dato in datos.formulario_confpos.items()  %}
+	    <label for="{{ campo }}">{{ dato["encabezado"] }}</label>
+	    <input name="{{ campo }}" {% if dato["dato"] %}value="{{ dato['dato'] }}" readonly{% endif %}>
         {% endif %}
     </form>
 {% endblock %}
