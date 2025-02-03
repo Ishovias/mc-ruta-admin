@@ -64,6 +64,11 @@ def empaquetador_rutaactual(request: object) -> map:
     def datos_base():
         with RutaActual() as ra:
             paquete["rutaLista"] = ra.listar(idy=True)
+            rutaactual = ra.mapdatos(
+                    fila=ra.hoja_actual["filadatos"],
+                    columnas=["fecha","nombreruta"]
+                    )
+            paquete["ruta"] = f"{rutaactual['fecha']['dato']} - {rutaactual['nombreruta']['dato']}"
 
     def form_confpos(confpos: str):
         with Inventario() as inv:

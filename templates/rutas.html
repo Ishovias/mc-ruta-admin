@@ -7,11 +7,10 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-{% if "ruta" in datos %}
-     {% if datos.ruta != None %}
           <p class="tituloscentrados">Ruta activa:{{ datos.ruta }}</p>
           <hr>
-          <table class="tbresultados">
+	  <div class="tabla-contenedor">
+	  <table class="tbresultados">
           <thead>
                {% for dato in datos.rutaLista.encabezados %}
                     <th>{{ dato }}</th>
@@ -51,6 +50,7 @@
                {% endfor %}
           </tbody>
           </table>
+	  </div>
           <form name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.finEnabled }}>Finalizar ruta actual</button>
@@ -62,37 +62,6 @@
                     <button class="botonanimado" name="reubicar" value="reubicar" {{ datos.reubicarEnabled }}>Mover posicion cliente</button>
                </form>
           </div>
-     {% else %}
-          <p class="textosinformativos">>>>>>>>>>>>>>  SIN DATOS <<<<<<<<<<<<<<</p>
-          <br><hr><br>
-          <h2 class="encabezado">Nueva ruta</h2>
-          <br><hr><br>
-          </form><form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-               <label for="fecha">Fecha: 
-                    <input type="date" name="fecha">
-               </label>
-               <label for="nombreruta">Nombre ruta: 
-                    <input type="text" name="nombreruta" placeholder="ej: Ruta Osorno-Puerto Montt-Llanquihue">
-               </label>
-               <br>
-               <button type="submit" name="iniciaruta" value="iniciaruta" {{ datos.inirutaEnabled }}>Iniciar ruta:</button>
-          </form>
-     {% endif %}
-     <br><hr><br>
-{% endif %}
-{% if "nuevaruta" in datos %}
-     <h2 class="encabezado">Nueva ruta</h2>
-     <br><hr><br>
-     <form name="nuevaruta" class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-          <label for="fecha">Fecha: 
-               <input type="date" name="fecha">
-          </label>
-          <label for="nombreruta">Nombre ruta: 
-               <input type="text" name="nombreruta" placeholder="ej: Ruta Osorno-Puerto Montt-Llanquihue">
-          </label>
-          <br>
-          <button type="submit" name="iniciaruta" value="iniciaruta">Iniciar ruta:</button>
-{% endif %}
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
