@@ -19,7 +19,7 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr {% if "DEUDA" in fila.7 or "deuda" in fila.7 or "RETIRO EN CAMINO" in fila.7 or "APLAZADO" in fila.7 %} 
+                    <tr {% if "DEUDA" in fila.10 or "deuda" in fila.10 or "RETIRO EN CAMINO" in fila.10 or "APLAZADO" in fila.10 %} 
                          {% if "RETIRO EN CAMINO" in fila.7 %}
                               style="background-color: lightgreen;" 
                          {% elif "APLAZADO" in fila.7 %}
