@@ -7,7 +7,6 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-{% if "rutaLista" in datos %}
           <p class="tituloscentrados">{{ datos.ruta }}</p>
           <hr>
           <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
@@ -46,7 +45,6 @@
                {% endfor %}
           </tbody>
           </table>
-{% endif %}
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
