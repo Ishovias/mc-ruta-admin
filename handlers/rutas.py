@@ -9,13 +9,12 @@ class RutaActual(bdmediclean):
      
      def nueva_ruta(self, fecha: str, ruta: str) -> None:
           filadatos = self.hoja_actual["filadatos"]
-          if super().getDato(fila=filadatos,columna="rutaencurso") != None:
+          if super().getDato(fila=filadatos,columna="fecha") != None:
                return False
-          fila = super().buscafila()
-          for dato, columna in [(fecha,"rutaencurso"),(ruta,"nombreruta")]:
+          for dato, columna in [(fecha,"fecha"),(ruta,"nombreruta")]:
                super().putDato(
                     dato=dato,
-                    fila=fila,
+                    fila=filadatos,
                     columna=columna
                )
 
@@ -23,7 +22,7 @@ class RutaActual(bdmediclean):
           return int(self.maxfilas) - int(self.hoja_actual["filainicial"])
 
      def getFechaRuta(self) -> str:
-          return super().getDato(identificador="rutaencurso")
+          return super().getDato(identificador="fecha")
 
      def agregar_a_ruta(self, datos: map) -> bool:
           cliente_existente = super().buscadato(
@@ -41,7 +40,7 @@ class RutaActual(bdmediclean):
           ubicacion = super().buscafila()
           datos["fecha"] = {"dato":super().getDato(
                fila=self.hoja_actual["filadatos"],
-               columna="rutaencurso"
+               columna="fecha"
                )}
           datos["id"] = {"dato":self.id_ruta() + 1}
           
@@ -54,7 +53,7 @@ class RutaActual(bdmediclean):
           return True
      
      def importar(self, datos: map) -> bool:
-          super().putDato(dato=datos["rutaencurso"],identificador="rutaencurso")
+          super().putDato(dato=datos["fecha"],identificador="fecha")
           super().putDato(dato=datos["nombreruta"],identificador="nombreruta")
           super().eliminarContenidos()
           filaubicacion = self.hoja_actual["filainicial"]
@@ -89,13 +88,13 @@ class RutaRegistros(bdmediclean):
      
      def registra_importacion(self, datos: map) -> bool:
           finalizada = True
-          existente = super().busca_ubicacion(dato=datos["rutaencurso"],columna="fecha")
+          existente = super().busca_ubicacion(dato=datos["fecha"],columna="fecha")
           if existente:
                finalizada = super().getDato(fila=existente,columna="otros")
           if not existente or not finalizada:
                fila = super().busca_ubicacion(columna="fecha")
-               cimprime(titulo="intentando registrar", datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila)
-               super().putDato(datos=[datos["rutaencurso"],datos["nombreruta"]],fila=fila,columna="fecha")
+               cimprime(titulo="intentando registrar", datos=[datos["fecha"],datos["nombreruta"]],fila=fila)
+               super().putDato(datos=[datos["fecha"],datos["nombreruta"]],fila=fila,columna="fecha")
                return True
           return False
 
@@ -213,7 +212,7 @@ class RutaImportar(bdmediclean):
 
      def extrae_ruta(self) -> map:
           return {
-               "rutaencurso": super().getDato(identificador="rutaencurso", retornostr=True),
+               "fecha": super().getDato(identificador="fecha", retornostr=True),
                "nombreruta": super().getDato(identificador="nombreruta", retornostr=True),
                "datos":super().listar(retornostr=True, solodatos=True)
           }

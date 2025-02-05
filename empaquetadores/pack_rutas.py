@@ -23,8 +23,8 @@ def inicia_ruta(iniciar: bool=False, paquete: map=None, pagina: str=None) -> map
                 fecha=request.form.get("fecha"),
                 ruta=request.form.get("nombreruta")
             )
-            paquete["alerta"] = "Ruta creada"
-            paquete["pagina"] = pagina if pagina else "rutas.html"
+        paquete["alerta"] = "Ruta creada"
+        paquete["pagina"] = pagina if pagina else "rutas.html"
     return paquete
 
 def ruta_existente() -> str:
@@ -68,7 +68,10 @@ def empaquetador_rutaactual(request: object) -> map:
                     fila=ra.hoja_actual["filadatos"],
                     columnas=["fecha","nombreruta"]
                     )
-            paquete["ruta"] = f"{rutaactual['fecha']['dato']} - {rutaactual['nombreruta']['dato']}"
+        if rutaactual["fecha"]["dato"]:
+            paquete["ruta"] = f" {rutaactual['fecha']['dato']} - {rutaactual['nombreruta']['dato']}"
+        else:
+            paquete["pagina"] = "rutas_nueva.html"
 
     def form_confpos(confpos: str):
         with Inventario() as inv:
@@ -96,6 +99,9 @@ def empaquetador_rutaactual(request: object) -> map:
         if "pagina_respuesta" in request.form:
             paginarespuesta = request.form.get("pagina_respuesta")
             paquete = inicia_ruta(paquete=paquete, pagina=paginarespuesta)
+        elif request.form.get("nombreruta"):
+            paquete = inicia_ruta(paquete=paquete)
+            datos_base()
         else:
             paquete = inicia_ruta(iniciar=True,paquete=paquete)
             datos_base()
@@ -124,7 +130,6 @@ def empaquetador_rutaactual(request: object) -> map:
     else:
         datos_base()
 
-    cimp(paquete_rutaactual=paquete)
     return paquete
 
 def empaquetador_registros_rutas(request: object) -> map:
@@ -302,6 +307,7 @@ def empaquetador_registros_rutas(request: object) -> map:
     with RutaRegistros() as rutaregistros:
         paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
 
+    cimp(paquete_rutaactual=paquete)
     return paquete
 
 def empaquetador_carga_ruta(request: object, app: object) -> map:
