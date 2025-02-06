@@ -29,10 +29,11 @@ def inicia_ruta(iniciar: bool=False, paquete: map=None, pagina: str=None) -> map
 
 def ruta_existente() -> str:
     with RutaActual() as ra:
-        return ra.getDato(
+        datoexistente = ra.getDato(
             fila=ra.hoja_actual["filadatos"],
             columna="fecha"
             )
+    return datoexistente
 
 def confpos(datos: map, confpos: str="realizado") -> map:
     datosruta = ["fecha","nombreruta","realizado","pospuesto"]
@@ -63,7 +64,10 @@ def empaquetador_rutaactual(request: object) -> map:
 
     def datos_base():
         with RutaActual() as ra:
-            paquete["rutaLista"] = ra.listar(idy=True)
+            paquete["rutaLista"] = ra.listar(
+                    columnas=["indice","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro"],
+                    idy=True
+                    )
             rutaactual = ra.mapdatos(
                     fila=ra.hoja_actual["filadatos"],
                     columnas=["fecha","nombreruta"]

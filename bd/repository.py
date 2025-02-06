@@ -184,16 +184,18 @@ class bdmediclean:
           else:
                return datos
 
-     def guardar(self) -> None:
+     def guardar(self) -> bool:
           try:
                self.bd.save(self.libroPorGuardar)
           except Exception as e:
                cimprime(excepcion_guardado=e)
                return False
           else:
+               cimprime(estado_conexion=f"{self.hojabd} >>GUARDADO<< ")
                return True
 
      def cerrar(self) -> None:
+          cimprime(estado_conexion=f"{self.hojabd} >>CONEXION BD CERRADA<< ")
           self.bd.close()
 
      def __exit__(self, exc_type, exc_value, traceback) -> None:

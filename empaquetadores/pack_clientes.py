@@ -8,12 +8,12 @@ import params
 def empaquetador_clientes(request: object) -> map:
      paquete = constructor_paquete(request, "clientes.html", "Clientes mediclean")
      vc = VariablesCompartidas()
-     
+
      def datos_base():
           campos_filtros = ["id","rut","cliente","direccion","comuna","telefono","otro"]
           with Clientes() as clientesbd:
                paquete["filtros_busqueda"] = clientesbd.mapdatos(columnas=campos_filtros)
-     
+
      if "buscacliente" in request.form or "cliente_a_ruta" in vc.variables:
           busqueda_guardada = False
           if "cliente_a_ruta" in vc.variables:
@@ -59,25 +59,28 @@ def empaquetador_clientes(request: object) -> map:
                     datos = cl.mapdatos(fila=int(ubicacion),idy=True)
                     paquete["form_modcliente"] = datos
                     paquete["pagina"] = "clientes_modifica.html"
-          
+
           if request.form.get("modificacliente") == "formulario_modificado":
                with Clientes() as cl:
                     paquete["listaclientes"] = cl.busca_cliente(datos["id"],"id",idy=True)
           datos_base()
-     
+
      elif "aRuta" in request.form:
           ubicacion_cliente = int(request.form.get("aRuta"))
           if not ruta_existente():
                paquete = inicia_ruta(iniciar=True,paquete=paquete,pagina="clientes.html")
                vc.put_variable(cliente_a_ruta=ubicacion_cliente)
           else:
+
                with Clientes() as cl:
-                    columnas_datos = ["contrato","id_cliente","id","rut","cliente","direccion","comuna","telefono","otro"]
+                    columnas_datos = ["contrato","id","rut","cliente","direccion","comuna","telefono","otro"]
                     datos = cl.mapdatos(fila=ubicacion_cliente,columnas=columnas_datos)
                with RutaActual() as ra:
+                    datos["indice"] = {"dato":ra.id_ruta() + 1}
                     agregado = ra.agregar_a_ruta(datos)
-                    paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
-     
+               paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
+               datos_base()
+
      elif "bdretiros" in request.form:
           ubicacion = request.form.get("bdretiros")
           with Clientes() as cl:
@@ -85,7 +88,7 @@ def empaquetador_clientes(request: object) -> map:
           with RutaBD() as rbd:
                filas = rbd.buscadato(dato=codigo_cliente,columna="id",exacto=True,buscartodo=True)
                retiros = rbd.listar(filas=filas,idy=True)
-     
+
      elif "darbaja" in request.form:
           ubicacion = request.form.get("darbaja")
           with Clientes() as cl:

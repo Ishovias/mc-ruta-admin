@@ -43,15 +43,16 @@ class RutaActual(bdmediclean):
                columna="fecha"
                )}
           datos["id"] = {"dato":self.id_ruta() + 1}
-          
+
           for dato in datos.keys():
                super().putDato(
                     dato=datos[dato]["dato"],
                     fila=ubicacion,
                     columna=dato
                     )
+          
           return True
-     
+
      def importar(self, datos: map) -> bool:
           super().putDato(dato=datos["fecha"],identificador="fecha")
           super().putDato(dato=datos["nombreruta"],identificador="nombreruta")
