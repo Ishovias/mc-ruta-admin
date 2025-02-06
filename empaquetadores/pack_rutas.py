@@ -90,7 +90,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 confpos(datos=datos, confpos=confpos)
             else:
                 columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
-                datos = ra.mapdatos(fila=ubicacion, columnas=columnas)
+                datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas)
                 if confpos == "realizado":
                     for clave, valor in inventario_actual.items():
                         datos[clave] = valor 

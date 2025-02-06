@@ -9,9 +9,19 @@
 {% block body_a %}
     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
         {% for campo, dato in datos.formulario_confpos.items()  %}
-	    <label for="{{ campo }}">{{ dato["encabezado"] }}</label>
-	    <input name="{{ campo }}" {% if dato["dato"] %}value="{{ dato['dato'] }}" readonly{% endif %}>
-        {% endif %}
+	    <label for="{{ campo }}"
+            {% if "ROJ" in dato["encabezado"] %}
+               style="color: red;"
+            {% elif "AMARILL" in dato["encabezado"] %}
+               style="background: yellow;"
+            {% endif %}>
+            {{ dato["encabezado"] }}
+        </label>
+	    <input name="{{ campo }}" 
+            {% if dato["dato"] %}
+            value="{{ dato['dato'] }}" readonly
+            {% endif %}>
+        {% endfor %}
     </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
