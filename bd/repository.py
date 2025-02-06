@@ -41,7 +41,7 @@ class bdmediclean:
                if celda.value != None:
                     filas += 1
                else:
-                    return filas - 1
+                   return filas - 1
 
      def mapdatos(self, fila: int=None, columnas: list=None, idy: bool=False) -> dict:
           columnas = self.hoja_actual["columnas"].keys() if not columnas else columnas
@@ -53,10 +53,10 @@ class bdmediclean:
                     }
           return data
 
-     def eliminarContenidos(self) -> None:
+     def eliminarContenidos(self, fila: int=None) -> None:
           filainicio = self.hoja_actual["filainicial"]
           filatermino = self.maxfilas + 1
-          for fila in range(filainicio, filatermino, 1):
+          for fila in range(filainicio, filatermino, 1) if not fila else [fila]:
                for columna in self.hoja_actual["columnas_todas"]:
                     celda = self.hojabd.cell(row=fila, column=columna)
                     celda.value = None

@@ -7,22 +7,23 @@ class RutaActual(bdmediclean):
      def __init__(self) -> None:
           super().__init__(params.RUTA_ACTUAL, otrolibro=params.LIBRORUTA)
      
-     def nueva_ruta(self, fecha: str, ruta: str) -> None:
+     def nueva_ruta(self, fecha: str, ruta: str) -> bool:
           filadatos = self.hoja_actual["filadatos"]
-          if super().getDato(fila=filadatos,columna="fecha") != None:
-               return False
-          for dato, columna in [(fecha,"fecha"),(ruta,"nombreruta")]:
+          #if super().getDato(fila=filadatos,columna="fecharuta") != None:
+          #     return False
+          for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta")]:
                super().putDato(
                     dato=dato,
                     fila=filadatos,
                     columna=columna
                )
+          return True
 
      def id_ruta(self) -> int:
           return int(self.maxfilas) - int(self.hoja_actual["filainicial"])
 
      def getFechaRuta(self) -> str:
-          return super().getDato(identificador="fecha")
+          return super().getDato(identificador="fecharuta")
 
      def agregar_a_ruta(self, datos: map) -> bool:
           cliente_existente = super().buscadato(
@@ -40,9 +41,9 @@ class RutaActual(bdmediclean):
           ubicacion = super().buscafila()
           datos["fecha"] = {"dato":super().getDato(
                fila=self.hoja_actual["filadatos"],
-               columna="fecha"
+               columna="fecharuta"
                )}
-          datos["id"] = {"dato":self.id_ruta() + 1}
+          datos["id_ruta"] = {"dato":self.id_ruta() + 2}
 
           for dato in datos.keys():
                super().putDato(
@@ -50,11 +51,10 @@ class RutaActual(bdmediclean):
                     fila=ubicacion,
                     columna=dato
                     )
-          
           return True
 
      def importar(self, datos: map) -> bool:
-          super().putDato(dato=datos["fecha"],identificador="fecha")
+          super().putDato(dato=datos["fecharuta"],identificador="fecharuta")
           super().putDato(dato=datos["nombreruta"],identificador="nombreruta")
           super().eliminarContenidos()
           filaubicacion = self.hoja_actual["filainicial"]

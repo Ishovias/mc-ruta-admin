@@ -7,9 +7,9 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-          <p class="tituloscentrados">Ruta activa:{{ datos.ruta }}</p>
-          <hr>
-	  <div class="tabla-contenedor">
+      <div class="tabla-contenedor">
+      <p class="titulos">>>>>{{ datos.ruta }}</p>
+      <hr>
 	  <table class="tbresultados">
           <thead>
                {% for dato in datos.rutaLista.encabezados %}
@@ -42,8 +42,9 @@
                                         ENCAM
                                    {% endif %}
                               </button>
-                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
-                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
+                              <button type="submit" name="cliente_ruta_confirmar" value="{{ fila[-1] }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
+                              <button type="submit" name="cliente_ruta_posponer" value="{{ fila[-1] }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
+                              <button type="submit" name="cliente_ruta_eliminar" value="{{ fila[-1] }}" style="height: 50px" {{ datos.cpEnabled }}>ELIM</button>
                          </form>
                     </td>
                     </tr>

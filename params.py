@@ -77,7 +77,7 @@ RUTA_ACTUAL = {
           "otro": {"num": 11, "encabezado": "OTRO"},
           "ultimoretiro": {"num": 12, "encabezado": "ULT.RETIRO"},
           # Columnas de datos de la ruta
-          "fecha": {"num": 2, "encabezado": "FECHA"},
+          "fecharuta": {"num": 2, "encabezado": "FECHA"},
           "nombreruta": {"num": 3, "encabezado": "RUTA"},
           "realizado": {"num": 4, "encabezado": "REALIZADOS"},
           "pospuesto": {"num": 5, "encabezado": "POSPUESTOS"},

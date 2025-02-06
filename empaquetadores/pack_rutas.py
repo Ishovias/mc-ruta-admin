@@ -12,18 +12,19 @@ import os
 
 def inicia_ruta(iniciar: bool=False, paquete: map=None, pagina: str=None) -> map:
     if iniciar:
-        columnas = ["fecha","nombreruta","realizado","pospuesto"]
+        columnas = ["fecharuta","nombreruta","realizado","pospuesto"]
         with RutaActual() as ra:
             paquete["nuevaruta"] = ra.mapdatos(columnas=columnas)
         paquete["pagina"] = "rutas_nueva.html"
         paquete["pagina_respuesta"] = pagina
     else:
+        datos_guardados = False
         with RutaActual() as ra:
-            ra.nueva_ruta(
-                fecha=request.form.get("fecha"),
+            datos_guardados = ra.nueva_ruta(
+                fecha=request.form.get("fecharuta"),
                 ruta=request.form.get("nombreruta")
             )
-        paquete["alerta"] = "Ruta creada"
+        paquete["alerta"] = "Ruta creada" if datos_guardados else "Error al crear ruta"
         paquete["pagina"] = pagina if pagina else "rutas.html"
     return paquete
 
@@ -31,7 +32,7 @@ def ruta_existente() -> str:
     with RutaActual() as ra:
         datoexistente = ra.getDato(
             fila=ra.hoja_actual["filadatos"],
-            columna="fecha"
+            columna="fecharuta"
             )
     return datoexistente
 
@@ -63,17 +64,17 @@ def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
 
     def datos_base():
-        with RutaActual() as ra:
-            paquete["rutaLista"] = ra.listar(
+        with RutaActual() as ractual:
+            paquete["rutaLista"] = ractual.listar(
                     columnas=["indice","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro"],
                     idy=True
                     )
-            rutaactual = ra.mapdatos(
-                    fila=ra.hoja_actual["filadatos"],
-                    columnas=["fecha","nombreruta"]
+            rutaactual = ractual.mapdatos(
+                    fila=ractual.hoja_actual["filadatos"],
+                    columnas=["fecharuta","nombreruta"]
                     )
-        if rutaactual["fecha"]["dato"]:
-            paquete["ruta"] = f" {rutaactual['fecha']['dato']} - {rutaactual['nombreruta']['dato']}"
+        if rutaactual["fecharuta"]["dato"]:
+            paquete["ruta"] = f" {rutaactual['fecharuta']['dato']} - {rutaactual['nombreruta']['dato']}"
         else:
             paquete["pagina"] = "rutas_nueva.html"
 
@@ -124,6 +125,12 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "cliente_ruta_posponer" in request.form:
         ubicacion = request.form.get("cliente_ruta_posponer")
         form_confpos(confpos="posponer")
+
+    elif "cliente_ruta_eliminar" in request.form:
+        ubicacion = int(request.form.get("cliente_ruta_eliminar"))
+        with RutaActual() as ra:
+            ra.eliminar(ubicacion)
+        datos_base()
 
     elif "agregaclientemanual" in request.form:
         pass
