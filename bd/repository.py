@@ -14,6 +14,7 @@ class bdmediclean:
           self.hoja_actual = hoja
           self.hojabd = self.bd[self.hoja_actual["nombrehoja"]]
           self.maxfilas = self.contarfilas()
+          cimprime(titulo="CONEXION A BD",Conexion_activa=f"{self.hojabd} - >> CONEXION ABIERTA >>")
           self.datosPorGuardar = False
 
      def __enter__(self) -> object:
@@ -29,7 +30,7 @@ class bdmediclean:
           except:
                read_id = id_inicial
           return read_id
-     
+
      def getmaxfilas(self) -> int:
           self.maxfilas = self.contarfilas()
           return self.maxfilas
@@ -191,11 +192,11 @@ class bdmediclean:
                cimprime(excepcion_guardado=e)
                return False
           else:
-               cimprime(estado_conexion=f"{self.hojabd} >>GUARDADO<< ")
+               cimprime(titulo="CONEXION A BD",estado_conexion=f"{self.hojabd} >>GUARDADO<< ")
                return True
 
      def cerrar(self) -> None:
-          cimprime(estado_conexion=f"{self.hojabd} >>CONEXION BD CERRADA<< ")
+          cimprime(titulo="CONEXION A BD",estado_conexion=f"{self.hojabd} >>CONEXION BD CERRADA<< ")
           self.bd.close()
 
      def __exit__(self, exc_type, exc_value, traceback) -> None:

@@ -94,8 +94,13 @@ def empaquetador_rutaactual(request: object) -> map:
                 if confpos == "realizado":
                     for clave, valor in inventario_actual.items():
                         datos[clave] = valor 
-                    datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
+                datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
                 paquete[f"formulario_confpos"] = datos
+                if confpos == "realizado":
+                    botonconfpos = "REALIZADO"
+                else:
+                    botonconfpos = "POSPONER"
+                paquete["botonconfpos"] = botonconfpos
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
 
