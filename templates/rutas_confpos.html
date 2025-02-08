@@ -14,12 +14,18 @@
                style="color: red;"
             {% elif "AMARILL" in dato["encabezado"] %}
                style="background: yellow;"
+            {% endif %}
+            {% if campo == "idy" %}
+               hidden
             {% endif %}>
             {{ dato["encabezado"] }}
         </label>
 	    <input name="{{ campo }}" 
             {% if dato["dato"] %}
             value="{{ dato['dato'] }}" readonly
+            {% endif %}
+            {% if campo == "idy" %}
+               hidden
             {% endif %}>
         {% endfor %}
     </form>
