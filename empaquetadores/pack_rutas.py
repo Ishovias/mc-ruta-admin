@@ -79,30 +79,60 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["pagina"] = "rutas_nueva.html"
 
     def form_confpos(confpos: str):
+        columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]i
+        columnas_inventario = params.INVENTARIOS["insumos_ruta"]
+        bdrutas = False
         with Inventario() as inv:
             inventario_actual = inv.mapdatos(
-                    columnas=params.INVENTARIOS["insumos_ruta"]
+                    columnas=columnas_inventario
                     )
+        # EXTRACCION DE DATOS E INSUMOS DEL CLIENTE
         with RutaActual() as ra:
             if ubicacion == "formulario_respuesta":
-                for columna in params.INVENTARIOS["insumos_ruta"]:
-                    datos[columna] = request.form.get(columna)
-                confpos(datos=datos, confpos=confpos)
+                ubicacion_cliente_ra = int(request.form.get("idy"))
+                datos = ra.mapdatos(fila=ubicacion_cliente_ra)
+                for columna in columnas_inventario:
+                    datos[columna] = {"dato":request.form.get(columna)}
+                bdrutas = True
             else:
-                columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
-                datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas)
+                datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
                 if confpos == "realizado":
                     for clave, valor in inventario_actual.items():
                         datos[clave] = valor 
                 datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
                 paquete[f"formulario_confpos"] = datos
                 if confpos == "realizado":
-                    botonconfpos = "REALIZADO"
+                    paquete["botonconfpos"] = "CONFIRMAR CLIENTE"
                 else:
-                    botonconfpos = "POSPONER"
-                paquete["botonconfpos"] = botonconfpos
+                    paquete["botonconfpos"] = "POSPONER CLIENTE"
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
+        if bdrutas:
+            # INGRESAR REGISTRO EN BD DE RUTAS
+            with RutaBD() as rbd:
+                bd_ubicacion = rbd.buscafila()
+                for columna, dato in datos.items():
+                    rbd.putDato(
+                            dato=dato["dato"],
+                            fila=bd_ubicacion,
+                            columna=columna
+                            )
+            # MODIFICAR EL STOCK
+            with Inventario() as inv:
+                for columna in columnas_inventario:
+                    stock_descontado = datos.[columnas]["dato"]
+                    if stock_descontado:
+                        stock_actual = inv.getDato(
+                                fila=inv.hoja_actual["filaStockActual"],
+                                columna=columna
+                                )
+                        nuevo_stock = int(stock_actual) - int(stock_descontado)
+                        inv.putDato(
+                                dato=nuevo_stock,
+                                fila=inv.hoja_actual["filaStockActual"],
+                                columna=columna
+                                )
+        confpos(titulo="LOGICA DE CONFPOS",datos=datos if datos else datos_cliente, confpos=confpos)
 
 
     if "iniciaruta" in request.form:
