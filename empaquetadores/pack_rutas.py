@@ -36,29 +36,33 @@ def ruta_existente() -> str:
             )
     return datoexistente
 
-def confpos(datos: map, confpos: str="realizado") -> map:
-    datosruta = ["fecha","nombreruta","realizado","pospuesto"]
+def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str="realizado") -> map:
+    # GRABAR CLIENTE CONF-POS EN BD
     with RutaBD() as rbd:
-        ubicacion = rbd.buscafila()
-        for dato in datos.keys():
-            if dato not in datosruta:
-                rbd.putDato(
-                        fila=ubicacion,
-                        dato=datos[dato],
-                        columna=dato
-                        )
+        bd_ubicacion = rbd.buscafila()
+        for columna, dato in datos.items():
             rbd.putDato(
-                dato=confpos,
-                fila=rbd.hoja_actual["filadatos"],
-                columna=confpos
-                )
+                    dato=dato["dato"],
+                    fila=bd_ubicacion,
+                    columna=columna
+                    )
+    # MODIFICAR EL STOCK
     if confpos == "realizado":
         with Inventario() as inv:
-            for col in inv.hoja_actual["insumos_ruta"]:
-                inv.modificaStock(
-                        elemento=col,
-                        modificacion=int(f"-{datos[col]}")
-                        )
+            for columna in columnas_inventario:
+                stock_descontado = datos[columna]["dato"]
+                if stock_descontado:
+                    stock_actual = inv.getDato(
+                            fila=inv.hoja_actual["filaStockActual"],
+                            columna=columna
+                            )
+                    nuevo_stock = int(stock_actual) - int(stock_descontado)
+                    inv.putDato(
+                            dato=nuevo_stock,
+                            fila=inv.hoja_actual["filaStockActual"],
+                            columna=columna
+                            )
+    confpos(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos)
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -91,9 +95,11 @@ def empaquetador_rutaactual(request: object) -> map:
             if ubicacion == "formulario_respuesta":
                 ubicacion_cliente_ra = int(request.form.get("idy"))
                 datos = ra.mapdatos(fila=ubicacion_cliente_ra)
-                for columna in columnas_inventario:
-                    datos[columna] = {"dato":request.form.get(columna)}
-                bdrutas = True
+                datos["detalleretiro"] = request.form.get("detalleretiro")
+                if confpos == "realizado":
+                    for columna in columnas_inventario:
+                        datos[columna] = {"dato":request.form.get(columna)}
+                confpos(datos,columnas,columnas_inventario,confpos)
             else:
                 datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
                 if confpos == "realizado":
@@ -107,33 +113,6 @@ def empaquetador_rutaactual(request: object) -> map:
                     paquete["botonconfpos"] = "POSPONER CLIENTE"
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
-        if bdrutas:
-            # INGRESAR REGISTRO EN BD DE RUTAS
-            with RutaBD() as rbd:
-                bd_ubicacion = rbd.buscafila()
-                for columna, dato in datos.items():
-                    rbd.putDato(
-                            dato=dato["dato"],
-                            fila=bd_ubicacion,
-                            columna=columna
-                            )
-            # MODIFICAR EL STOCK
-            with Inventario() as inv:
-                for columna in columnas_inventario:
-                    stock_descontado = datos.[columnas]["dato"]
-                    if stock_descontado:
-                        stock_actual = inv.getDato(
-                                fila=inv.hoja_actual["filaStockActual"],
-                                columna=columna
-                                )
-                        nuevo_stock = int(stock_actual) - int(stock_descontado)
-                        inv.putDato(
-                                dato=nuevo_stock,
-                                fila=inv.hoja_actual["filaStockActual"],
-                                columna=columna
-                                )
-        confpos(titulo="LOGICA DE CONFPOS",datos=datos if datos else datos_cliente, confpos=confpos)
-
 
     if "iniciaruta" in request.form:
         if "pagina_respuesta" in request.form:
@@ -179,11 +158,7 @@ def empaquetador_rutaactual(request: object) -> map:
     return paquete
 
 def empaquetador_registros_rutas(request: object) -> map:
-    paquete = {"pagina":"rutasRegistros.html","aut":request.args.get("aut")}
-    privilegio = privilegios(request, paquete, retornaUser=True)
-    paquete = privilegio["paquete"]
-    usuario = privilegio["usuario"]
-    paquete["usuario"] = usuario
+    paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
 
     if "detalle_ruta_registro" in request.form:
         fecha = request.form.get("detalle_ruta_registro")
