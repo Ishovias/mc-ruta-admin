@@ -6,7 +6,7 @@ from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, constructor_paquete
-from cimprime import cimprime as cimp
+from cimprime import cimprime
 import params
 import os
 
@@ -40,12 +40,17 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str=
     # GRABAR CLIENTE CONF-POS EN BD
     with RutaBD() as rbd:
         bd_ubicacion = rbd.buscafila()
-        for columna, dato in datos.items():
-            rbd.putDato(
-                    dato=dato["dato"],
-                    fila=bd_ubicacion,
-                    columna=columna
-                    )
+        for columna in list(rbd.hoja_actual["columnas"].keys()):
+            if columna in datos:
+                rbd.putDato(
+                        dato=datos[columna]["dato"],
+                        fila=bd_ubicacion,
+                        columna=columna
+                        )
+    # Sumar cliente confirmado o pospuesto a registro
+    with RutaRegistros() as reg:
+        ubicacion = reg.ubicacion_registro(datos)
+        reg.cliente_confpos(ubicacion, confpos)
     # MODIFICAR EL STOCK
     if confpos == "realizado":
         with Inventario() as inv:
@@ -62,7 +67,7 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str=
                             fila=inv.hoja_actual["filaStockActual"],
                             columna=columna
                             )
-    confpos(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos)
+    cimprime(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos)
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -83,7 +88,7 @@ def empaquetador_rutaactual(request: object) -> map:
             paquete["pagina"] = "rutas_nueva.html"
 
     def form_confpos(confpos: str):
-        columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]i
+        columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
         columnas_inventario = params.INVENTARIOS["insumos_ruta"]
         bdrutas = False
         with Inventario() as inv:
@@ -95,6 +100,14 @@ def empaquetador_rutaactual(request: object) -> map:
             if ubicacion == "formulario_respuesta":
                 ubicacion_cliente_ra = int(request.form.get("idy"))
                 datos = ra.mapdatos(fila=ubicacion_cliente_ra)
+                datos["fecharuta"] = ra.getDato(
+                        fila=ra.hoja_actual["filadatos"],
+                        columna=["fecharuta"]
+                        )
+                datos["nombreruta"] = ra.getDato(
+                        fila=ra.hoja_actual["filadatos"],
+                        columna=["nombreruta"]
+                        )
                 datos["detalleretiro"] = request.form.get("detalleretiro")
                 if confpos == "realizado":
                     for columna in columnas_inventario:
@@ -159,176 +172,32 @@ def empaquetador_rutaactual(request: object) -> map:
 
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
+    
+    def datos_base():
+        with RutaRegistros() as rutaregistros:
+            paquete["rutaLista"] = rutaregistros.listar()
 
     if "detalle_ruta_registro" in request.form:
-        fecha = request.form.get("detalle_ruta_registro")
-        data: list = []
-        
-        with RutaBD() as rutabd:
-            encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
-            encabezados.remove(encabezados[0])
-            maxfilas = rutabd.getmaxfilas()
-            fila = params.RUTAS_BD["filainicial"]
-            filasEncontradas = []
-            
-            while(fila <= maxfilas):
-                filadatos = rutabd.buscadato(
-                        filainicio=fila,
-                        columna=params.RUTAS_BD["columnas"]["fecha"],
-                        dato=fecha
-                        )
-                if filadatos:
-                        filasEncontradas.append(filadatos)
-                        fila = filadatos + 1
-                else:
-                        break
-            
-            for f in filasEncontradas:
-                recopilado = rutabd.extraefila(
-                        fila=f,
-                        columnas=params.RUTAS_BD["columnas"]["todas"]
-                        )
-                recopilado.append(f)
-                data.append(recopilado)
-
-            insumos_usados = rutabd.cuenta_insumos(
-                insumos=seleccionar_conjunto_elementos(
-                    hoja=rutabd.hoja_actual,
-                    nombreDesde="cajaroja_0.5",
-                    nombreHasta="frascoamalgama"
-                ),
-                ubicaciones=filasEncontradas
-            )
-
-            paquete["encabezados"] = encabezados
-            paquete["itemskg"] = rutabd.kgtotales(fecha,fecha)
-            paquete["fecha"] = fecha
-            paquete["rutaResultado"] = data
-            paquete["insumos_usados"] = insumos_usados
-            
-        cimprime(insumos_usados=insumos_usados,itemskg=paquete["itemskg"])
+        pass
 
     elif "agrega_eliminacion" in request.form:
-        with RutaBD() as rbd:     
-            ubicacionCliente = int(request.form.get("agrega_eliminacion"))
-            estadoRetiro = rbd.getDato(
-                fila=ubicacionCliente,
-                columna="otro"
-            )
-            if "ELIMINADO" not in estadoRetiro:
-                rbd.putDato(
-                    fila=int(ubicacionCliente),
-                    dato="FASE_ELIMINACION",
-                    columna="otro"
-                    )
-            else:
-                paquete["alerta"] = "Retiro ya eliminado en disposicion final"
-    
-    elif "lista_eliminacion" in request.form:
-        encabezados = params.RUTAS_BD["encabezados_nombre"].copy()
-        encabezados.remove(encabezados[0])
-        
-        with RutaBD() as rbd:
-            filashalladas = rbd.buscadato(
-                filainicio=rbd.hoja_actual["filainicial"], 
-                columna=rbd.hoja_actual["columnas"]["otro"], 
-                dato="FASE_ELIMINACION", 
-                exacto=True, 
-                buscartodo=True
-                )
-            data = []
-            rbd.eliminaKilosRegistrados()
-            for fila in filashalladas:
-                recopilado = rbd.extraefila(
-                    fila=fila,
-                        columnas=params.RUTAS_BD["columnas"]["todas"]
-                        )
-                data.append(recopilado)
-                rbd.kgtotales(filaCliente=fila)
-            totalKilos = rbd.getKilos()
-            paquete["itemskg"] = totalKilos.copy()
+        pass
 
-        paquete["encabezados"] = encabezados
-        paquete["fecha"] = "Objetos en fase de eliminacion"
-        paquete["rutaResultado"] = data
+    elif "lista_eliminacion" in request.form:
+        pass
 
     elif "eliminar_desechos" in request.form:
-        with RutaBD() as rbd:
-            fechaEliminacion = date.isoformat(date.today())
-            fechaEliminacion = fechaEliminacion.replace("-","")
-            listaFilas = rbd.buscadato(
-            filainicio=rbd.hoja_actual["filainicial"], 
-            columna=rbd.hoja_actual["columnas"]["otro"], 
-            dato="FASE_ELIMINACION", 
-            buscartodo=True
-            )
-            fechasEliminadas = []
-            for fila in listaFilas:
-                fechasEliminadas.append(rbd.getDato(fila=fila, columna="fecha"))
-            kilos = rbd.recuentoKgEliminar()
-        with EliminacionRegistros() as rege:
-            mensajeRegistro = rege.obtener_fechas_eliminadas(fechasEliminadas=fechasEliminadas)
-            datosRegistro = {
-                "fechaeliminacion":fechaEliminacion,
-                "observacion":mensajeRegistro,
-            }
-            for elemento, valor in kilos.items():
-                datosRegistro[elemento] = valor
-            rege.registra_eliminacion(datosRegistro)
-        with RutaBD() as rbd:    
-            clientesEliminados = []
-            for fila in listaFilas:
-                rbd.putDato(
-                    dato=f"ELIMINADO-{fechaEliminacion}",
-                    fila=fila,
-                    columna="otro"
-                    )
-                clientesEliminados.append(rbd.getDato(fila=fila,columnas=rbd.hoja_actual["columnas"]["todas"]))
-
-        with RetirosEliminados() as relim:
-            fila = relim.busca_ubicacion(columna="fecha")
-            for eliminado in clientesEliminados:
-                relim.putDato(
-                    datos=eliminado, 
-                    fila=fila, 
-                    columna="fecha"
-                    )
-                fila += 1
+        pass
 
     elif "cancelar_eliminacion" in request.form:
-        with RutaBD() as rbd:
-            for f in range(rbd.hoja_actual["filainicial"],rbd.getmaxfilas(),1):
-                celda = rbd.getDato(fila=f,columna="otro")
-                if not celda:
-                    continue
-                if "FASE_ELIMINACION" in celda:
-                    celda = celda.replace("FASE_ELIMINACION", "")
-                    rbd.putDato(
-                        dato=celda,
-                        fila=f,
-                        columna="otro"
-                        )
+        pass
 
     elif "eliminar_ruta" in request.form:
-        with RutaBD() as rbd:
-            fechaRuta = request.form.get("eliminar_ruta")
-            ubicaciones = rbd.buscadato(
-                filainicio = rbd.hoja_actual["filainicial"], 
-                columna=rbd.hoja_actual["columnas"]["fecha"], 
-                dato=fechaRuta,
-                buscartodo=True
-                )
-            for fila in ubicaciones:
-                rbd.putDato(
-                    fila=fila,
-                    dato="FASE_ELIMINACION",
-                    columna="otro"
-                )
+        pass
 
-    with RutaRegistros() as rutaregistros:
-        paquete["rutaLista"] = rutaregistros.listar(retornostr=True)
+    else:
+        datos_base()
 
-    cimp(paquete_rutaactual=paquete)
     return paquete
 
 def empaquetador_carga_ruta(request: object, app: object) -> map:

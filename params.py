@@ -136,8 +136,8 @@ RUTAS_REGISTROS = {
      "nombrehoja": "rutas_registros",
      "filainicial": 2,
      "columnas": {
-          "fecha": {"num": 1, "encabezado": "FECHA"},
-          "ruta": {"num": 2, "encabezado": "RUTA"},
+          "fecharuta": {"num": 1, "encabezado": "FECHA"},
+          "nonbreruta": {"num": 2, "encabezado": "RUTA"},
           "REALIZADO": {"num": 3, "encabezado": "REALIZADOS"},
           "POSPUESTO": {"num": 4, "encabezado": "POSPUESTOS"},
           "otros": {"num": 5, "encabezado": "OTRO"},
@@ -149,7 +149,7 @@ RUTAS_REGISTROS = {
           "liquidorx": {"num": 11, "encabezado": "LIQUIDO RX"},
           "insumos_usados": {"num": 12, "encabezado": "RESUMEN INSUMOS"}
      },
-     "todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
      "encabezados": 1
 }
 
