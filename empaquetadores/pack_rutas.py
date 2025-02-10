@@ -181,10 +181,19 @@ def empaquetador_registros_rutas(request: object) -> map:
     def datos_base():
         columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
-            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True)
+            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True)
 
     if "detalle_ruta_registro" in request.form:
-        fecharuta = request.form.get("detalle_ruta_registro")
+        ubicacion = request.form.get("rutas_registradas")
+        with RutaRegistros() as reg:
+            nombreruta = reg.getDato(
+                    fila=int(ubicacion),
+                    columna="nombreruta"
+                    )
+            fecharuta = reg.getDato(
+                    fila=int(ubicacion),
+                    columna="fecharuta"
+                    )
         with RutaBD() as rbd:
             ubicaciones = rbd.buscadato(
                     dato = fecharuta,
@@ -192,6 +201,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                     buscartodo = True
                     )
             paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
+            paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
 
     elif "agrega_eliminacion" in request.form:
         pass
