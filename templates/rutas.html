@@ -29,7 +29,11 @@
                          {% endif %}
                     {% endif %}>
                     {% for data in fila %}
-                         <td>{{ data }}</td>
+                        {% if data == "0" or data == None %}
+                            -
+                        {% else %}
+                            <td>{{ data }}</td>
+                        {% endif %}
                     {% endfor %}
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">

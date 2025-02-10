@@ -179,8 +179,9 @@ def empaquetador_registros_rutas(request: object) -> map:
     paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
     
     def datos_base():
+        columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
-            paquete["rutaLista"] = rutaregistros.listar()
+            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True)
 
     if "detalle_ruta_registro" in request.form:
         fecharuta = request.form.get("detalle_ruta_registro")
