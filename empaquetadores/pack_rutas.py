@@ -24,6 +24,11 @@ def inicia_ruta(iniciar: bool=False, paquete: map=None, pagina: str=None) -> map
                 fecha=request.form.get("fecharuta"),
                 ruta=request.form.get("nombreruta")
             )
+        with RutaRegistros() as reg:
+            reg.nueva_ruta(
+                fecha=request.form.get("fecharuta"),
+                ruta=request.form.get("nombreruta")
+            )
         paquete["alerta"] = "Ruta creada" if datos_guardados else "Error al crear ruta"
         paquete["pagina"] = pagina if pagina else "rutas.html"
     return paquete
@@ -178,7 +183,14 @@ def empaquetador_registros_rutas(request: object) -> map:
             paquete["rutaLista"] = rutaregistros.listar()
 
     if "detalle_ruta_registro" in request.form:
-        pass
+        fecharuta = request.form.get("detalle_ruta_registro")
+        with RutaBD() as rbd:
+            ubicaciones = rbd.buscadato(
+                    dato = fecharuta,
+                    columna = "fecha",
+                    buscartodo = True
+                    )
+            paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
 
     elif "agrega_eliminacion" in request.form:
         pass

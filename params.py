@@ -133,25 +133,25 @@ RUTAS_BD = {
 }
 
 RUTAS_REGISTROS = {
-     "nombrehoja": "rutas_registros",
-     "filainicial": 2,
-     "columnas": {
-          "fecharuta": {"num": 1, "encabezado": "FECHA"},
-          "nonbreruta": {"num": 2, "encabezado": "RUTA"},
-          "REALIZADO": {"num": 3, "encabezado": "REALIZADOS"},
-          "POSPUESTO": {"num": 4, "encabezado": "POSPUESTOS"},
-          "otros": {"num": 5, "encabezado": "OTRO"},
-          "farmaco": {"num": 6, "encabezado": "FARMACO"},
-          "patologico": {"num": 7, "encabezado": "PATOLOGICO"},
-          "contaminado": {"num": 8, "encabezado": "CONTAMINADO"},
-          "cortopunzante": {"num": 9, "encabezado": "CORTOPUNZANTE"},
-          "otropeligroso": {"num": 10, "encabezado": "OTRO PELIGROSO"},
-          "liquidorx": {"num": 11, "encabezado": "LIQUIDO RX"},
-          "insumos_usados": {"num": 12, "encabezado": "RESUMEN INSUMOS"}
-     },
-     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-     "encabezados": 1
-}
+    "nombrehoja": "rutas_registros",
+    "filainicial": 2,
+    "columnas": {
+        "fecharuta": {"num": 1, "encabezado": "FECHA"},
+        "nombreruta": {"num": 2, "encabezado": "RUTA"},
+        "REALIZADO": {"num": 3, "encabezado": "REALIZADOS"},
+        "POSPUESTO": {"num": 4, "encabezado": "POSPUESTOS"},
+        "otros": {"num": 5, "encabezado": "OTRO"},
+        "farmaco": {"num": 6, "encabezado": "FARMACO"},
+        "patologico": {"num": 7, "encabezado": "PATOLOGICO"},
+        "contaminado": {"num": 8, "encabezado": "CONTAMINADO"},
+        "cortopunzante": {"num": 9, "encabezado": "CORTOPUNZANTE"},
+        "otropeligroso": {"num": 10, "encabezado": "OTRO PELIGROSO"},
+        "liquidorx": {"num": 11, "encabezado": "LIQUIDO RX"},
+        "insumos_usados": {"num": 12, "encabezado": "RESUMEN INSUMOS"}
+        },
+    "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "encabezados": 1
+    }
 
 GASTOS_BD = {
      "nombrehoja": "gastos_bd",

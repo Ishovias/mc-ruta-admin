@@ -1,53 +1,53 @@
 {% extends 'layout.html' %}
 
 {% block encabezado %}
-     <h1>Mediclean Ruta</h1>
-     <h2>Administrador de ruta</h2>
-     <h2>(Registro historico de rutas)</h2>
+    <h1>Mediclean Ruta</h1>
+    <h2>Administrador de ruta</h2>
+    <h2>(Registro historico de rutas)</h2>
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-          <p class="tituloscentrados">{{ datos.ruta }}</p>
-          <hr>
-          <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
-               <button name="lista_eliminacion" value="lista_eliminacion" style="height: 70px;">Lista eliminacion</button>
-               <button name="eliminar_desechos" value="eliminar_desechos" style="height: 70px;">Eliminar desechos</button>
-               <button name="cancelar_eliminacion" value="cancelar_eliminacion" style="height: 70px;">Cancelar eliminacion</button>
-          </form>
-          <hr>
-          <div class="tabla-contenedor">
-          <table class="tbresultados">
-          <thead>
-                    <th>DETALLES</th>
-               {% for dato in datos.rutaLista.encabezados %}
-                    <th>{{ dato }}</th>
-               {% endfor %}
-                    <th>DISPOSICION FINAL</th>
-          </thead>
-          <tbody>
-               {% for fila in datos.rutaLista.datos %}
+        <p class="tituloscentrados">{{ datos.ruta }}</p>
+        <hr>
+        <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
+            <button name="lista_eliminacion" value="lista_eliminacion" style="height: 70px;">Lista eliminacion</button>
+            <button name="eliminar_desechos" value="eliminar_desechos" style="height: 70px;">Eliminar desechos</button>
+            <button name="cancelar_eliminacion" value="cancelar_eliminacion" style="height: 70px;">Cancelar eliminacion</button>
+        </form>
+        <hr>
+        <div class="tabla-contenedor">
+        <table class="tbresultados">
+        <thead>
+            <th>DETALLES</th>
+            {% for dato in datos.rutaLista.encabezados %}
+                <th>{{ dato }}</th>
+            {% endfor %}
+            <th>DISPOSICION FINAL</th>
+        </thead>
+        <tbody>
+            {% for fila in datos.rutaLista.datos %}
                     <tr {% if fila.0 == datos.fecha %} style="background-color: yellowgreen;" {% endif %}>
-                         <td>
-                              <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
-                                   <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
-                              </form>
-                         </td>
-                         {% for data in fila %}
-                              <td>
-                                  {% if data == "0" or data == None %}
+                        <td>
+                            <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
+                                <button type="submit" name="detalle_ruta_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
+                            </form>
+                        </td>
+                        {% for data in fila %}
+                            <td>
+                                {% if data == "0" or data == None %}
                                     -
-                                  {% else %}
-                                   {{ data }}
-                                  {% endif %}
-                              </td>
-                         {% endfor %}
-                         <td>
-                              <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
-                                   <button type="submit" name="eliminar_ruta" value="{{ fila.0 }}" style="width: 95px;">Eliminacion</button>
-                              </form>
-                         </td>
+                                {% else %}
+                                    {{ data }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        <td>
+                            <form method="post" action="{{ url_for('rutas', aut=datos.aut) }}">
+                                <button type="submit" name="eliminar_ruta" value="{{ fila.0 }}" style="width: 95px;">Eliminacion</button>
+                            </form>
+                        </td>
                     </tr>
-               {% endfor %}
+            {% endfor %}
           </tbody>
           </table>
           </div>
@@ -55,33 +55,33 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if "rutaResultado" in datos %}
-     {% if datos.fecha %}
-     <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> 
-     <p>Kilos totales</p>
-     <ul>
-          <li>Farmaco: {{ datos.itemskg.farmaco }}kg</li>
-          <li>Patologico: {{ datos.itemskg.patologico }}kg</li>
-          <li>Contaminado: {{ datos.itemskg.contaminado }}kg</li>
-          <li>Cortopunzante: {{ datos.itemskg.cortopunzante }}kg</li>
-          <li>Otro Peligroso: {{ datos.itemskg.otropeligroso }}kg</li>
-          <li>Liquido RX: {{ datos.itemskg.liquidorx }}kg</li>
-     </ul>
-     {% endif %}
-     <hr>
-     <table class="tbresultados">
-     <thead>
-          {% for dato in datos.encabezados %}
-               <th>
-                    {{ dato }}
-               </th>
-          {% endfor %}
-          <th>IDX</th>
-          <th>Acciones</th>
-     </thead>
-     <tbody>
-          {% for fila in datos.rutaResultado %}
-               <tr
-               {% if fila.8 != None %} 
+    {% if datos.fecha %}
+    <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> 
+    <p>Kilos totales</p>
+    <ul>
+        <li>Farmaco: {{ datos.itemskg.farmaco }}kg</li>
+        <li>Patologico: {{ datos.itemskg.patologico }}kg</li>
+        <li>Contaminado: {{ datos.itemskg.contaminado }}kg</li>
+        <li>Cortopunzante: {{ datos.itemskg.cortopunzante }}kg</li>
+        <li>Otro Peligroso: {{ datos.itemskg.otropeligroso }}kg</li>
+        <li>Liquido RX: {{ datos.itemskg.liquidorx }}kg</li>
+    </ul>
+    {% endif %}
+    <hr>
+    <table class="tbresultados">
+    <thead>
+        {% for dato in datos.encabezados %}
+            <th>
+                {{ dato }}
+            </th>
+        {% endfor %}
+        <th>IDX</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody>
+        {% for fila in datos.rutaResultado %}
+            <tr
+                {% if fila.8 != None %} 
                     {% if fila.10 == "POSPUESTO" %} 
                          style="background-color: red;" 
                     {% elif fila.8 == "FASE_ELIMINACION" %}
@@ -89,27 +89,27 @@
                     {% elif "ELIMINADO" in fila.8 %}
                          style="background-color: gray;" 
                     {% endif %}
-               {% endif %}>
-               {% for data in fila %}
+                {% endif %}>
+                {% for data in fila %}
                     <td>{{ data }}</td>
-               {% endfor %}
+                {% endfor %}
                     <td>
-                         <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
-                              <button name="agrega_eliminacion" value="{{ fila.18 }}">ELIM</button>
-                         </form>
+                        <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
+                            <button name="agrega_eliminacion" value="{{ fila.18 }}">ELIM</button>
+                        </form>
                     </td>
-               </tr>
-          {% endfor %}
-     </tbody>
-     </table>
-     <hr>
-     {% if datos.fecha %}
-          <p>Insumos ocupados en esta ruta:</p>
-          <ul>
-               {% for elemento in datos.insumos_usados %}
-               <li>{{ elemento }}: {{ datos.insumos_usados[elemento] }}un</li>
-               {% endfor %}
-          </ul>
-     {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <hr>
+    {% if datos.fecha %}
+        <p>Insumos ocupados en esta ruta:</p>
+        <ul>
+            {% for elemento in datos.insumos_usados %}
+            <li>{{ elemento }}: {{ datos.insumos_usados[elemento] }}un</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endif %}
 {% endblock %}
