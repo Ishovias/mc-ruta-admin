@@ -152,8 +152,11 @@ class RutaBD(bdmediclean):
                  "liquidorx":0
                  }
          if fechainicio and fechafinal:
-               filainicio = super().busca_ubicacion(dato=str(fechainicio),columna="fecha")
-               filafinal = super().busca_ubicacion(dato=str(fechafinal),columna="fecha")
+               filainicio = super().buscadato(dato=str(fechainicio),columna="fecha")
+               filafinal = super().buscadato(dato=str(fechafinal),columna="fecha")
+               if not filainicio and not filafinal:
+                   self.kilosItems = items
+                   return items
                for i in range(filafinal, super().getmaxfilas(),1):
                     dato = super().getDato(fila=i,columna="fecha")
                     if str(dato) != str(fechafinal):
@@ -165,7 +168,7 @@ class RutaBD(bdmediclean):
                        if dato:
                               items[item] += int(dato)
                               self.kilosItems[item] += int(dato)
-               return items
+         return items
 
          if filaCliente:
                for item in items:

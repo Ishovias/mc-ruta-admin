@@ -8,7 +8,7 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 <div class="tabla-contenedor">
-    <p class="tituloscentrados">Ruta seleccionada: {{ datos.fecha }}</p> 
+    <p class="titulos">{{ datos.rutanombre }}</p> 
     <hr>
     <table class="tbresultados">
     <thead>
@@ -49,6 +49,8 @@
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
+    <p class="titulos">Resumen de ruta {{ datos.rutanombre }}</p> 
+    <hr>
     <p>Kilos totales</p>
     <ul>
         <li>Farmaco: {{ datos.itemskg.farmaco }}kg</li>
@@ -58,8 +60,8 @@
         <li>Otro Peligroso: {{ datos.itemskg.otropeligroso }}kg</li>
         <li>Liquido RX: {{ datos.itemskg.liquidorx }}kg</li>
     </ul>
-{% if "rutaResultado" in datos %}
-    {% if datos.fecha %}
+    {% if datos.insumos_usados %}
+    <hr>
         <p>Insumos ocupados en esta ruta:</p>
         <ul>
             {% for elemento in datos.insumos_usados %}
@@ -67,5 +69,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-{% endif %}
 {% endblock %}

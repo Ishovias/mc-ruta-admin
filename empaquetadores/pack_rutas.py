@@ -41,7 +41,7 @@ def ruta_existente() -> str:
             )
     return datoexistente
 
-def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str="realizado") -> map:
+def confpos(datos: map, columnas: list, columnas_inventario: list, confpos_accion: str="realizado") -> map:
     # GRABAR CLIENTE CONF-POS EN BD
     with RutaBD() as rbd:
         bd_ubicacion = rbd.buscafila()
@@ -55,9 +55,9 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str=
     # Sumar cliente confirmado o pospuesto a registro
     with RutaRegistros() as reg:
         ubicacion = reg.ubicacion_registro(datos)
-        reg.cliente_confpos(ubicacion, confpos)
+        reg.cliente_confpos(ubicacion, confpos_accion)
     # MODIFICAR EL STOCK
-    if confpos == "realizado":
+    if confpos_accion == "realizado":
         with Inventario() as inv:
             for columna in columnas_inventario:
                 stock_descontado = datos[columna]["dato"]
@@ -72,7 +72,7 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos: str=
                             fila=inv.hoja_actual["filaStockActual"],
                             columna=columna
                             )
-    cimprime(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos)
+    cimprime(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos_accion)
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -92,7 +92,7 @@ def empaquetador_rutaactual(request: object) -> map:
         else:
             paquete["pagina"] = "rutas_nueva.html"
 
-    def form_confpos(confpos: str):
+    def form_confpos(confpos_accion: str):
         columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
         columnas_inventario = params.INVENTARIOS["insumos_ruta"]
         bdrutas = False
@@ -113,22 +113,22 @@ def empaquetador_rutaactual(request: object) -> map:
                         fila=ra.hoja_actual["filadatos"],
                         columna=["nombreruta"]
                         )
-                datos["detalleretiro"] = request.form.get("detalleretiro")
-                if confpos == "realizado":
+                datos["detalleretiro"] = {"dato":request.form.get("detalleretiro")}
+                if confpos_accion == "realizado":
                     for columna in columnas_inventario:
                         datos[columna] = {"dato":request.form.get(columna)}
-                confpos(datos,columnas,columnas_inventario,confpos)
+                confpos(datos,columnas,columnas_inventario,confpos_accion)
             else:
                 datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
-                if confpos == "realizado":
+                if confpos_accion == "realizado":
                     for clave, valor in inventario_actual.items():
                         datos[clave] = valor 
-                datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
-                paquete[f"formulario_confpos"] = datos
-                if confpos == "realizado":
                     paquete["botonconfpos"] = "CONFIRMAR CLIENTE"
                 else:
                     paquete["botonconfpos"] = "POSPONER CLIENTE"
+                datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
+                paquete[f"formulario_confpos"] = datos
+                paquete["confpos"] = confpos_accion
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
 
@@ -150,13 +150,13 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "reubicar" in request.form:
         pass
 
-    elif "cliente_ruta_confirmar" in request.form:
-        ubicacion = request.form.get("cliente_ruta_confirmar")
-        form_confpos(confpos="realizado")
+    elif "cliente_ruta_realizado" in request.form:
+        ubicacion = request.form.get("cliente_ruta_realizado")
+        form_confpos(confpos_accion="realizado")
 
     elif "cliente_ruta_posponer" in request.form:
         ubicacion = request.form.get("cliente_ruta_posponer")
-        form_confpos(confpos="posponer")
+        form_confpos(confpos_accion="posponer")
 
     elif "cliente_ruta_eliminar" in request.form:
         ubicacion = int(request.form.get("cliente_ruta_eliminar"))
@@ -177,7 +177,6 @@ def empaquetador_rutaactual(request: object) -> map:
 
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
-    
     def datos_base():
         columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
@@ -198,10 +197,16 @@ def empaquetador_registros_rutas(request: object) -> map:
             ubicaciones = rbd.buscadato(
                     dato = fecharuta,
                     columna = "fecha",
+                    exacto=True,
                     buscartodo = True
                     )
             paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
-            paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
+            if paquete["rutaResultado"]["datos"] != [None]:
+                paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
+            else:
+                paquete["itemskg"] = rbd.kgtotales()
+        paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
+        paquete["pagina"] = "rutas_registros_resultados.html"
 
     elif "agrega_eliminacion" in request.form:
         pass
