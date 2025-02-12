@@ -5,7 +5,7 @@ from empaquetadores.pack_inventarios import empaquetador_inventarios
 from empaquetadores.pack_rutas import empaquetador_registros_rutas, empaquetador_rutaactual, empaquetador_carga_ruta
 from empaquetadores.pack_admin import empaquetador_usersactives
 from empaquetadores.pack_todo import empaquetador_todo
-from empaquetadores.pack_eliminaciones import empaquetador_eliminaciones
+from empaquetadores.pack_disp_final import empaquetador_disposicion_final
 from helpers import SessionSingleton, empaquetador_codex1, empaquetador_codex2, empaquetador_login
 from params import RUTA_IMPORTACION, EXTENSIONES_PERMITDAS
 
@@ -114,11 +114,11 @@ def inventarios() -> render_template:
      datos = empaquetador_inventarios(request)
      return render_template(datos["pagina"], datos=datos)
 
-@app.route('/eliminaciones', methods=['GET','POST'])
+@app.route('/disposicion_final', methods=['GET','POST'])
 def eliminaciones() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
-     datos = empaquetador_eliminaciones(request)
+     datos = empaquetador_disposicion_final(request)
      return render_template(datos["pagina"], datos=datos)
 
 if __name__ == '__main__':

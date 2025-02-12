@@ -52,16 +52,7 @@ class RutaActual(bdmediclean):
         return True
 
     def importar(self, datos: map) -> bool:
-        super().putDato(dato=datos["fecharuta"],identificador="fecharuta")
-        super().putDato(dato=datos["nombreruta"],identificador="nombreruta")
-        super().eliminarContenidos()
-        filaubicacion = self.hoja_actual["filainicial"]
-        for fila in datos["datos"]:
-            super().putDato(datos=fila,fila=filaubicacion,columna="fecha")
-            filaubicacion += 1
-        else:
-            return True
-        return False
+        pass
 
 class RutaRegistros(bdmediclean):
 
@@ -223,6 +214,13 @@ class RutaBD(bdmediclean):
               if insumos_usados[elemento] == 0:
                   del insumos_usados[elemento]
           return insumos_usados
+
+     def disposicion_final(self, ubicacion: int, status: str) -> None:
+         super().putDato(
+                 dato=status,
+                 fila=int(ubicacion),
+                 columna="status"
+                 )
 
 class RutaImportar(bdmediclean):
 

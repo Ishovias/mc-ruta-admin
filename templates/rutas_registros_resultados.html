@@ -34,9 +34,9 @@
                 >
                     <td>
                         <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
-                            <button name="agrega_eliminacion" value="{{ fila[-1] }}">DESECH</button>
+                            <button name="disposicion_final" value="{{ fila[-1] }}">DISP-FINAL</button>
                             <button name="modifica_registro" value="{{ fila[-1] }}">MOD</button>
-                            <button name="elimina_registro" value="{{ fila[-1] }}">DEL</button>
+                            <button name="elimina_cliente_registro" value="{{ fila[-1] }}">DEL</button>
                         </form>
                     </td>
                 {% for data in fila %}

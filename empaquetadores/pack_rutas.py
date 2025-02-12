@@ -184,8 +184,7 @@ def empaquetador_registros_rutas(request: object) -> map:
         with RutaRegistros() as rutaregistros:
             paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True)
 
-    if "detalle_ruta_registro" in request.form:
-        ubicacion = request.form.get("rutas_registradas")
+    def buscar_registros(ubicacion: int, solo_ubicaciones: bool=False) -> list:
         with RutaRegistros() as reg:
             nombreruta = reg.getDato(
                     fila=int(ubicacion),
@@ -202,28 +201,48 @@ def empaquetador_registros_rutas(request: object) -> map:
                     exacto=True,
                     buscartodo = True
                     )
-            paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
-            if paquete["rutaResultado"]["datos"] != [None]:
-                paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
+            if solo_ubicaciones:
+                return ubicaciones
             else:
-                paquete["itemskg"] = rbd.kgtotales()
+                paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
+                if paquete["rutaResultado"]["datos"] != [None]:
+                    paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
+                else:
+                    paquete["itemskg"] = rbd.kgtotales()
+        if not solo_ubicaciones:
         paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
         paquete["pagina"] = "rutas_registros_resultados.html"
 
-    elif "agrega_eliminacion" in request.form:
-        pass
+    if "detalle_ruta_registro" in request.form:
+        vc = VariablesCompartidas()
+        ubicacion = request.form.get("rutas_registradas")
+        vc.put_variable(reg_ult_busqueda=ubicacion)
+        buscar_registros(ubicacion)
 
-    elif "lista_eliminacion" in request.form:
-        pass
+    elif "elimina_cliente_registro" in request.form:
+        vc = VariablesCompartidas()
+        ubicacion = request.form.get("elimina_cliente_registro")
+        with RutaBD() as rbd:
+            rbd.eliminar(int(ubicacion))
+        if "reg_ult_busqueda" in vc.variables:
+            buscar_registros(vc.get_variable("reg_ult_busqueda"))
 
-    elif "eliminar_desechos" in request.form:
-        pass
-
-    elif "cancelar_eliminacion" in request.form:
-        pass
+    elif "disposicion_final" in request.form:
+        vc = VariablesCompartidas()
+        ubicacion = request.form.get("disposicion_final")
+        with RutaBD() as rbd:
+            rbd.disposicion_final(int(ubicacion),"PRE-ELIMINACION")
+        if "reg_ult_busqueda" in vc.variables:
+            buscar_registros(vc.get_variable("reg_ult_busqueda"))
 
     elif "eliminar_ruta" in request.form:
-        pass
+        ubicacion = request.form.get("rutas_registradas")
+        ubicaciones = buscar_registros(ubicacion)
+        with RutaBD() as rbd:
+            for fila in ubicaciones:
+                rbd.eliminar(fila)
+        #with RutasRegistros <<<<<  TRABAJANDO EN ESTA LOGICA
+
 
     else:
         datos_base()
