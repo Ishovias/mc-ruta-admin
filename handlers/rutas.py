@@ -107,7 +107,7 @@ class RutaRegistros(bdmediclean):
                 )
         # Sumar uno cliente con-pos
         super().putDato(
-                dato=int(cantidad_actual) + cantidad,
+                dato=int(cantidad_actual) + cantidad if cantidad_actual else cantidad,
                 fila=fila,
                 columna=confpos
                 )

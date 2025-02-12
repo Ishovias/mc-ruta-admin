@@ -5,7 +5,7 @@ from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, constructor_paquete
+from helpers import mensajes, privilegios, constructor_paquete, VariablesCompartidas
 from cimprime import cimprime
 import params
 import os
@@ -153,10 +153,12 @@ def empaquetador_rutaactual(request: object) -> map:
     elif "cliente_ruta_realizado" in request.form:
         ubicacion = request.form.get("cliente_ruta_realizado")
         form_confpos(confpos_accion="realizado")
+        datos_base()
 
     elif "cliente_ruta_posponer" in request.form:
         ubicacion = request.form.get("cliente_ruta_posponer")
         form_confpos(confpos_accion="posponer")
+        datos_base()
 
     elif "cliente_ruta_eliminar" in request.form:
         ubicacion = int(request.form.get("cliente_ruta_eliminar"))

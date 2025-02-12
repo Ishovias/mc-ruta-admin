@@ -12,13 +12,12 @@
     <hr>
     <table class="tbresultados">
     <thead>
+        <th>Acciones</th>
         {% for dato in datos.rutaResultado.encabezados %}
             <th>
                 {{ dato }}
             </th>
         {% endfor %}
-        <th>IDX</th>
-        <th>Acciones</th>
     </thead>
     <tbody>
         {% for fila in datos.rutaResultado.datos %}
@@ -31,15 +30,22 @@
                     {% elif "ELIMINADO" in fila.8 %}
                          style="background-color: gray;" 
                     {% endif %}
-                {% endif %}>
-                {% for data in fila %}
-                    <td>{{ data }}</td>
-                {% endfor %}
+                {% endif %}
+                >
                     <td>
                         <form action="{{ url_for('rutas', aut=datos.aut) }}" method="post">
-                            <button name="agrega_eliminacion" value="{{ fila[-1] }}">ELIM</button>
+                            <button name="agrega_eliminacion" value="{{ fila[-1] }}">DESECH</button>
+                            <button name="modifica_registro" value="{{ fila[-1] }}">MOD</button>
+                            <button name="elimina_registro" value="{{ fila[-1] }}">DEL</button>
                         </form>
                     </td>
+                {% for data in fila %}
+                    {% if data == "0" or data == None %}
+                        <td>-</td>
+                    {% else %}
+                        <td>{{ data }}</td>
+                    {% endif %}
+                {% endfor %}
             </tr>
         {% endfor %}
     </tbody>

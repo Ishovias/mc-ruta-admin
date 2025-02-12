@@ -138,8 +138,8 @@ RUTAS_REGISTROS = {
     "columnas": {
         "fecharuta": {"num": 1, "encabezado": "FECHA"},
         "nombreruta": {"num": 2, "encabezado": "RUTA"},
-        "REALIZADO": {"num": 3, "encabezado": "REALIZADOS"},
-        "POSPUESTO": {"num": 4, "encabezado": "POSPUESTOS"},
+        "realizado": {"num": 3, "encabezado": "REALIZADOS"},
+        "pospuesto": {"num": 4, "encabezado": "POSPUESTOS"},
         "otros": {"num": 5, "encabezado": "OTRO"},
         "farmaco": {"num": 6, "encabezado": "FARMACO"},
         "patologico": {"num": 7, "encabezado": "PATOLOGICO"},
