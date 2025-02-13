@@ -194,6 +194,10 @@ def empaquetador_registros_rutas(request: object) -> map:
                     fila=int(ubicacion),
                     columna="fecharuta"
                     )
+            datosruta = reg.listar(
+                    filas=[int(ubicacion)],
+                    columnas=["fecharuta","nombreruta","realizado","pospuesto"]
+                    )
         with RutaBD() as rbd:
             ubicaciones = rbd.buscadato(
                     dato = fecharuta,
@@ -210,8 +214,9 @@ def empaquetador_registros_rutas(request: object) -> map:
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
         if not solo_ubicaciones:
-        paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
-        paquete["pagina"] = "rutas_registros_resultados.html"
+            paquete["datosruta"] = datosruta
+            paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
+            paquete["pagina"] = "rutas_registros_resultados.html"
 
     if "detalle_ruta_registro" in request.form:
         vc = VariablesCompartidas()

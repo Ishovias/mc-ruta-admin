@@ -56,6 +56,32 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
     <p class="titulos">Resumen de ruta {{ datos.rutanombre }}</p> 
+    <hr>    
+    <div class="tabla-contenedor">
+        <table class="tbresultados">
+        <thead>
+            {% for campo in datos.datosruta.encabezados %}
+                <th>
+                    {{ campo }}
+                </th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for fila in datos.datosruta.datos %}
+                <tr>
+                    {% for data in fila %}
+                        {% if data == "0" or data == None %}
+                            <td>-</td>
+                        {% else %}
+                            <td>{{ data }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        <hr>
+    </div>    
     <hr>
     <p>Kilos totales</p>
     <ul>

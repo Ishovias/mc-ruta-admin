@@ -115,7 +115,7 @@ def inventarios() -> render_template:
      return render_template(datos["pagina"], datos=datos)
 
 @app.route('/disposicion_final', methods=['GET','POST'])
-def eliminaciones() -> render_template:
+def disposicion_final() -> render_template:
      if not sesion.getAutenticado(request):
           return redirect(url_for('login'))
      datos = empaquetador_disposicion_final(request)
