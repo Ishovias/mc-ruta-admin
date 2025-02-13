@@ -8,30 +8,32 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 {% if "registrosEliminaciones" in datos %}
-          <table class="tbresultados">
-          <thead>
-                    <th>DETALLES</th>
-               {% for dato in datos.registrosEliminaciones.encabezados %}
-                    <th>{{ dato }}</th>
-               {% endfor %}
-          </thead>
-          <tbody>
-               {% for fila in datos.registrosEliminaciones.datos %}
-                    <tr>
-                         <td>
-                              <form method="post" action="{{ url_for('eliminaciones', aut=datos.aut) }}">
-                                   <button type="submit" name="detalle_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
-                              </form>
-                         </td>
-                         {% for data in fila %}
-                              <td>
-                                   {{ data }}
-                              </td>
-                         {% endfor %}
-                    </tr>
-               {% endfor %}
-          </tbody>
-          </table>
+<table class="tbresultados">
+    <thead>
+        <th>DETALLES</th>
+        {% for dato in datos.registrosEliminaciones.encabezados %}
+            <th>{{ dato }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for fila in datos.registrosEliminaciones.datos %}
+            <tr>
+                <td>
+                    <form method="post" action="{{ url_for('eliminaciones', aut=datos.aut) }}">
+                        <button type="submit" name="detalle_registro" value="{{ fila.0 }}" style="width: 95px;">Detalle</button>
+                    </form>
+                </td>
+                {% for data in fila %}
+                    <td>
+                        {{ data }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% else %}
+---------- SIN CLIENTES PARA ELIMINAR ------------
 {% endif %}
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->

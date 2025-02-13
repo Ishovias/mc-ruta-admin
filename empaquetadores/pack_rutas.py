@@ -241,8 +241,9 @@ def empaquetador_registros_rutas(request: object) -> map:
         with RutaBD() as rbd:
             for fila in ubicaciones:
                 rbd.eliminar(fila)
-        #with RutasRegistros <<<<<  TRABAJANDO EN ESTA LOGICA
-
+        with RutasRegistros() as reg:
+            reg.eliminar(ubicacion)
+        datos_base()
 
     else:
         datos_base()

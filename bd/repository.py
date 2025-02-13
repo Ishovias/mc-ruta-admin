@@ -63,9 +63,16 @@ class bdmediclean:
                     celda.value = None
           self.datosPorGuardar = True
 
-     def eliminar(self, fila: int) -> None:
+     def eliminar(self, fila: int) -> bool:
+          if type(fila) != int:
+              try:
+                  int(fila)
+              except Exception(e):
+                  print(e)
+                  return False
           self.hojabd.delete_rows(fila)
           self.datosPorGuardar = True
+          return True
 
      def buscafila(self, columna: int = 1) -> int:
           filainicio = self.hoja_actual["filainicial"]
