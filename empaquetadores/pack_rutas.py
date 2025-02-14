@@ -72,7 +72,6 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos_accio
                             fila=inv.hoja_actual["filaStockActual"],
                             columna=columna
                             )
-    cimprime(titulo="LOGICA DE CONFPOS",datos=datos, confpos=confpos_accion)
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -117,6 +116,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 if confpos_accion == "realizado":
                     for columna in columnas_inventario:
                         datos[columna] = {"dato":request.form.get(columna)}
+                    datos["status"] = {"dato":confpos_accion}
                 confpos(datos,columnas,columnas_inventario,confpos_accion)
             else:
                 datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)

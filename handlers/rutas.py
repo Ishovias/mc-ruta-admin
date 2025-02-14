@@ -217,10 +217,11 @@ class RutaBD(bdmediclean):
 
      def disposicion_final(self, ubicacion: int, status: str) -> None:
          super().putDato(
-                 dato=status,
+                 dato="PRE-ELIMINACION",
                  fila=int(ubicacion),
                  columna="status"
                  )
+         pass
 
 class RutaImportar(bdmediclean):
 
