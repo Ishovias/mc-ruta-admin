@@ -7,6 +7,17 @@ class RutaActual(bdmediclean):
     def __init__(self) -> None:
         super().__init__(params.RUTA_ACTUAL, otrolibro=params.LIBRORUTA)
 
+    def ruta_existente(self) -> bool:
+        if super().getDato(
+                fila="filadatos",
+                columna="fecharuta"
+                ) and super().getDato(
+                        fila="filadatos",
+                        columna="nombreruta"
+                        ):
+            return True
+        return False
+
     def nueva_ruta(self, fecha: str, ruta: str) -> bool:
         filadatos = self.hoja_actual["filadatos"]
         for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta")]:

@@ -66,7 +66,7 @@ class bdmediclean:
      def eliminar(self, fila: int) -> bool:
           if type(fila) != int:
               try:
-                  int(fila)
+                  fila = int(fila)
               except Exception(e):
                   print(e)
                   return False

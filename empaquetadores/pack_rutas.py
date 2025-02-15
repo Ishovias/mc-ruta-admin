@@ -229,6 +229,8 @@ def empaquetador_registros_rutas(request: object) -> map:
         ubicacion = request.form.get("elimina_cliente_registro")
         with RutaBD() as rbd:
             rbd.eliminar(int(ubicacion))
+        with RutaRegistros() as reg:
+            reg.cliente_confpos(int(ubicacion),-1)
         if "reg_ult_busqueda" in vc.variables:
             buscar_registros(vc.get_variable("reg_ult_busqueda"))
 
@@ -243,11 +245,15 @@ def empaquetador_registros_rutas(request: object) -> map:
     elif "eliminar_ruta" in request.form:
         ubicacion = request.form.get("rutas_registradas")
         ubicaciones = buscar_registros(ubicacion)
-        with RutaBD() as rbd:
-            for fila in ubicaciones:
-                rbd.eliminar(fila)
-        with RutasRegistros() as reg:
+        if ubicaciones:
+            with RutaBD() as rbd:
+                for fila in ubicaciones:
+                    rbd.eliminar(fila)
+        with RutaRegistros() as reg:
             reg.eliminar(ubicacion)
+        with RutaActual() as ra:
+            if ra.ruta_existente():
+                ra.eliminar
         datos_base()
 
     else:
