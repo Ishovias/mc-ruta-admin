@@ -131,6 +131,13 @@ class RutaBD(bdmediclean):
      def __init__(self) -> None:
         super().__init__(params.RUTAS_BD)
 
+     def get_status_retiro(self, ubicacion: int) -> str:
+         dato = super().getDato(
+                 fila=int(ubicacion),
+                 columna="status"
+                 )
+         return dato
+
      def registraMovimiento(self, datos: list) -> bool:
          try:
              super().ingresador(

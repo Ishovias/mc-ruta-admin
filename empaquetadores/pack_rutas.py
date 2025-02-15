@@ -227,10 +227,14 @@ def empaquetador_registros_rutas(request: object) -> map:
     elif "elimina_cliente_registro" in request.form:
         vc = VariablesCompartidas()
         ubicacion = request.form.get("elimina_cliente_registro")
+        # Eliminar cliente en RutaBD
         with RutaBD() as rbd:
-            rbd.eliminar(int(ubicacion))
+            rbd.eliminar(ubicacion)
+            status = rbd.get_status_retiro(ubicacion)
+        # Descontar de los clientes confirmado o pospuesto
         with RutaRegistros() as reg:
-            reg.cliente_confpos(int(ubicacion),-1)
+            reg.cliente_confpos(int(ubicacion),status,-1)
+        # Devolver pagina con registros actualizados al usuario
         if "reg_ult_busqueda" in vc.variables:
             buscar_registros(vc.get_variable("reg_ult_busqueda"))
 
