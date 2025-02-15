@@ -253,7 +253,13 @@ def empaquetador_registros_rutas(request: object) -> map:
             reg.eliminar(ubicacion)
         with RutaActual() as ra:
             if ra.ruta_existente():
-                ra.eliminar
+                for campo in ["fecharuta","nombreruta"]:
+                    ra.putDato(
+                            fila="filadatos",
+                            dato=None,
+                            columna=campo
+                            )
+                ra.eliminarContenidos()
         datos_base()
 
     else:
