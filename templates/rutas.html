@@ -38,13 +38,13 @@
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
                               <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>
-                                   {% if "RETIRO EN CAMINO" in fila.7 %}
+                                  {% if "RETIRO EN CAMINO" in fila.6 %}
                                         APLAZ
-                                   {% elif "APLAZADO" in fila.7 %}
+                                  {% elif "APLAZADO" in fila.6 %}
                                         DESM
-                                   {% else %}
+                                  {% else %}
                                         ENCAM
-                                   {% endif %}
+                                  {% endif %}
                               </button>
                               <button type="submit" name="cliente_ruta_realizado" value="{{ fila[-1] }}" style="height: 50px" {{ datos.cpEnabled }}>CONF</button>
                               <button type="submit" name="cliente_ruta_posponer" value="{{ fila[-1] }}" style="height: 50px" {{ datos.cpEnabled }}>POSP</button>
@@ -56,7 +56,7 @@
           </tbody>
           </table>
 	  </div>
-          <form name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
+          <form class="formularioIngreso" name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.finEnabled }}>Finalizar ruta actual</button>
           </form>
@@ -71,8 +71,8 @@
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
 {% if datos.ruta %}
-<label class="formularioIngreso" for="clientemanual">Agragar cliente manual</label>
 <form class="formularioIngreso" name="clientemanual" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
+     <p class="titulos">Agregar cliente manual</p>
      <label for="rut">Rut:</label>
      <input name="rut" type="text" value="9999" required>
      <label for="cliente">Nombre:</label>

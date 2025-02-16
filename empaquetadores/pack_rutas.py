@@ -79,7 +79,7 @@ def empaquetador_rutaactual(request: object) -> map:
     def datos_base():
         with RutaActual() as ractual:
             paquete["rutaLista"] = ractual.listar(
-                    columnas=["indice","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro"],
+                    columnas=["indice","rut","cliente","direccion","comuna","telefono","otro","id_ruta","contrato"],
                     idy=True
                     )
             rutaactual = ractual.mapdatos(
@@ -116,7 +116,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 if confpos_accion == "realizado":
                     for columna in columnas_inventario:
                         datos[columna] = {"dato":request.form.get(columna)}
-                    datos["status"] = {"dato":confpos_accion}
+                datos["status"] = {"dato":confpos_accion}
                 confpos(datos,columnas,columnas_inventario,confpos_accion)
             else:
                 datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
@@ -157,7 +157,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
     elif "cliente_ruta_posponer" in request.form:
         ubicacion = request.form.get("cliente_ruta_posponer")
-        form_confpos(confpos_accion="posponer")
+        form_confpos(confpos_accion="pospuesto")
         datos_base()
 
     elif "cliente_ruta_eliminar" in request.form:
