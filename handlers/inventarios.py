@@ -3,34 +3,20 @@ from helpers import cimprime
 import params
 
 class Inventario(bdmediclean):
-     
-     def __init__(self) -> None:
-          super().__init__(params.INVENTARIOS)
 
-     def getStockActual(self, columnas: list=None) -> map:
-          datos = {}
-          
-          if columnas and type(columnas) == list:
-               columnasSeleccionadas = columnas
-          else:
-               columnasSeleccionadas = list(params.INVENTARIOS["columnas"].keys())
-               columnasSeleccionadas.remove(columnasSeleccionadas[0])
-               columnasSeleccionadas.remove(columnasSeleccionadas[-1])
+    def __init__(self) -> None:
+        super().__init__(params.INVENTARIOS)
 
-          nombresColumnas = []
-          for columna in columnasSeleccionadas:
-               indice = self.hoja_actual["columnas"][columna]
-               nombresColumnas.append(params.INVENTARIOS["encabezados_nombre"][indice])
-          
-          for columna in columnasSeleccionadas:
-               dato = super().getDato(
-                    fila=params.INVENTARIOS["filaStockActual"],
-                    columna=columna
-               )
-               i = columnasSeleccionadas.index(columna)
-               datos[nombresColumnas[i]] = {"stock":dato,"columna":columna}
-
-          return datos
+    def getStockActual(self, columnas: list=None) -> map:
+        if columnas and type(columnas) == str:
+            columnas = [columnas]
+        elif not columnas:
+            columnas = list(self.hoja_actual["columnas"].keys())
+        datos = super().mapdatos(
+                fila="filaStockActual",
+                columnas=columnas
+                )
+        return datos
 
      def modificaStock(self, elemento: str, modificacion: int) -> bool:
           if elemento not in params.INVENTARIOS["columnas"]:
