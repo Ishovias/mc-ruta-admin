@@ -18,21 +18,21 @@ class Inventario(bdmediclean):
                 )
         return datos
 
-     def modificaStock(self, elemento: str, modificacion: int) -> bool:
-          if elemento not in params.INVENTARIOS["columnas"]:
-               return False
-          filaStock = self.hoja_actual["filaStockActual"]
-          cantidadActual = super().getDato(
-               fila=filaStock,
-               columna=elemento
-          )
-          cantidadActual = cantidadActual if cantidadActual else 0
-          return super().putDato(
-               dato=int(cantidadActual) + modificacion,
-               fila=filaStock,
-               columna=elemento
-          )
-          
+    def modificaStock(self, elemento: str, modificacion: int) -> bool:
+        if elemento not in params.INVENTARIOS["columnas"]:
+            return False
+        filaStock = self.hoja_actual["filaStockActual"]
+        cantidadActual = super().getDato(
+            fila=filaStock,
+            columna=elemento
+            )
+        cantidadActual = cantidadActual if cantidadActual else 0
+        return super().putDato(
+            dato=int(cantidadActual) + modificacion,
+            fila=filaStock,
+            columna=elemento
+            )
+
      def actualizarStock(self, inventario: map) -> bool:
           for columna, valor in inventario.items():
                super().putDato(
