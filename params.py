@@ -192,7 +192,7 @@ INVENTARIOS = {
           "guantes": {"num": 20, "encabezado": "GUANTES"},
           "alcoholgel": {"num": 21, "encabezado": "ALCOHOL GEL"}
      },
-     "todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
      "encabezados": 1,
      "insumos_ruta":["cajaroja_0.5","cajaroja_1","cajaroja_1.3","cajaroja_1.65","cajaroja_3","cajaamarilla_5","cajaamarilla_15","basureroamarillo_120","bolsaroja","bolsaroja_farmaco","bolsaamarilla","bidon_5","frascoamalgama"]
 }

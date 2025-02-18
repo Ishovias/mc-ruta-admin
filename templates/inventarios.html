@@ -7,14 +7,23 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
+<div class="tabla-contenedor">
 <p>Stock actual:</p>
-<table id="inventarioactual">
+<table class="tbresultados">
      <tbody>
-          {% for columna, dato in datos.stockActual.items() %}
-               <tr><td>{{ columna }}</td><td>{{ dato.stock }} unidades</td></tr>
+          {% for columna, data in datos.stockActual.items() %}
+               <tr>
+                   <td>{{ data.encabezado }}</td>
+                   {% if data.dato == "None" %}
+                   <td>{{ data.dato }} unidades</td>
+                   {% else %}
+                   <td>Sin stock</td>
+                   {% endif %}
+               </tr>
           {% endfor %}
      </tbody>
 </table>
+</div>
 <hr>
 <form class="formularioIngreso" action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
      <button name="nuevoinventario">Nuevo inventario</button>

@@ -4,11 +4,14 @@ import params
 
 def empaquetador_inventarios(request: object) -> map:
     paquete = constructor_paquete(request,"inventarios.html","Inventarios PDLK-25")
+
     def datos_base():
         with Inventario() as inv:
             paquete["listainventarios"] = inv.listar()
-            paquete["stockActual"] = inv.mapdatos()
-     
+            stock = inv.mapdatos()
+            del stock["fecha"]
+            paquete["stockActual"] = stock
+
     if "nuevoinventario" in request.form:
         with Inventario() as inv:
             elementos = inv.mapdatos()
@@ -28,8 +31,8 @@ def empaquetador_inventarios(request: object) -> map:
                 actualizacionInv[columna] = dato
             if inv.actualizarStock(actualizacionInv):
                 paquete["alerta"] = "Inventario grabado y Stock actualizado"
-     
+
     else:
         datos_base()
-     
+
     return paquete
