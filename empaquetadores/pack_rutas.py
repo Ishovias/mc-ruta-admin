@@ -155,8 +155,8 @@ def empaquetador_rutaactual(request: object) -> map:
         form_confpos(confpos_accion="realizado")
         datos_base()
 
-    elif "cliente_ruta_posponer" in request.form:
-        ubicacion = request.form.get("cliente_ruta_posponer")
+    elif "cliente_ruta_pospuesto" in request.form:
+        ubicacion = request.form.get("cliente_ruta_pospuesto")
         form_confpos(confpos_accion="pospuesto")
         datos_base()
 
