@@ -23,6 +23,20 @@
           {% endfor %}
      </tbody>
 </table>
+<form class="formularioIngreso" action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
+    <label for="ajuste_stock">Ajuste de stock:
+        <input name="ajuste_stock" placeholder="Ingresa una cantidad" required>
+    </label>
+    <label for="insumo">Insumo:
+        <select name="insumo" required>
+            <option value="" selected>-- Selecciona --</option>
+            {% for columna, data in datos.stockActual.items() %}
+            <option value="{{ columna }}">{{ data.encabezado }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button name="actualiza_stock_insummo">Ajustar stock</button>
+</form>
 </div>
 <hr>
 <form class="formularioIngreso" action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">

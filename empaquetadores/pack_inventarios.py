@@ -14,23 +14,32 @@ def empaquetador_inventarios(request: object) -> map:
 
     if "nuevoinventario" in request.form:
         with Inventario() as inv:
-            elementos = inv.mapdatos()
-            del elementos["fecha"]
-            paquete["elementos"] = elementos
-        paquete["pagina"] = "nuevoinventario.html"
+            if request.form.get("nuevoinventario") == "formulario_respuesta":
+                ubicacion = inv.busca_ubicacion(columna="fecha")
+                actualizacionInv = {}
+                for columna in params.INVENTARIOS["columnas"].keys():
+                    dato = request.form.get(columna)
+                    inv.putDato(dato=dato,fila=ubicacion,columna=columna)
+                    actualizacionInv[columna] = dato
+                if inv.actualizar_stock(actualizacionInv):
+                    paquete["alerta"] = "Inventario grabado y Stock actualizado"
+                datos_base()
+            else:
+                elementos = inv.mapdatos()
+                del elementos["fecha"]
+                paquete["elementos"] = elementos
+                paquete["pagina"] = "nuevoinventario.html"
 
-    elif "enviarinventario" in request.form:
+    elif "actualiza_stock_insummo" in request.form:
+        cantidad = int(request.form.get("ajuste_stock"))
+        columna = request.form.get("insumo")
         with Inventario() as inv:
-            nuevaUbicacion = inv.busca_ubicacion(columna="fecha")
-            actualizacionInv = {}
-            for columna in params.INVENTARIOS["columnas"].keys():
-                if columna == "todas":
-                    break
-                dato = request.form.get(columna)
-                inv.putDato(dato=dato,fila=nuevaUbicacion,columna=columna)
-                actualizacionInv[columna] = dato
-            if inv.actualizarStock(actualizacionInv):
-                paquete["alerta"] = "Inventario grabado y Stock actualizado"
+            inv.modifica_stock(
+                    columna=columna,
+                    modificacion=cantidad,
+                    sobrescribe=True
+                    )
+        datos_base()
 
     else:
         datos_base()
