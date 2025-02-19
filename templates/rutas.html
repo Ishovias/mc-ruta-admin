@@ -58,7 +58,10 @@
 	  </div>
           <form class="formularioIngreso" name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
                <br><hr>
-               <button class="botonanimado" name="finalizaRutaActual" value="finalizar" {{ datos.finEnabled }}>Finalizar ruta actual</button>
+               <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
+               <br><hr>
+               <button class="botonanimado" name="cancelaRutaActual" value="cancelar" style="background: red;">Cancelar ruta</button>
+               <br><hr>
           </form>
           <div id="ordenaruta">
                <form class="formularioIngreso" name="ordenaRuta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">

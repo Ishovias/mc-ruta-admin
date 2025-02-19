@@ -140,6 +140,15 @@ def empaquetador_rutaactual(request: object) -> map:
         return paquete
 
     elif "finalizaRutaActual" in request.form:
+        with RutaActual() as ra:
+            if ra.listar(solodatos=True) == []:
+                pass
+                # registrar kilos en registro de ruta
+                # confirmar 
+            else:
+                paquete["alerta"] = "Aun quedan clientes por confirmar o posponer antes de finalizar ruta"
+
+    elif "cancelaRutaActual" in request.form:
         pass
 
     elif "reubicar" in request.form:
@@ -232,6 +241,8 @@ def empaquetador_registros_rutas(request: object) -> map:
         # Devolver pagina con registros actualizados al usuario
         if "reg_ult_busqueda" in vc.variables:
             buscar_registros(vc.get_variable("reg_ult_busqueda"))
+        else:
+            datos_base()
 
     elif "disposicion_final" in request.form:
         vc = VariablesCompartidas()
@@ -240,6 +251,8 @@ def empaquetador_registros_rutas(request: object) -> map:
             rbd.disposicion_final(int(ubicacion),"PRE-ELIMINACION")
         if "reg_ult_busqueda" in vc.variables:
             buscar_registros(vc.get_variable("reg_ult_busqueda"))
+        else:
+            datos_base()
 
     elif "eliminar_ruta" in request.form:
         ubicacion = request.form.get("rutas_registradas")
