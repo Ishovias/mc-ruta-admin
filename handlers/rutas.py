@@ -9,10 +9,10 @@ class RutaActual(bdmediclean):
 
     def ruta_existente(self) -> bool:
         if super().getDato(
-                fila="filadatos",
+                fila=self.hoja_actual["filadatos"],
                 columna="fecharuta"
                 ) and super().getDato(
-                        fila="filadatos",
+                        fila=self.hoja_actual["filadatos"],
                         columna="nombreruta"
                         ):
             return True
