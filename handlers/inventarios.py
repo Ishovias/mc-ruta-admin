@@ -19,7 +19,7 @@ class Inventario(bdmediclean):
         return datos
 
     def modifica_stock(self, columna: str, modificacion: int, sobrescribe: bool=False) -> bool:
-        if columna not in params.INVENTARIOS["columnas"].keys():
+        if columna not in self.hoja_actual["columnas"].keys():
             return False
         filaStock = self.hoja_actual["filaStockActual"]
         cantidadActual = super().getDato(
@@ -28,8 +28,9 @@ class Inventario(bdmediclean):
             )
         cantidadActual = cantidadActual if cantidadActual else 0
         nuevaCantidad = int(cantidadActual) + modificacion 
+        datoainsertar = nuevaCantidad if not sobrescribe else modificacion
         super().putDato(
-            dato=nuevaCantidad if not sobrescribe else modificacion,
+            dato=datoainsertar,
             fila=filaStock,
             columna=columna
             )

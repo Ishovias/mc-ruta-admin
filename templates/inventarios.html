@@ -8,13 +8,13 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
 <div class="tabla-contenedor">
-<p>Stock actual:</p>
+<p class="titulos">Stock actual:</p>
 <table class="tbresultados">
      <tbody>
           {% for columna, data in datos.stockActual.items() %}
                <tr>
                    <td>{{ data.encabezado }}</td>
-                   {% if data.dato == "None" %}
+                   {% if data.dato != None %}
                    <td>{{ data.dato }} unidades</td>
                    {% else %}
                    <td>Sin stock</td>
@@ -25,7 +25,7 @@
 </table>
 <form class="formularioIngreso" action="{{ url_for('inventarios', aut=datos.aut) }}" method="post">
     <label for="ajuste_stock">Ajuste de stock:
-        <input name="ajuste_stock" placeholder="Ingresa una cantidad" required>
+        <input name="ajuste_stock" type="number" placeholder="Ingresa una cantidad" required>
     </label>
     <label for="insumo">Insumo:
         <select name="insumo" required>

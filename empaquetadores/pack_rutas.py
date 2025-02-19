@@ -62,15 +62,10 @@ def confpos(datos: map, columnas: list, columnas_inventario: list, confpos_accio
             for columna in columnas_inventario:
                 stock_descontado = datos[columna]["dato"]
                 if stock_descontado:
-                    stock_actual = inv.getDato(
-                            fila=inv.hoja_actual["filaStockActual"],
-                            columna=columna
-                            )
-                    nuevo_stock = int(stock_actual) - int(stock_descontado)
-                    inv.putDato(
-                            dato=nuevo_stock,
-                            fila=inv.hoja_actual["filaStockActual"],
-                            columna=columna
+                    stock_descontado = int(stock_descontado)
+                    inv.modifica_stock(
+                            columna=columna,
+                            modificacion=-stock_descontado
                             )
 
 def empaquetador_rutaactual(request: object) -> map:
@@ -229,8 +224,8 @@ def empaquetador_registros_rutas(request: object) -> map:
         ubicacion = request.form.get("elimina_cliente_registro")
         # Eliminar cliente en RutaBD
         with RutaBD() as rbd:
-            rbd.eliminar(ubicacion)
             status = rbd.get_status_retiro(ubicacion)
+            rbd.eliminar(ubicacion)
         # Descontar de los clientes confirmado o pospuesto
         with RutaRegistros() as reg:
             reg.cliente_confpos(int(ubicacion),status,-1)

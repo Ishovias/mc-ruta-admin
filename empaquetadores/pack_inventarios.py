@@ -8,7 +8,7 @@ def empaquetador_inventarios(request: object) -> map:
     def datos_base():
         with Inventario() as inv:
             paquete["listainventarios"] = inv.listar()
-            stock = inv.mapdatos()
+            stock = inv.mapdatos(fila=inv.hoja_actual["filaStockActual"])
             del stock["fecha"]
             paquete["stockActual"] = stock
 
@@ -34,11 +34,12 @@ def empaquetador_inventarios(request: object) -> map:
         cantidad = int(request.form.get("ajuste_stock"))
         columna = request.form.get("insumo")
         with Inventario() as inv:
-            inv.modifica_stock(
+            modificado = inv.modifica_stock(
                     columna=columna,
                     modificacion=cantidad,
                     sobrescribe=True
                     )
+        cimprime(cantidad=cantidad,columna=columna,modificado=modificado)
         datos_base()
 
     else:
