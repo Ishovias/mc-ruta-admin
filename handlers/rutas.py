@@ -177,17 +177,15 @@ class RutaBD(bdmediclean):
                        if dato:
                               items[item] += int(dato)
                               self.kilosItems[item] += int(dato)
-         return items
 
-         if filaCliente:
+         elif filaCliente:
                for item in items:
                   dato = super().getDato(fila=filaCliente,columna=item)
                   if dato:
                      items[item] += int(dato)
                      self.kilosItems[item] += int(dato)
-               return items
 
-         return None
+         return items
 
      def recuentoKgEliminar(self) -> map:
           self.eliminaKilosRegistrados()

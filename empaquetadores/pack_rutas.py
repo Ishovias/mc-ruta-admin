@@ -184,7 +184,7 @@ def empaquetador_rutaactual(request: object) -> map:
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
     def datos_base():
-        columnas = ["fecharuta","nombreruta"]
+        columnas = ["ruta","nombreruta"]
         with RutaRegistros() as rutaregistros:
             paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True)
 
