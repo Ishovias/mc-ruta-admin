@@ -20,7 +20,7 @@ class RutaActual(bdmediclean):
 
     def nueva_ruta(self, fecha: str, ruta: str) -> bool:
         filadatos = self.hoja_actual["filadatos"]
-        for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta")]:
+        for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta"),("0","realizado"),("0","pospuesto")]:
             super().putDato(
                     dato=dato,
                     fila=filadatos,
@@ -72,16 +72,12 @@ class RutaRegistros(bdmediclean):
 
     def nueva_ruta(self, fecha: str, ruta: str) -> None:
         ubicacion = super().buscafila()
-        super().putDato(
-                dato=fecha,
-                fila=ubicacion,
-                columna="fecharuta"
-                )
-        super().putDato(
-                dato=ruta,
-                fila=ubicacion,
-                columna="nombreruta"
-                )
+        for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta"),(0,"realizado"),(0,"pospuesto")]:
+            super().putDato(
+                    dato=dato,
+                    fila=ubicacion,
+                    columna=columna
+                    )
 
     def ubicacion_registro(self, datos: map) -> int:
         fechasruta = super().buscadato(
