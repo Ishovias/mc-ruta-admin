@@ -171,7 +171,7 @@ class bdmediclean:
           self.datosPorGuardar = True
           return True
 
-     def insertafila(self, filainsercion: int) -> None:
+     def insertar_fila(self, filainsercion: int) -> None:
           self.hojabd.insert_rows(filainsercion)
           self.datosPorGuardar = True
 

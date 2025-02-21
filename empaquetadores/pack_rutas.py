@@ -179,7 +179,22 @@ def empaquetador_rutaactual(request: object) -> map:
         pass
 
     elif "reubicar" in request.form:
-        pass
+        with RutaActual() as ra:
+            origen = int(request.form.get("uboriginal")) + (ra.hoja_actual["filainicial"] - 1)
+            destino = int(request.form.get("ubdestino")) + (ra.hoja_actual["filainicial"] - 1)
+            datosfila = ra.listar(filas=[origen],solodatos=True)[0]
+            ra.insertar_fila(destino)
+            col = 0
+            columnas = list(ra.hoja_actual["columnas"].keys())
+            for dato in datosfila:
+                ra.putDato(
+                        dato=dato,
+                        fila=destino,
+                        columna=columnas[col]
+                        )
+                col += 1
+            ra.eliminar(origen)
+        datos_base()
 
     elif "cliente_ruta_realizado" in request.form:
         ubicacion = request.form.get("cliente_ruta_realizado")
