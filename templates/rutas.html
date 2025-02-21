@@ -30,7 +30,7 @@
                     {% endif %}>
                     {% for data in fila %}
                         {% if data == "0" or data == None %}
-                            -
+                            <td>-</td>
                         {% else %}
                             <td>{{ data }}</td>
                         {% endif %}
@@ -57,11 +57,9 @@
           </table>
 	  </div>
           <form class="formularioIngreso" name="finruta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-               <br><hr>
+               <button class="botonanimado" name="agrega_cliente_manual" value="to_form">Agrega cliente manual</button>
                <button class="botonanimado" name="finalizaRutaActual" value="finalizar">Finalizar ruta actual</button>
-               <br><hr>
                <button class="botonanimado" name="cancelaRutaActual" value="cancelar" style="background: red;">Cancelar ruta</button>
-               <br><hr>
           </form>
           <div id="ordenaruta">
                <form class="formularioIngreso" name="ordenaRuta" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
@@ -73,24 +71,4 @@
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
 {% block body_b %}
-{% if datos.ruta %}
-<form class="formularioIngreso" name="clientemanual" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-     <p class="titulos">Agregar cliente manual</p>
-     <label for="rut">Rut:</label>
-     <input name="rut" type="text" value="9999" required>
-     <label for="cliente">Nombre:</label>
-     <input name="cliente" type="text" placeholder="Nombre del cliente" required>
-     <label for="direccion">Direccion: </label>
-     <input name="direccion" type="text" placeholder="Direccion del cliente" required>
-     <label for="comuna">Comuna: </label>
-     <input name="comuna" type="text" placeholder="Comuna del cliente" required>
-     <label for="telefono">Telefono: </label>
-     <input name="telefono" type="number" placeholder="Numero de contacto">
-     <label for="contrato">Contrato: </label>
-     <input name="contrato" type="text" value="60">
-     <label for="otro">Otro: </label>
-     <input name="otro" type="text" placeholder="Alguna observacion como horario u otro">
-     <button type="submit" name="agregaclientemanual" value="{{ datos.rutaActiva }}" {{ datos.inirutaEnabled }}>Agrega cliente manual</button>
-</form>
-{% endif %}
 {% endblock %}

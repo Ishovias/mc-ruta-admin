@@ -139,6 +139,33 @@ def empaquetador_rutaactual(request: object) -> map:
             datos_base()
         return paquete
 
+    elif "agrega_cliente_manual" in request.form:
+        accion = request.form.get("agrega_cliente_manual")
+        columnas=["contrato","rut","cliente","direccion","comuna","telefono","otro"]
+        if accion == "to_form":
+            with RutaActual() as ra:
+                clte_manual = ra.mapdatos(columnas=columnas)
+            for dato, tipo, requerido in [
+                    ("contrato","number","required"),
+                    ("rut","number","required"),
+                    ("cliente","text","required"),
+                    ("direccion","text","required"),
+                    ("comuna","text","required"),
+                    ("telefono","number","required"),
+                    ("otro","text","")
+                    ]:
+                clte_manual[dato]["tipodato"] = tipo
+                clte_manual[dato]["required"] = requerido
+            paquete["pagina"] = "rutas_clienteman.html"
+            paquete["clte_manual"] = clte_manual
+        else:
+            datos = {}
+            for columna in columnas:
+                datos[columna] = {"dato":request.form.get(columna)}
+            with RutaActual() as ra:
+                ra.agregar_a_ruta(datos)
+        datos_base()
+
     elif "finalizaRutaActual" in request.form:
         with RutaActual() as ra:
             if ra.listar(solodatos=True) == []:
