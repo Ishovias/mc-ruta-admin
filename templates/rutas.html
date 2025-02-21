@@ -19,10 +19,10 @@
           </thead>
           <tbody>
                {% for fila in datos.rutaLista.datos %}
-                    <tr {% if "DEUDA" in fila.10 or "deuda" in fila.10 or "RETIRO EN CAMINO" in fila.10 or "APLAZADO" in fila.10 %} 
-                         {% if "RETIRO EN CAMINO" in fila.7 %}
+                    <tr {% if "DEUDA" in fila.11 or "deuda" in fila.11 or "RETIRO EN CAMINO" in fila.11 or "APLAZADO" in fila.11 %} 
+                         {% if "RETIRO EN CAMINO" in fila.8 %}
                               style="background-color: lightgreen;" 
-                         {% elif "APLAZADO" in fila.7 %}
+                         {% elif "APLAZADO" in fila.8 %}
                               style="background-color: cornflowerblue;" 
                          {% else %}
                               style="background-color: pink;" 
@@ -38,9 +38,9 @@
                     <td>
                          <form method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}" style="display:flex">
                               <button type="submit" name="enCamino" value="{{ fila.0 }}" style="height: 50px" {{ datos.cpEnabled }}>
-                                  {% if "RETIRO EN CAMINO" in fila.6 %}
+                                  {% if "RETIRO EN CAMINO" in fila.7 %}
                                         APLAZ
-                                  {% elif "APLAZADO" in fila.6 %}
+                                  {% elif "APLAZADO" in fila.7 %}
                                         DESM
                                   {% else %}
                                         ENCAM

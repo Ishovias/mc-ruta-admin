@@ -73,7 +73,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
     def datos_base():
         with RutaActual() as ractual:
-            paquete["rutaLista"] = ractual.listar(
+            paquete["rutaLista"] = ractual.listar_rutaactual(
                     columnas=["id_ruta","rut","cliente","direccion","comuna","telefono","otro","id","contrato"],
                     idy=True
                     )
@@ -183,17 +183,15 @@ def empaquetador_rutaactual(request: object) -> map:
             origen = int(request.form.get("uboriginal")) + (ra.hoja_actual["filainicial"] - 1)
             destino = int(request.form.get("ubdestino")) + (ra.hoja_actual["filainicial"] - 1)
             datosfila = ra.listar(filas=[origen],solodatos=True)[0]
+            ra.eliminar(origen)
             ra.insertar_fila(destino)
-            col = 0
             columnas = list(ra.hoja_actual["columnas"].keys())
             for dato in datosfila:
                 ra.putDato(
                         dato=dato,
                         fila=destino,
-                        columna=columnas[col]
+                        columna=columnas[datosfila.index(dato)]
                         )
-                col += 1
-            ra.eliminar(origen)
         datos_base()
 
     elif "cliente_ruta_realizado" in request.form:
