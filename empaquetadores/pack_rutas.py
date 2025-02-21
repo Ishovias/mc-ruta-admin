@@ -74,7 +74,7 @@ def empaquetador_rutaactual(request: object) -> map:
     def datos_base():
         with RutaActual() as ractual:
             paquete["rutaLista"] = ractual.listar(
-                    columnas=["indice","rut","cliente","direccion","comuna","telefono","otro","id_ruta","contrato"],
+                    columnas=["id_ruta","rut","cliente","direccion","comuna","telefono","otro","id","contrato"],
                     idy=True
                     )
             rutaactual = ractual.mapdatos(

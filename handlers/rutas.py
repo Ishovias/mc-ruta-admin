@@ -18,6 +18,10 @@ class RutaActual(bdmediclean):
             return True
         return False
 
+    def listar_rutaactual(self, columnas: list) -> map:
+        listado = super().listar(columnas=columnas)
+        
+
     def nueva_ruta(self, fecha: str, ruta: str) -> bool:
         filadatos = self.hoja_actual["filadatos"]
         for dato, columna in [(fecha,"fecharuta"),(ruta,"nombreruta"),("0","realizado"),("0","pospuesto")]:

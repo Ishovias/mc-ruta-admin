@@ -71,12 +71,10 @@ def empaquetador_clientes(request: object) -> map:
                paquete = inicia_ruta(iniciar=True,paquete=paquete,pagina="clientes.html")
                vc.put_variable(cliente_a_ruta=ubicacion_cliente)
           else:
-
                with Clientes() as cl:
                     columnas_datos = ["contrato","id","rut","cliente","direccion","comuna","telefono","otro"]
                     datos = cl.mapdatos(fila=ubicacion_cliente,columnas=columnas_datos)
                with RutaActual() as ra:
-                    datos["indice"] = {"dato":ra.id_ruta() + 1}
                     agregado = ra.agregar_a_ruta(datos)
                paquete["alerta"] = "Cliente agregado a ruta" if agregado else "Cliente ya en ruta"
                datos_base()
