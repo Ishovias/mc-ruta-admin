@@ -176,7 +176,25 @@ def empaquetador_rutaactual(request: object) -> map:
                 paquete["alerta"] = "Aun quedan clientes por confirmar o posponer antes de finalizar ruta"
 
     elif "cancelaRutaActual" in request.form:
-        pass
+        with RutaActual() as ra:
+            datosruta = ra.mapdatos(
+                    fila=ra.hoja_actual["filadatos"],
+                    columnas=["fecharuta","nombreruta"]
+                    )
+            ra.eliminarContenidos()
+            for col in ["fecharuta","nombreruta"]:
+                ra.putDato(
+                        dato=None,
+                        fila=ra.hoja_actual["filadatos"],
+                        columna=col
+                        )
+        with RutaRegistros() as reg:
+            ubicacion_fecharuta = ra.buscadato(
+                    dato=datosruta["fecharuta"]["dato"],
+                    columna="fecharuta"
+                    )
+            reg.eliminar(ubicacion_fecharuta)
+        datos_base()
 
     elif "reubicar" in request.form:
         with RutaActual() as ra:
@@ -210,9 +228,6 @@ def empaquetador_rutaactual(request: object) -> map:
             ra.eliminar(ubicacion)
         datos_base()
 
-    elif "agregaclientemanual" in request.form:
-        pass
-
     elif "enCamino" in request.form:
         pass
 
@@ -226,7 +241,7 @@ def empaquetador_registros_rutas(request: object) -> map:
     def datos_base():
         columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
-            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True)
+            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True).reverse()
 
     def buscar_registros(ubicacion: int, solo_ubicaciones: bool=False) -> list:
         with RutaRegistros() as reg:

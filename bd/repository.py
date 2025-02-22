@@ -67,7 +67,7 @@ class bdmediclean:
           if type(fila) != int:
               try:
                   fila = int(fila)
-              except Exception(e):
+              except Exception as e:
                   print(e)
                   return False
           self.hojabd.delete_rows(fila)
