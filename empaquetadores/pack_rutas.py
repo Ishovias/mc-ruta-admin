@@ -241,7 +241,9 @@ def empaquetador_registros_rutas(request: object) -> map:
     def datos_base():
         columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
-            paquete["rutas_lista"] = rutaregistros.listar(columnas=columnas,solodatos=True, idy=True).reverse()
+            ruta_lista = rutaregistros.listar(columnas=columnas, solodatos=True, idy=True)
+            ruta_lista.reverse()
+            paquete["rutas_lista"] = ruta_lista
 
     def buscar_registros(ubicacion: int, solo_ubicaciones: bool=False) -> list:
         with RutaRegistros() as reg:
