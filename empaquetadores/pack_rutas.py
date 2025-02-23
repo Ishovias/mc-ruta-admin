@@ -41,7 +41,7 @@ def ruta_existente() -> str:
             )
     return datoexistente
 
-def confpos(datos: map, columnas: list, columnas_inventario: list, confpos_accion: str="realizado") -> map:
+def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_accion: str="realizado") -> map:
     # GRABAR CLIENTE CONF-POS EN BD
     with RutaBD() as rbd:
         bd_ubicacion = rbd.buscafila()
@@ -167,13 +167,48 @@ def empaquetador_rutaactual(request: object) -> map:
         datos_base()
 
     elif "finalizaRutaActual" in request.form:
+        clientes_posponer = []
+        finalizar_ruta = False
+
+        # Verificaciones previas
         with RutaActual() as ra:
-            if ra.listar(solodatos=True) == []:
-                pass
-                # registrar kilos en registro de ruta
-                # confirmar 
+            verificacion = ra.verifica_ruta_completa()
+            if verificacion:
+                finalizar_ruta = True
+                if verificacion > 0:
+                    clientes = ra.listar(solodatos=True,columnas=["cliente"],idy=True)
+                    for cliente in clientes:
+                        datacliente = ra.mapdatos(fila=cliente[-1])
+                        datacliente["detalleretiro"] = {"dato":"DEUDA"}
+                        datacliente["status"] = {"dato":"pospuesto"}
+                        clientes_posponer.append(datacliente)
             else:
                 paquete["alerta"] = "Aun quedan clientes por confirmar o posponer antes de finalizar ruta"
+            datos_ruta = ra.mapdatos(
+                    fila=ra.hoja_actual["filadatos"],
+                    columnas=["fecharuta","nombreruta"]
+                    )
+
+        # SECUENCIA DE FINALIZACION DE RUTA
+        if finalizar_ruta = True:
+            # Secuencia de CONFPOS
+            if clientes_posponer != []:
+                for data_cliente in clientes_posponer:
+                    confpos(datos=data_cliente,confpos_accion="pospuesto")
+
+            with RutaRegistros() as reg:
+                
+
+
+            # Limpia de datos la hoja de ruta luego de terminar de trabajar en ella
+            with RutaActual() as ractual:
+                ractual.eliminarContenidos()
+                for col in ["fecharuta","nombreruta"]:
+                    ractual.putDato(
+                            dato=None,
+                            fila=ractual.hoja_actual["filadatos"],
+                            columna=col
+                            )
 
     elif "cancelaRutaActual" in request.form:
         with RutaActual() as ra:

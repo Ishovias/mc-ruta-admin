@@ -71,6 +71,18 @@ class RutaActual(bdmediclean):
                     )
         return True
 
+    def verifica_ruta_completa(self) -> int:
+        datos = super().listar(solodatos=True, columnas=["otro"])
+        if datos == []:
+            return 0
+        for dato in datos:
+            if "DEUDA" in dato[0] or "deuda" in dato[0] or "Deuda" in dato[0]:
+                continue
+            else:
+                return None
+        else:
+            return len(datos)
+
     def importar(self, datos: map) -> bool:
         pass
 
