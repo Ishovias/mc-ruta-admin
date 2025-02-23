@@ -113,6 +113,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         datos[columna] = {"dato":request.form.get(columna)}
                 datos["status"] = {"dato":confpos_accion}
                 confpos(datos,columnas,columnas_inventario,confpos_accion)
+                ra.eliminar(ubicacion_cliente_ra)
             else:
                 datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
                 if confpos_accion == "realizado":
@@ -190,15 +191,24 @@ def empaquetador_rutaactual(request: object) -> map:
                     )
 
         # SECUENCIA DE FINALIZACION DE RUTA
-        if finalizar_ruta = True:
+        if finalizar_ruta:
             # Secuencia de CONFPOS
             if clientes_posponer != []:
                 for data_cliente in clientes_posponer:
                     confpos(datos=data_cliente,confpos_accion="pospuesto")
 
             with RutaRegistros() as reg:
-                pass
-
+                ubicacion_registro = reg.ubicacion_registro(
+                        datos={
+                            "fecharuta":datos["fecharuta"]["dato"],
+                            "nombreruta":datos["nombreruta"]["dato"]
+                            })
+                if ubicacion_registro:
+                    reg.putDato(
+                        dato="RUTA FINALIZADA",
+                        fila=ubicacion_registro,
+                        columna="otros"
+                        )
 
             # Limpia de datos la hoja de ruta luego de terminar de trabajar en ella
             with RutaActual() as ractual:

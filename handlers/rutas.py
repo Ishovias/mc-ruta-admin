@@ -108,8 +108,8 @@ class RutaRegistros(bdmediclean):
                 buscartodo=True
                 )
         nombresruta = super().buscadato(
-                dato=datos["fecharuta"],
-                columna="fecharuta",
+                dato=datos["nombreruta"],
+                columna="nombreruta",
                 exacto=True,
                 buscartodo=True
                 )
