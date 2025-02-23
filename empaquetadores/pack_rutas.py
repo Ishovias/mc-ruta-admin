@@ -197,7 +197,7 @@ def empaquetador_rutaactual(request: object) -> map:
                     confpos(datos=data_cliente,confpos_accion="pospuesto")
 
             with RutaRegistros() as reg:
-                
+                pass
 
 
             # Limpia de datos la hoja de ruta luego de terminar de trabajar en ella
