@@ -1,6 +1,8 @@
 from handlers.usuarios import Usuariosbd
 from coder.codexpy import codexpy
 from enum import Enum
+from datetime import datetime
+import params
 
 # ---------------------- MENSAJES PREDEFINIDOS ----------------------
 class mensajes(Enum):
@@ -217,6 +219,9 @@ def formatear_precio(precio: int) -> int:
      precio = list(precio)
      precio.insert(0,"$")
      return "".join(precio)
+
+def formato_fecha(fecha: str) -> str:
+    return datetime.strftime(datetime.strptime(fecha,params.FORMATO_FECHA),params.FORMATO_FECHA_CODIGO)
 
 class VariablesCompartidas:
      

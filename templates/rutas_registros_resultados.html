@@ -10,6 +10,7 @@
 <div class="tabla-contenedor">
     <p class="titulos">{{ datos.rutanombre }}</p> 
     <hr>
+    {% if datos.rutaResultado %}
     <table class="tbresultados">
     <thead>
         <th>Acciones</th>
@@ -50,6 +51,9 @@
         {% endfor %}
     </tbody>
     </table>
+    {% else %}
+    <p class="titulos">SIN DATOS AUN</p>
+    {% endif %}
     <hr>
 </div>    
 {% endblock %}

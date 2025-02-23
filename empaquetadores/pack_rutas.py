@@ -5,7 +5,7 @@ from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
 from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
 from handlers.inventarios import Inventario
-from helpers import mensajes, privilegios, constructor_paquete, VariablesCompartidas
+from helpers import mensajes, privilegios, constructor_paquete, VariablesCompartidas,formato_fecha
 from cimprime import cimprime
 import params
 import os
@@ -19,16 +19,12 @@ def inicia_ruta(iniciar: bool=False, paquete: map=None, pagina: str=None) -> map
         paquete["pagina_respuesta"] = pagina
     else:
         datos_guardados = False
+        ruta = request.form.get("nombreruta")
+        fecha = formato_fecha(request.form.get("fecharuta"))
         with RutaActual() as ra:
-            datos_guardados = ra.nueva_ruta(
-                fecha=request.form.get("fecharuta"),
-                ruta=request.form.get("nombreruta")
-            )
+            datos_guardados = ra.nueva_ruta(fecha=fecha,ruta=ruta)
         with RutaRegistros() as reg:
-            reg.nueva_ruta(
-                fecha=request.form.get("fecharuta"),
-                ruta=request.form.get("nombreruta")
-            )
+            reg.nueva_ruta(fecha=fecha,ruta=ruta)
         paquete["alerta"] = "Ruta creada" if datos_guardados else "Error al crear ruta"
         paquete["pagina"] = pagina if pagina else "rutas.html"
     return paquete
@@ -219,6 +215,7 @@ def empaquetador_rutaactual(request: object) -> map:
                             fila=ractual.hoja_actual["filadatos"],
                             columna=col
                             )
+        datos_base()
 
     elif "cancelaRutaActual" in request.form:
         with RutaActual() as ra:
@@ -314,8 +311,8 @@ def empaquetador_registros_rutas(request: object) -> map:
             if solo_ubicaciones:
                 return ubicaciones
             else:
-                paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True)
-                if paquete["rutaResultado"]["datos"] != [None]:
+                paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True) if ubicaciones else None
+                if paquete["rutaResultado"]:
                     paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
@@ -358,7 +355,7 @@ def empaquetador_registros_rutas(request: object) -> map:
 
     elif "eliminar_ruta" in request.form:
         ubicacion = request.form.get("rutas_registradas")
-        ubicaciones = buscar_registros(ubicacion)
+        ubicaciones = buscar_registros(ubicacion,solo_ubicaciones=True)
         if ubicaciones:
             with RutaBD() as rbd:
                 for fila in ubicaciones:

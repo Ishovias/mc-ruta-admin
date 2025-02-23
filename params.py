@@ -25,7 +25,8 @@ RUTA_IMPORTACION = "./ruta_import"
 
 EXTENSIONES_PERMITDAS = {"xlsx", "xls"}
 MAX_FILAS = 10000
-FORMATO_FECHA = "%d-%m-%Y"
+FORMATO_FECHA = "%Y-%m-%d"
+FORMATO_FECHA_CODIGO = "%Y%m%d"
 
 CLIENTES = {
      "nombrehoja": "clientes",
