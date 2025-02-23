@@ -329,6 +329,9 @@ def empaquetador_registros_rutas(request: object) -> map:
                             columna=campo
                             )
                 ra.eliminarContenidos()
+        vc = VariablesCompartidas()
+        if "reg_ult_busqueda" in vc.variables:
+            vc.del_variable("reg_ult_busqueda")
         datos_base()
 
     else:
