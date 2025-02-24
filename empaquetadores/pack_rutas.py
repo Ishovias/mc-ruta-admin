@@ -65,14 +65,20 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                             )
         with RutaBD() as rbd:
             fecharuta = datos["fecharuta"]["dato"]
-            kgtotales = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
+            kgtotales = rbd.kgtotales(fecharuta)
         with RutaRegistros() as reg:
             for columna, dato in kgtotales.items(): # Registrar los kilos que van hasta este momento
                 reg.putDato(
                         dato=dato,
+                        fila=ubicacion,
                         columna=columna
                         )
-            # FALTA SISTEMA PARA RESUMIR LOS INSUMOS USADOS !!!!!!!
+            # Registrar mensaje con resumen de insumos usados
+            reg.putDato(
+                    dato=reg.resumen_insumos(fecharuta),
+                    fila=ubicacion,
+                    columna="insumos_usados"
+                    )
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")

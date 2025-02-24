@@ -173,6 +173,8 @@ class RutaBD(bdmediclean):
          if not fechafinal:
              fechafinal = fechainicio
          filafinal = super().buscadato(dato=str(fechafinal),columna="fecha")
+         if not filainicio or not filafinal:
+             return None
          for i in range(filafinal, super().getmaxfilas(),1):
              dato = super().getDato(fila=i,columna="fecha")
              if str(dato) != str(fechafinal):
@@ -190,27 +192,48 @@ class RutaBD(bdmediclean):
                  "liquidorx":0
                  }
          if fechainicio and fechafinal:
-             if not filainicio and not filafinal:
+             rangodatos = self._obtener_rangofecha(fechainicio,fechafinal)
+             if not rangodatos:
                  self.kilosItems = items
                  return items
              for item in items:
-                 for f in self._obtener_rangofecha(fechainicio,fechafinal):
+                 for f in rangodatos:
                      dato = super().getDato(fila=f,columna=item)
                      if dato:
                          items[item] += int(dato)
                          self.kilosItems[item] += int(dato)
-
          elif filaCliente:
                for item in items:
                   dato = super().getDato(fila=filaCliente,columna=item)
                   if dato:
                      items[item] += int(dato)
                      self.kilosItems[item] += int(dato)
-
          return items
 
-     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None) -> str:
-
+     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None, filaCLiente: int=None) -> str:
+         insumos = {}
+         for insumo in  self.hoja_actual["columnas"]:
+             if insumo != "fecha":
+                 insumos[insumo] = 0
+         mensaje = ""
+         if fechainicio and fechafinal:
+             rangodatos = self._obtener_rangofecha(fechainicio,fechafinal)
+             if not rangodatos:
+                 return "Sin insumos usados"
+             for insumo in insumos.keys():
+                 for f in rangodatos:
+                     dato = super().getDato(fila=f,columna=insumo)
+                     if dato:
+                         insumos[insumo] += int(dato)
+         elif filaCliente:
+             for insumo in insumos.keys():
+                 dato = super().getDato(fila=filaCliente,columna=insumo)
+                 if dato:
+                     insumos[insumo] += int(dato)
+         for insumo in insumos.keys():
+             if insumos[insumo] > 0:
+                 mensaje += f"/ {insumo} = {insumos['insumo']} /"
+         return mensaje
 
      def recuentoKgEliminar(self) -> map:
           self.eliminaKilosRegistrados()
