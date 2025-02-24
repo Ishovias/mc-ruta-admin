@@ -168,6 +168,18 @@ class RutaBD(bdmediclean):
          else:
               return True
 
+     def _obtener_rangofecha(self, fechainicio: str=None, fechafinal: str=None) -> range: 
+         filainicio = super().buscadato(dato=str(fechainicio),columna="fecha")
+         if not fechafinal:
+             fechafinal = fechainicio
+         filafinal = super().buscadato(dato=str(fechafinal),columna="fecha")
+         for i in range(filafinal, super().getmaxfilas(),1):
+             dato = super().getDato(fila=i,columna="fecha")
+             if str(dato) != str(fechafinal):
+                 filafinal = i
+                 break
+         return range(filainicio,filafinal,1)
+
      def kgtotales(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
          items = {
                  "farmaco":0,
@@ -178,22 +190,15 @@ class RutaBD(bdmediclean):
                  "liquidorx":0
                  }
          if fechainicio and fechafinal:
-               filainicio = super().buscadato(dato=str(fechainicio),columna="fecha")
-               filafinal = super().buscadato(dato=str(fechafinal),columna="fecha")
-               if not filainicio and not filafinal:
-                   self.kilosItems = items
-                   return items
-               for i in range(filafinal, super().getmaxfilas(),1):
-                    dato = super().getDato(fila=i,columna="fecha")
-                    if str(dato) != str(fechafinal):
-                         filafinal = i
-                         break
-               for item in items:
-                   for f in range(filainicio,filafinal,1):
-                       dato = super().getDato(fila=f,columna=item)
-                       if dato:
-                              items[item] += int(dato)
-                              self.kilosItems[item] += int(dato)
+             if not filainicio and not filafinal:
+                 self.kilosItems = items
+                 return items
+             for item in items:
+                 for f in self._obtener_rangofecha(fechainicio,fechafinal):
+                     dato = super().getDato(fila=f,columna=item)
+                     if dato:
+                         items[item] += int(dato)
+                         self.kilosItems[item] += int(dato)
 
          elif filaCliente:
                for item in items:
@@ -203,6 +208,9 @@ class RutaBD(bdmediclean):
                      self.kilosItems[item] += int(dato)
 
          return items
+
+     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None) -> str:
+
 
      def recuentoKgEliminar(self) -> map:
           self.eliminaKilosRegistrados()

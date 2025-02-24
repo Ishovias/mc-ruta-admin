@@ -63,6 +63,16 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                             columna=columna,
                             modificacion=-stock_descontado
                             )
+        with RutaBD() as rbd:
+            fecharuta = datos["fecharuta"]["dato"]
+            kgtotales = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
+        with RutaRegistros() as reg:
+            for columna, dato in kgtotales.items(): # Registrar los kilos que van hasta este momento
+                reg.putDato(
+                        dato=dato,
+                        columna=columna
+                        )
+            # FALTA SISTEMA PARA RESUMIR LOS INSUMOS USADOS !!!!!!!
 
 def empaquetador_rutaactual(request: object) -> map:
     paquete = constructor_paquete(request,"rutas.html","RUTA EN CURSO")
@@ -231,7 +241,7 @@ def empaquetador_rutaactual(request: object) -> map:
                         columna=col
                         )
         with RutaRegistros() as reg:
-            ubicacion_fecharuta = ra.buscadato(
+            ubicacion_fecharuta = reg.buscadato(
                     dato=datosruta["fecharuta"]["dato"],
                     columna="fecharuta"
                     )
@@ -280,6 +290,7 @@ def empaquetador_rutaactual(request: object) -> map:
 
 def empaquetador_registros_rutas(request: object) -> map:
     paquete = constructor_paquete(request,"rutas_registros.html","REGISTRO DE RUTAS")
+
     def datos_base():
         columnas = ["fecharuta","nombreruta"]
         with RutaRegistros() as rutaregistros:
