@@ -54,7 +54,6 @@
     {% else %}
     <p class="titulos">SIN DATOS AUN</p>
     {% endif %}
-    <hr>
 </div>    
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
@@ -84,7 +83,6 @@
             {% endfor %}
         </tbody>
         </table>
-        <hr>
     </div>
     <hr>
     <p>Kilos totales</p>
@@ -100,8 +98,8 @@
     <hr>
         <p>Insumos ocupados en esta ruta:</p>
         <ul>
-            {% for elemento in datos.insumos_usados %}
-            <li>{{ elemento }}: {{ datos.insumos_usados[elemento] }}un</li>
+            {% for elemento, valor in datos.insumos_usados.items() %}
+            <li>{{ elemento }}: {{ valor }} un</li>
             {% endfor %}
         </ul>
     {% endif %}

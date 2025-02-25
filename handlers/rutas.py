@@ -175,7 +175,8 @@ class RutaBD(bdmediclean):
          filafinal = super().buscadato(dato=str(fechafinal),columna="fecha")
          if not filainicio or not filafinal:
              return None
-         for i in range(filafinal, super().getmaxfilas(),1):
+         maxfilas = super().getmaxfilas() + 2
+         for i in range(filafinal, maxfilas,1):
              dato = super().getDato(fila=i,columna="fecha")
              if str(dato) != str(fechafinal):
                  filafinal = i
@@ -210,7 +211,7 @@ class RutaBD(bdmediclean):
                      self.kilosItems[item] += int(dato)
          return items
 
-     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
+     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None, retorna_map: bool=False) -> str:
          insumos = {}
          for insumo in params.INVENTARIOS["insumos_ruta"]:
              if insumo != "fecha":
@@ -230,6 +231,8 @@ class RutaBD(bdmediclean):
                  dato = super().getDato(fila=filaCliente,columna=insumo)
                  if dato:
                      insumos[insumo] += int(dato)
+         if retorna_map:
+             return insumos
          for insumo in insumos.keys():
              if insumos[insumo] > 0:
                  mensaje += f"/ {insumo} = {insumos[insumo]} /"

@@ -3,7 +3,7 @@ from flask import request
 from datetime import datetime, date
 from handlers.clientes import Clientes
 from handlers.eliminaciones import RetirosEliminados, EliminacionRegistros
-from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar, cimprime
+from handlers.rutas import RutaActual, RutaBD, RutaRegistros, RutaImportar 
 from handlers.inventarios import Inventario
 from helpers import mensajes, privilegios, constructor_paquete, VariablesCompartidas,formato_fecha
 from cimprime import cimprime
@@ -109,10 +109,15 @@ def empaquetador_rutaactual(request: object) -> map:
     def form_confpos(confpos_accion: str):
         columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
         columnas_inventario = params.INVENTARIOS["insumos_ruta"]
+        columnas_retirokgs = params.RUTA_BD["retirokgs"]
         bdrutas = False
         with Inventario() as inv:
             inventario_actual = inv.mapdatos(
                     columnas=columnas_inventario
+                    )
+        with RutaBD() as rbd:
+            detallekgs = rbd.mapdatos(
+                    columnas=columnas_retirokgs
                     )
         # EXTRACCION DE DATOS E INSUMOS DEL CLIENTE
         with RutaActual() as ra:
@@ -131,6 +136,8 @@ def empaquetador_rutaactual(request: object) -> map:
                 if confpos_accion == "realizado":
                     for columna in columnas_inventario:
                         datos[columna] = {"dato":request.form.get(columna)}
+                    for columna in columnas_retirokgs:
+                        datos[columna] = {"dato":request.form.get(columna)}
                 datos["status"] = {"dato":confpos_accion}
                 confpos(datos,columnas,columnas_inventario,confpos_accion)
                 ra.eliminar(ubicacion_cliente_ra)
@@ -139,6 +146,8 @@ def empaquetador_rutaactual(request: object) -> map:
                 if confpos_accion == "realizado":
                     for clave, valor in inventario_actual.items():
                         datos[clave] = valor 
+                    for clave, valor in detallekgs.items():
+                        datos[clave] = valor
                     paquete["botonconfpos"] = "CONFIRMAR CLIENTE"
                 else:
                     paquete["botonconfpos"] = "POSPONER CLIENTE"
@@ -342,8 +351,10 @@ def empaquetador_registros_rutas(request: object) -> map:
                     paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
+                paquete["insumos_usados"] = rbd.resumen_insumos(fecharuta,retorno_map=True)
         if not solo_ubicaciones:
             with RutaRegistros() as reg:
+                # Obtener datos de la ruta y mostrarlos actualizando realizados y pospuestos
                 col_list_reg = ["fecharuta","nombreruta","realizado","pospuesto"]
                 datosruta = reg.listar(
                         filas=[int(ubicacion)],
@@ -360,6 +371,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                             fila=int(ubicacion),
                             columna=columna
                             )
+                
             paquete["datosruta"] = datosruta
             paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
             paquete["pagina"] = "rutas_registros_resultados.html"
