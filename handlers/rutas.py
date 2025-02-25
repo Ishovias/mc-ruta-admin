@@ -279,6 +279,26 @@ class RutaBD(bdmediclean):
                   del insumos_usados[elemento]
           return insumos_usados
 
+     def total_clientes_confpos(self, fechainicio: str=None, fechafinal: str=None) -> map:
+          clientes = {
+                  "realizado":0,
+                  "pospuesto":0
+                  }
+          rango = self._obtener_rangofecha(fechainicio)
+          if rango:
+              for fila in rango:
+                  dato = super().getDato(
+                          fila=fila,
+                          columna="status"
+                          )
+                  if dato == "realizado":
+                      clientes["realizado"] += 1
+                  elif dato == "pospuesto":
+                      clientes["pospuesto"] += 1
+              return clientes
+          return None
+
+
      def disposicion_final(self, ubicacion: int, status: str) -> None:
          super().putDato(
                  dato="PRE-ELIMINACION",

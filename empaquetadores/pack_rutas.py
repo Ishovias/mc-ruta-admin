@@ -48,10 +48,6 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                         fila=bd_ubicacion,
                         columna=columna
                         )
-    # Sumar cliente confirmado o pospuesto a registro
-    with RutaRegistros() as reg:
-        ubicacion = reg.ubicacion_registro(datos)
-        reg.cliente_confpos(ubicacion, confpos_accion)
     # MODIFICAR EL STOCK
     if confpos_accion == "realizado":
         with Inventario() as inv:
@@ -78,6 +74,7 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                     )
             resumen_insumos_general = rbd.resumen_insumos(fecharuta)
         with RutaRegistros() as reg:
+            ubicacion = reg.ubicacion_registro(datos)
             for columna, dato in kgtotales.items(): # Registrar los kilos que van hasta este momento
                 reg.putDato(
                         dato=dato,
@@ -339,12 +336,30 @@ def empaquetador_registros_rutas(request: object) -> map:
             if solo_ubicaciones:
                 return ubicaciones
             else:
+                total_confpos = rbd.total_clientes_confpos(fecharuta)
                 paquete["rutaResultado"] = rbd.listar(filas=ubicaciones,idy=True) if ubicaciones else None
                 if paquete["rutaResultado"]:
                     paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
         if not solo_ubicaciones:
+            with RutaRegistros() as reg:
+                col_list_reg = ["fecharuta","nombreruta","realizado","pospuesto"]
+                datosruta = reg.listar(
+                        filas=[int(ubicacion)],
+                        columnas=col_list_reg
+                        )
+                col_realizado = col_list_reg.index("realizado")
+                col_pospuesto = col_list_reg.index("pospuesto")
+                datosruta["datos"][0][col_realizado] = 0 if not total_confpos else total_confpos["realizado"]
+                datosruta["datos"][0][col_pospuesto] = 0 if not total_confpos else total_confpos["pospuesto"]
+                if total_confpos:
+                    for columna, dato in total_confpos.items():
+                        reg.putDato(
+                            dato=dato,
+                            fila=int(ubicacion),
+                            columna=columna
+                            )
             paquete["datosruta"] = datosruta
             paquete["rutanombre"] = f"{fecharuta} - {nombreruta}"
             paquete["pagina"] = "rutas_registros_resultados.html"
@@ -363,8 +378,8 @@ def empaquetador_registros_rutas(request: object) -> map:
             status = rbd.get_status_retiro(ubicacion)
             rbd.eliminar(ubicacion)
         # Descontar de los clientes confirmado o pospuesto
-        with RutaRegistros() as reg:
-            reg.cliente_confpos(int(ubicacion),status,-1)
+        # with RutaRegistros() as reg:
+        #     reg.cliente_confpos(int(ubicacion),status,-1)
         # Devolver pagina con registros actualizados al usuario
         if "reg_ult_busqueda" in vc.variables:
             buscar_registros(vc.get_variable("reg_ult_busqueda"))
