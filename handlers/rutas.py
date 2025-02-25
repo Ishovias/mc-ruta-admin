@@ -210,9 +210,9 @@ class RutaBD(bdmediclean):
                      self.kilosItems[item] += int(dato)
          return items
 
-     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None, filaCLiente: int=None) -> str:
+     def resumen_insumos(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
          insumos = {}
-         for insumo in  self.hoja_actual["columnas"]:
+         for insumo in params.INVENTARIOS["insumos_ruta"]:
              if insumo != "fecha":
                  insumos[insumo] = 0
          mensaje = ""
@@ -232,7 +232,7 @@ class RutaBD(bdmediclean):
                      insumos[insumo] += int(dato)
          for insumo in insumos.keys():
              if insumos[insumo] > 0:
-                 mensaje += f"/ {insumo} = {insumos['insumo']} /"
+                 mensaje += f"/ {insumo} = {insumos[insumo]} /"
          return mensaje
 
      def recuentoKgEliminar(self) -> map:

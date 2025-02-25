@@ -64,8 +64,19 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                             modificacion=-stock_descontado
                             )
         with RutaBD() as rbd:
-            fecharuta = datos["fecharuta"]["dato"]
+            fecharuta = datos["fecharuta"]
             kgtotales = rbd.kgtotales(fecharuta)
+            # Mensaje en confirmacion de usuario con resumen de insumos
+            detalle_retiro = rbd.getDato(
+                    fila=bd_ubicacion,
+                    columna="detalleretiro"
+                    )
+            rbd.putDato(
+                    dato=f"{detalle_retiro} INSUMOS:{rbd.resumen_insumos(filaCliente=bd_ubicacion)}",
+                    fila=bd_ubicacion,
+                    columna="detalleretiro"
+                    )
+            resumen_insumos_general = rbd.resumen_insumos(fecharuta)
         with RutaRegistros() as reg:
             for columna, dato in kgtotales.items(): # Registrar los kilos que van hasta este momento
                 reg.putDato(
@@ -75,7 +86,7 @@ def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_
                         )
             # Registrar mensaje con resumen de insumos usados
             reg.putDato(
-                    dato=reg.resumen_insumos(fecharuta),
+                    dato=resumen_insumos_general,
                     fila=ubicacion,
                     columna="insumos_usados"
                     )
@@ -258,10 +269,10 @@ def empaquetador_rutaactual(request: object) -> map:
         with RutaActual() as ra:
             origen = int(request.form.get("uboriginal")) + (ra.hoja_actual["filainicial"] - 1)
             destino = int(request.form.get("ubdestino")) + (ra.hoja_actual["filainicial"] - 1)
-            datosfila = ra.listar(filas=[origen],solodatos=True)[0]
+            datosfila = ra.listar(filas=[origen],columnas=ra.hoja_actual["ncolumnas_todas"],solodatos=True)[0]
             ra.eliminar(origen)
             ra.insertar_fila(destino)
-            columnas = list(ra.hoja_actual["columnas"].keys())
+            columnas = ra.hoja_actual["ncolumnas_todas"]
             for dato in datosfila:
                 ra.putDato(
                         dato=dato,
@@ -392,6 +403,9 @@ def empaquetador_registros_rutas(request: object) -> map:
         if "reg_ult_busqueda" in vc.variables:
             vc.del_variable("reg_ult_busqueda")
         datos_base()
+
+    elif "modifica_registro" in request.form:
+        pass
 
     else:
         datos_base()

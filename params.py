@@ -83,8 +83,8 @@ RUTA_ACTUAL = {
      },
      "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
      "columnas_datos": [2,3,4,5],
-     "ncolumnas_datos":["fecha","nombreruta"],
-     "ncolumnas_todas": ["contrato","id_ruta","id","rut","cliente","direccion","comuna","telefono","otro"],
+     "ncolumnas_datos":["fecharuta","nombreruta"],
+     "ncolumnas_todas": ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"],
      "encabezados": 2
 }
 
