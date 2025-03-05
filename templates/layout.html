@@ -27,22 +27,22 @@
             <button class="botonanimado" id="rutas" name="rutas" value="rutas">Rutas</button>
         </form>
         <form method="post" action="{{ url_for('disposicion_final', aut=datos.aut) }}">
-            <button class="botonanimado" id="disposicion_final" name="disposicion_final">Disposicion final</button>
+            <button class="botonanimado" id="disposicion_final" name="disposicion_final" disabled>Disposicion final</button>
         </form>
         <form method="post" action="{{ url_for('inventarios', aut=datos.aut) }}">
-            <button class="botonanimado" id="inventario" name="inventarios" value="inventario">Inventarios</button>
+            <button class="botonanimado" id="inventario" name="inventarios" value="inventario" disabled>Inventarios</button>
         </form>
         <!-- <form>
             <button class="botonanimado" id="gastos" name="gastos" value="gastos" disabled>Gastos</button>
         </form> -->
         {% if datos.usuario == "iberoiza" or datos.usuario == "mjose" %}
             <form method="post" action="{{ url_for('todo', aut=datos.aut) }}">
-                <button class="botonanimado" id="todo" name="todo" value="todo">ToDo</button>
+                <button class="botonanimado" id="todo" name="todo" value="todo" disabled>ToDo</button>
             </form>
         {% endif %}
         {% if datos.usuario == "iberoiza" %}
             <form method="post" action="{{ url_for('usersactives', aut=datos.aut) }}">
-                <button class="botonanimado" id="usuariosactivos" name="usuariosactivos" value="usuariosactivos">Users actives</button>
+                <button class="botonanimado" id="usuariosactivos" name="usuariosactivos" value="usuariosactivos" disabled>Users actives</button>
             </form>
             <form method="post" action="{{ url_for('codex1', aut=datos.aut) }}">
                 <button class="botonanimado" name="codex1">Codex1</button>
@@ -51,7 +51,7 @@
                 <button class="botonanimado" name="codex2">Codex2</button>
             </form>
             <form method="post" action="{{ url_for('uploadRuta', aut=datos.aut) }}">
-                <button class="botonanimado" name="aut" value="{{ datos.aut }}">Upload Ruta</button>
+                <button class="botonanimado" name="aut" value="{{ datos.aut }}" disabled>Upload Ruta</button>
             </form>
         {% endif %}
         <form method="post" action="{{ url_for('logout', aut=datos.aut) }}">
