@@ -1,5 +1,33 @@
 {% extends 'layout.html' %}
+<style>
+    #mi-formulario {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        max-width: 400px;
+        margin: 0 auto;
+        }
 
+        .fila {
+            display: contents;
+            }
+
+        label {
+            text-align: right;
+            padding-right: 10px;
+            }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            }
+
+        button {
+            grid-column: span 2;
+            justify-self: center;
+            }
+</style>
 {% block encabezado %}
      <h1>Mediclean Ruta</h1>
      <h2>Administrador de ruta</h2>
@@ -8,28 +36,49 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-        {% for campo, dato in datos.formulario_confpos.items()  %}
-        <div class="form-field">
-        <label for="{{ campo }}"
-            {% if "ROJ" in dato["encabezado"] %}
-               style="color: red;"
-            {% elif "AMARILL" in dato["encabezado"] %}
-               style="background: yellow;"
-            {% endif %}
-            {% if campo == "idy" %}
-               hidden
-            {% endif %}>
-            {{ dato["encabezado"] }}
-        </label>
-	    <input name="{{ campo }}" 
-            {% if dato["dato"] %}
-            value="{{ dato['dato'] }}" readonly
-            {% endif %}
-            {% if campo == "idy" %}
-               hidden
-            {% endif %}>
+        <span class="titulos">Datos del cliente</span>
+        {% for campo, dato in datos.formulario_confpos_cliente.items()  %}
+            <div class="form-field">
+                <label for="{{ campo }}"
+                    {% if campo == "idy" %}
+                       hidden
+                    {% endif %}>
+                    {{ dato["encabezado"] }}
+                </label>
+                <input name="{{ campo }}" 
+                    {% if dato["dato"] %}
+                    value="{{ dato['dato'] }}" readonly
+                    {% endif %}
+                    {% if campo == "idy" %}
+                       hidden
+                    {% endif %}>
+            </div>
         {% endfor %}
-        </div>
+        <hr>
+        <span class="titulos">Insumos utilizados</span>
+        {% for campo, dato in datos.formulario_confpos_inventario.items()  %}
+            <div class="form-field">
+                <label for="{{ campo }}"
+                    {% if "ROJ" in dato["encabezado"] %}
+                       style="color: red;"
+                    {% elif "AMARILL" in dato["encabezado"] %}
+                       style="background: yellow;"
+                    {% endif %}>
+                    {{ dato["encabezado"] }}
+                </label>
+                <input name="{{ campo }}">
+            </div>
+        {% endfor %}
+        <hr>
+        <span class="titulos">Registro de kilos</span>
+        {% for campo, dato in datos.formulario_confpos_kilos.items()  %}
+            <div class="form-field">
+                <label for="{{ campo }}">
+                    {{ dato["encabezado"] }}
+                </label>
+                <input name="{{ campo }}">
+            </div>
+        {% endfor %}
         <div class="form-field">
             <button name="cliente_ruta_{{ datos.confpos }}" value="formulario_respuesta">{{ datos.botonconfpos }}</button>
         </div>

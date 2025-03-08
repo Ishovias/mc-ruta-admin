@@ -109,7 +109,7 @@ def empaquetador_rutaactual(request: object) -> map:
     def form_confpos(confpos_accion: str):
         columnas = ["fecha","id_ruta","id","contrato","rut","cliente","direccion","comuna","telefono","otro"]
         columnas_inventario = params.INVENTARIOS["insumos_ruta"]
-        columnas_retirokgs = params.RUTA_BD["retirokgs"]
+        columnas_retirokgs = params.RUTAS_BD["retirokgs"]
         bdrutas = False
         with Inventario() as inv:
             inventario_actual = inv.mapdatos(
@@ -142,17 +142,15 @@ def empaquetador_rutaactual(request: object) -> map:
                 confpos(datos,columnas,columnas_inventario,confpos_accion)
                 ra.eliminar(ubicacion_cliente_ra)
             else:
-                datos = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
+                datos_cliente = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
+                paquete[f"formulario_confpos_cliente"] = datos_cliente
                 if confpos_accion == "realizado":
-                    for clave, valor in inventario_actual.items():
-                        datos[clave] = valor 
-                    for clave, valor in detallekgs.items():
-                        datos[clave] = valor
+                    paquete[f"formulario_confpos_inventario"] = inventario_actual
+                    paquete[f"formulario_confpos_kilos"] = detallekgs
                     paquete["botonconfpos"] = "CONFIRMAR CLIENTE"
                 else:
                     paquete["botonconfpos"] = "POSPONER CLIENTE"
                 datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
-                paquete[f"formulario_confpos"] = datos
                 paquete["confpos"] = confpos_accion
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"
@@ -351,7 +349,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                     paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
-                paquete["insumos_usados"] = rbd.resumen_insumos(fecharuta,retorno_map=True)
+                paquete["insumos_usados"] = rbd.resumen_insumos(fecharuta,retorna_map=True)
         if not solo_ubicaciones:
             with RutaRegistros() as reg:
                 # Obtener datos de la ruta y mostrarlos actualizando realizados y pospuestos

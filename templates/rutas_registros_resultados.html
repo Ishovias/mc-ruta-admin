@@ -99,7 +99,7 @@
         <p>Insumos ocupados en esta ruta:</p>
         <ul>
             {% for elemento, valor in datos.insumos_usados.items() %}
-            <li>{{ elemento }}: {{ valor }} un</li>
+            <li>{{ elemento }}: <strong style="background: lightgreen;">{{ valor }} un</strong></li>
             {% endfor %}
         </ul>
     {% endif %}
