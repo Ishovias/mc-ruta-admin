@@ -1,4 +1,5 @@
 # hoja de parametros generales
+IMPRESION_LOGS = False
 
 # Privilegios usuarios
 PRIVILEGIOS = {

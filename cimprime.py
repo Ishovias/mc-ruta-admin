@@ -1,4 +1,8 @@
+import params
+
 def cimprime(**kwargs) -> None:
+    if not params.IMPRESION_LOGS:
+        return None
     if "titulo" in kwargs.keys():
         print(kwargs["titulo"])
     else:
