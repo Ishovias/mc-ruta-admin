@@ -1,5 +1,5 @@
 from bd.repository import bdmediclean
-from helpers import cimprime
+from cimprime import cimprime
 import params
 
 class RutaActual(bdmediclean):

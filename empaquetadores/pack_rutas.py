@@ -349,7 +349,7 @@ def empaquetador_registros_rutas(request: object) -> map:
                     paquete["itemskg"] = rbd.kgtotales(fechainicio=fecharuta,fechafinal=fecharuta)
                 else:
                     paquete["itemskg"] = rbd.kgtotales()
-                paquete["insumos_usados"] = rbd.resumen_insumos(fecharuta,retorna_map=True)
+                paquete["insumos_usados"] = rbd.resumen_insumos(fecharuta,fecharuta,retorna_map=True)
         if not solo_ubicaciones:
             with RutaRegistros() as reg:
                 # Obtener datos de la ruta y mostrarlos actualizando realizados y pospuestos
