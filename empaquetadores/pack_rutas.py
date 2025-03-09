@@ -143,6 +143,7 @@ def empaquetador_rutaactual(request: object) -> map:
                 ra.eliminar(ubicacion_cliente_ra)
             else:
                 datos_cliente = ra.mapdatos(fila=int(ubicacion), columnas=columnas,idy=True)
+                datos_cliente["detalleretiro"] = {"encabezado":"Detalle del retiro"}
                 paquete[f"formulario_confpos_cliente"] = datos_cliente
                 if confpos_accion == "realizado":
                     paquete[f"formulario_confpos_inventario"] = inventario_actual
@@ -150,7 +151,6 @@ def empaquetador_rutaactual(request: object) -> map:
                     paquete["botonconfpos"] = "CONFIRMAR CLIENTE"
                 else:
                     paquete["botonconfpos"] = "POSPONER CLIENTE"
-                datos["detalleretiro"] = {"encabezado":"Detalle del retiro"}
                 paquete["confpos"] = confpos_accion
                 paquete["nombrePagina"] = f"Formulario de cliente {confpos}"
                 paquete["pagina"] = "rutas_confpos.html"

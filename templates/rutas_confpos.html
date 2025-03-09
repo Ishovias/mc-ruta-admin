@@ -36,7 +36,7 @@
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
     <form class="formularioIngreso" method="post" action="{{ url_for('rutaactual', aut=datos.aut) }}">
-        <span class="titulos">Datos del cliente</span>
+        <span class="titulos" style="background: #00838f; color: white;">Datos del cliente</span>
         {% for campo, dato in datos.formulario_confpos_cliente.items()  %}
             <div class="form-field">
                 <label for="{{ campo }}"
@@ -55,7 +55,7 @@
             </div>
         {% endfor %}
         <hr>
-        <span class="titulos">Insumos utilizados</span>
+        <span class="titulos" style="background: #00838f; color: white;">Insumos utilizados</span>
         {% for campo, dato in datos.formulario_confpos_inventario.items()  %}
             <div class="form-field">
                 <label for="{{ campo }}"
@@ -70,7 +70,7 @@
             </div>
         {% endfor %}
         <hr>
-        <span class="titulos">Registro de kilos</span>
+        <span class="titulos" style="background: #00838f; color: white;">Registro de kilos</span>
         {% for campo, dato in datos.formulario_confpos_kilos.items()  %}
             <div class="form-field">
                 <label for="{{ campo }}">
@@ -79,6 +79,7 @@
                 <input name="{{ campo }}">
             </div>
         {% endfor %}
+        <br><hr>
         <div class="form-field">
             <button name="cliente_ruta_{{ datos.confpos }}" value="formulario_respuesta">{{ datos.botonconfpos }}</button>
         </div>
