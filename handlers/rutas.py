@@ -132,7 +132,11 @@ class RutaRegistros(bdmediclean):
                 )
 
     def registra_importacion(self, datos: map) -> bool:
-        pass
+        for col in ["fecharuta","nombreruta"]:
+            super().putDato(
+                    dato=datos[col],
+                    columna=col
+                    )
 
 class RutaBD(bdmediclean):
 
@@ -317,8 +321,17 @@ class RutaImportar(bdmediclean):
           self.hoja_actual = params.RUTA_ACTUAL
 
      def extrae_ruta(self) -> map:
+         filadatos = self.hoja_actual["filadatos"]
          return {
-                 "fecha": super().getDato(identificador="fecha", retornostr=True),
-                 "nombreruta": super().getDato(identificador="nombreruta", retornostr=True),
-                 "datos":super().listar(retornostr=True, solodatos=True)
+                 "fecharuta": super().getDato(
+                     fila=filadatos,
+                     columna="fecharuta"
+                     ),
+                 "nombreruta": super().getDato(
+                     fila=filadatos,
+                     columnas="nombreruta"
+                     ),
+                 "datos":super().listar(
+                     columnas=self.hoja_actual["columnas_todas"],
+                     solodatos=True)
                  }

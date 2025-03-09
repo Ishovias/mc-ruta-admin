@@ -7,10 +7,12 @@
 {% endblock %}
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
+<span class="titulos">Importacion de ruta</span>
      <form class="formularioIngreso" method="post" action="{{ url_for('uploadRuta', aut=datos.aut) }}" enctype="multipart/form-data">
           <label for="archivo">Archivo de ruta:
                <input type="file" name="archivo" style="width: 200px">
                <input type="submit" value="upload" style="width: 200px">
+          </label>
      </form>
 {% endblock %}
 <!-- -------------------------BODY B------------------------------- -->
