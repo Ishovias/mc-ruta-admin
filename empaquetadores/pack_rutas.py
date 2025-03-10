@@ -201,7 +201,8 @@ def empaquetador_rutaactual(request: object) -> map:
         # Verificaciones previas
         with RutaActual() as ra:
             verificacion = ra.verifica_ruta_completa()
-            if verificacion:
+            cimprime(verificacion=verificacion,verif=True if verificacion else False)
+            if verificacion >= 0:
                 finalizar_ruta = True
                 if verificacion > 0:
                     clientes = ra.listar(solodatos=True,columnas=["cliente"],idy=True)
@@ -227,8 +228,8 @@ def empaquetador_rutaactual(request: object) -> map:
             with RutaRegistros() as reg:
                 ubicacion_registro = reg.ubicacion_registro(
                         datos={
-                            "fecharuta":datos["fecharuta"]["dato"],
-                            "nombreruta":datos["nombreruta"]["dato"]
+                            "fecharuta":datos_ruta["fecharuta"]["dato"],
+                            "nombreruta":datos_ruta["nombreruta"]["dato"]
                             })
                 if ubicacion_registro:
                     reg.putDato(
