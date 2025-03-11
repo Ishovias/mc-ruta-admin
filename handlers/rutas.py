@@ -322,6 +322,7 @@ class RutaImportar(bdmediclean):
 
      def extrae_ruta(self) -> map:
          filadatos = self.hoja_actual["filadatos"]
+         columnas_datos = ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"]
          return {
                  "fecharuta": super().getDato(
                      fila=filadatos,
@@ -331,7 +332,6 @@ class RutaImportar(bdmediclean):
                      fila=filadatos,
                      columnas="nombreruta"
                      ),
-                 columnas_datos = ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"]
                  "datos":super().mapdatos(
                      columnas=columnas_datos,
                      solodatos=True
