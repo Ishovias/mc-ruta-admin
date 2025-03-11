@@ -331,7 +331,9 @@ class RutaImportar(bdmediclean):
                      fila=filadatos,
                      columnas="nombreruta"
                      ),
-                 "datos":super().listar(
-                     columnas=self.hoja_actual["columnas_todas"],
-                     solodatos=True)
+                 columnas_datos = ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"]
+                 "datos":super().mapdatos(
+                     columnas=columnas_datos,
+                     solodatos=True
+                     )
                  }

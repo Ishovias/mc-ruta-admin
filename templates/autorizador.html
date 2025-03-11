@@ -7,7 +7,7 @@
 
 <!-- ------------------- BODY A ----------------------------- -->
 {% block body_a %}
-    <p>Login</p>
+    <p class="titulos">Login</p>
     <form name="login" class="formularioIngreso" method="post" action="{{ url_for('login') }}">
       <label for="user"><input name="user" type="text" placeholder="usuario" required="obligatorio"></label>
       <label for="contrasena"><input name="contrasena" type="password" required="obligatorio"></label>
