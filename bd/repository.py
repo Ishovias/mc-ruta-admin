@@ -90,10 +90,10 @@ class bdmediclean:
                     celda = self.hojabd.cell(row=fila, column=self.hoja_actual["columnas"][columna]["num"])
                     try:
                          valorcelda = str(celda.value) if exacto else str(celda.value).lower()
-                         datob = dato if exacto else dato.lower()
+                         datob = str(dato) if exacto else dato.lower()
                     except:
                          valorcelda = str(celda.value)
-                         datob = dato
+                         datob = str(dato)
                     finally:
                          if filtropuntuacion:
                               datob = datob.replace(".", "").replace(" ", "").replace("-", "")

@@ -84,7 +84,16 @@ class RutaActual(bdmediclean):
             return len(datos)
 
     def importar(self, datos: map) -> bool:
-        pass
+        columnas = datos["orden_columnas"]
+        filalibre = super().buscafila()
+        for fila in datos["datos"]:
+            for dato in fila:
+                super().putDato(
+                        dato=dato,
+                        columna=columnas[fila.index(dato)],
+                        fila=filalibre
+                        )
+            filalibre += 1
 
 class RutaRegistros(bdmediclean):
 
@@ -330,10 +339,11 @@ class RutaImportar(bdmediclean):
                      ),
                  "nombreruta": super().getDato(
                      fila=filadatos,
-                     columnas="nombreruta"
+                     columna="nombreruta"
                      ),
-                 "datos":super().mapdatos(
+                 "datos":super().listar(
                      columnas=columnas_datos,
                      solodatos=True
-                     )
+                     ),
+                 "orden_columnas":columnas_datos
                  }
