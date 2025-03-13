@@ -94,6 +94,8 @@ class RutaActual(bdmediclean):
                         fila=filalibre
                         )
             filalibre += 1
+        else:
+            return True
 
 class RutaRegistros(bdmediclean):
 
@@ -140,12 +142,37 @@ class RutaRegistros(bdmediclean):
                 columna=confpos
                 )
 
+    def _busca_existente(self, datos: map) -> bool:
+        fecharuta = datos["fecharuta"]
+        nombreruta = datos["nombreruta"]
+        ubicaciones_fecharuta = super().buscadato(
+                dato=fecharuta,
+                columna="fecharuta",
+                buscartodo=True
+                )
+        ubicaciones_nombreruta = super().buscadato(
+                dato=nombreruta,
+                columna="nombreruta",
+                exacto=True
+                )
+        if not ubicaciones_nombreruta:
+            return False
+        elif ubicaciones_fecharuta:
+            for filafecha in ubicaciones_fecharuta:
+                if filafecha in ubicaciones_nombreruta:
+                    return True
+        else:
+            return False
+
     def registra_importacion(self, datos: map) -> bool:
+        if not self._busca_existente(datos):
+            return False
         for col in ["fecharuta","nombreruta"]:
             super().putDato(
                     dato=datos[col],
                     columna=col
                     )
+        return True
 
 class RutaBD(bdmediclean):
 
