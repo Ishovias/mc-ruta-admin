@@ -165,7 +165,7 @@ class RutaRegistros(bdmediclean):
             return False
 
     def registra_importacion(self, datos: map) -> bool:
-        if not self._busca_existente(datos):
+        if self._busca_existente(datos):
             return False
         for col in ["fecharuta","nombreruta"]:
             super().putDato(
