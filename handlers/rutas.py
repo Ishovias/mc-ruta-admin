@@ -84,6 +84,12 @@ class RutaActual(bdmediclean):
             return len(datos)
 
     def importar(self, datos: map) -> bool:
+        for columna in ["fecharuta","nombreruta"]:
+            super().putDato(
+                    dato=datos[columna],
+                    fila=self.hoja_actual["filadatos"],
+                    columna=columna
+                    )
         columnas = datos["orden_columnas"]
         filalibre = super().buscafila()
         for fila in datos["datos"]:

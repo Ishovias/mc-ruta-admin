@@ -20,16 +20,23 @@ class Clientes(bdmediclean):
           resultados = super().listar(filas=filas, idy=idy) if filas else "Sin resultados"
           return resultados
      
-     def nuevo_cliente(self, mapdatos: map, modificacion: int=None) -> bool:
+     def nuevo_cliente(self, mapdatos: map, modificacion: int=None, datoeval: str="id") -> bool:
           if not modificacion:
                existencia = super().buscadato(
-                    dato=mapdatos["id"],
-                    columna="id",
+                    dato=mapdatos[datoeval],
+                    columna=datoeval,
                     exacto=True
                     )
                if existencia:
                     return False
           fila = super().buscafila(columna="id") if not modificacion else int(modificacion)
+          if not mapdatos["id"]:
+               if not existencia:
+                    mapdatos["id"] = int(super().get_id()) + 1
+               mapdatos["id"] = super().getDato(
+                       fila=existencia,
+                       columna="id"
+                       )
           for campo in mapdatos.keys():
                super().putDato(dato=mapdatos[campo], fila=fila, columna=campo)
           return True
