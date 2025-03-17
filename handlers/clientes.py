@@ -7,7 +7,16 @@ class Clientes(bdmediclean):
 
      def __init__(self) -> None:
           super().__init__(params.CLIENTES)
-     
+          
+     def formato_rut(self, rut: str) -> str:
+          if "." in rut:
+             rut = rut.replace(".","")
+          if "-" not in rut:
+             rut = list(rut)
+             rut.insert(-2,"-")
+             rut = "".join(rut)
+          return rut
+
      def busca_cliente(self, busqueda: str, filtro: str, retornafilas: bool=False, idy: bool=False) -> map:
           # Devuelve un listado con encabezados y datos al estilo repository.listar
           filas = super().buscadato(
@@ -31,12 +40,7 @@ class Clientes(bdmediclean):
                     return False
           fila = super().buscafila(columna="id") if not modificacion else int(modificacion)
           if not mapdatos["id"]:
-               if not existencia:
-                    mapdatos["id"] = int(super().get_id()) + 1
-               mapdatos["id"] = super().getDato(
-                       fila=existencia,
-                       columna="id"
-                       )
+               mapdatos["id"] = int(super().get_id()) + 1
           for campo in mapdatos.keys():
                super().putDato(dato=mapdatos[campo], fila=fila, columna=campo)
           return True
