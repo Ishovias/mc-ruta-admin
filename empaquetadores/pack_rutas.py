@@ -38,6 +38,15 @@ def ruta_existente() -> str:
     return datoexistente
 
 def confpos(datos: map, columnas: list, columnas_inventario: list=None, confpos_accion: str="realizado") -> map:
+    with Clientes() as cl:
+        datos_cliente = {"cliente":None,"estado":"activo"}
+        for dato in ["contrato","rut","cliente","direccion","comuna","telefono","otro"]:
+            datos_cliente[dato] = dato[dato]["dato"]
+        verif_ncliente = cl.nuevo_cliente(datos_cliente, datoeval="rut")
+        if verif_ncliente:
+            cimprime(titulo="Nuevo cliente a bd",agregado_a_bd=f"Cliente {datos_cliente['cliente']} agregado a BD")
+        else:
+            cimprime(titulo="Cliente en bd",agregado_a_bd=f"Cliente {datos_cliente['cliente']} ya en BD")
     # GRABAR CLIENTE CONF-POS EN BD
     with RutaBD() as rbd:
         bd_ubicacion = rbd.buscafila()
