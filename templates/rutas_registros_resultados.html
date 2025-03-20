@@ -97,6 +97,7 @@
     {% if datos.insumos_usados %}
     <hr>
         <p>Insumos ocupados en esta ruta:</p>
+        {% if datos.insumos_usados != "Sin insumos usados" %}
         <ul>
             {% for elemento, valor in datos.insumos_usados.items() %}
             <li>
@@ -117,5 +118,8 @@
             </li>
             {% endfor %}
         </ul>
+        {% else %}
+            <span>{{ datos.insumos_usados }}</span>
+        {% endif %}
     {% endif %}
 {% endblock %}

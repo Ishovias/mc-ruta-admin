@@ -145,7 +145,7 @@ class bdmediclean:
                datafile = []
                for campo in columnas:
                     dato = self.hojabd.cell(row=fila, column=campo)
-                    datafile.append(dato.value)
+                    datafile.append(str(dato.value))
                if idy:
                     datafile.append(fila)
                resultados["datos"].append(datafile)
