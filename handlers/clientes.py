@@ -39,7 +39,9 @@ class Clientes(bdmediclean):
                if existencia:
                     return False
           fila = super().buscafila(columna="id") if not modificacion else int(modificacion)
-          if not mapdatos["id"]:
+          if "id" not in mapdatos:
+               mapdatos["id"] = int(super().get_id()) + 1
+          elif not mapdatos["id"]:
                mapdatos["id"] = int(super().get_id()) + 1
           for campo in mapdatos.keys():
                super().putDato(dato=mapdatos[campo], fila=fila, columna=campo)
