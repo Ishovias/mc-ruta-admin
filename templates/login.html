@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Login</h3><hr><br>
+<div id="tablaResultados" class="tabla">
+    <form name="formularioLogin" action="{{ url_for('login') }}" method="post">
+        {% if "incorrecto" in datos %}
+            <span style="background: red"><strong>USUARIO O CONTRASEÑA INVALIDA</strong></span>
+        {% endif %}
+        <label for="usuario">
+            Usuario: 
+            <input name="usuario" required>
+        </label>
+        <label for="contrasena">
+            Contraseña: 
+            <input type="password" name="contrasena" required>
+        </label>
+        <button type="submit" name="enviarlogin">Enviar</button>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}

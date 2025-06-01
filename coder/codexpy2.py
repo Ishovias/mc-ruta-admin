@@ -9,7 +9,7 @@
 import os
 import random
 
-class codexpy2:
+class Codexpy2:
 
     cod_a = list("abcdefghijklmnopqrstuvwxyz1234567890@#$")
     cod_b = list("$#@0987654321zYXwvUTSRqpOnmlkjihgfedcba")

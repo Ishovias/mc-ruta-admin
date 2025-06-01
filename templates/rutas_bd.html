@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Rutas</h3><hr><br>
+<div class="contenedores">
+    <div class="selectores-de-ruta">
+        <div id="listaRutas" class="selector"></div><br><hr><br>
+        <div class="cuadroBusquedaCliente">
+            <label for="buscacliente">Busqueda clientes:</label><br>
+            <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"><br>
+            <label for="filtro">Buscar por:</label><br>
+            <select name="filtro" id="filtro">
+                <option value="cliente" selected>Nombre</option>
+                <option value="rut">Rut</option>
+                <option value="telefono">Telefono</option>
+                <option value="direccion">Direccion</option>
+                <option value="comuna">Comuna</option>
+            </select>
+        </div>
+    </div>
+    <div class="contenedor-resultados">
+        <div class="resultados">
+            <div id="totales" class="lista"></div><br><hr><br>
+            <div id="tablaResultados" class="tabla"></div><br><hr><br>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='rutabd.js') }}"></script>
+{% endblock %}

@@ -6,7 +6,7 @@
 ## reciente adaptacion hecha el 28 de jun, 2024 se transforma a clase simple
 
 
-class codexpy:
+class Codexpy:
 
         def __init__(self) -> None:
                 self.cod = list("abcdefghijklmnopqrstuvwxyz1234567890@#$")

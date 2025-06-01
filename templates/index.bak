@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MedicleanRuta (Isaias B)</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+        <h1>MedicleanRuta</h1>
+        <h2>{{ datos.tituloPagina }}</h2>
+    </head>
+<body>
+    <header>
+        <hr>
+        <div class="botonera">
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('clientes') }}" method="get">
+                <button name="clientes">Clientes</button>
+                <button name="rutas" disabled>Rutas</button>
+                <button name="rutasregistros" disabled>Registros Rutas</button>
+            </form>
+        </div>
+        <hr>
+    </header>
+    <h3>Login</h3>
+    <div id="data-container"></div>
+    <form id="miFormulario">
+        <label for="usuario">Usuario: <input type="text" id="usuario" name="usuario"></label>
+        <label for="clave">Clave: <input type="text" id="clave" name="clave"></label>
+        <button type="submit">Login</button>
+    </form>
+    <hr>
+    <label for="coder2">Palabra a codificar:</label><br>
+    <input type="text" id="coder2" name="coder2" style="width: 50%;">
+    <div id="respuesta-api">
+        <label for="respuesta">Frase codificada:</label><br>
+        <input type="text" id="respuesta" style="width: 50%;" value="--------" readonly>
+    </div>
+    <hr>
+    <label for="buscacliente">Busqueda clientes:</label><br>
+    <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"><br>
+    <label for="filtro">Buscar por:</label><br>
+    <select name="filtro" id="filtro">
+        <option value="cliente" selected>Nombre</option>
+        <option value="rut">Rut</option>
+        <option value="telefono">Telefono</option>
+        <option value="direccion">Direccion</option>
+        <option value="comuna">Comuna</option>
+    </select>
+    <div id="respuestaBuscaCliente">
+    
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from bd.repository import bdmediclean
-from helpers import cimprime
+from cimprime import cimprime
 import params
 
 class Inventario(bdmediclean):
@@ -7,43 +7,83 @@ class Inventario(bdmediclean):
     def __init__(self) -> None:
         super().__init__(params.INVENTARIOS)
 
-    def getStockActual(self, columnas: list=None) -> map:
-        if columnas and type(columnas) == str:
-            columnas = [columnas]
-        elif not columnas:
-            columnas = list(self.hoja_actual["columnas"].keys())
-        datos = super().mapdatos(
-                fila="filaStockActual",
-                columnas=columnas
-                )
-        return datos
+    def get_stock(self) -> list:
+        columnas = list(self.hoja_actual["columnas"].keys())
+        columnas.remove("fecha")
+        columnas.remove("id")
+        resultado = []
+        for columna in columnas:
+            resultado.append([
+                columna,
+                self.hoja_actual["columnas"][columna]["encabezado"],
+                super().getDato(
+                    fila=self.hoja_actual.get("filaStockActual"),
+                    columna=columna
+                    )
+                ])
+        return resultado
 
-    def modifica_stock(self, columna: str, modificacion: int, sobrescribe: bool=False) -> bool:
-        if columna not in self.hoja_actual["columnas"].keys():
-            return False
-        filaStock = self.hoja_actual["filaStockActual"]
-        cantidadActual = super().getDato(
-            fila=filaStock,
-            columna=columna
-            )
-        cantidadActual = cantidadActual if cantidadActual else 0
-        nuevaCantidad = int(cantidadActual) + modificacion 
-        datoainsertar = nuevaCantidad if not sobrescribe else modificacion
-        super().putDato(
-            dato=datoainsertar,
-            fila=filaStock,
-            columna=columna
-            )
-        return True
-
-    def actualizar_stock(self, inventario: map) -> bool:
-        for columna, valor in inventario.items():
+    def registra_movimiento(self, datos: dict) -> None:
+        columnas = self.hoja_actual["columnas_ruta"].copy()
+        fila = super().buscafila()
+        fila_stock = self.hoja_actual.get("filaStockActual")
+        for columna in columnas:
+            if columna in datos.keys():
+                dato = datos.get(columna)
+                super().putDato(
+                        dato=dato,
+                        fila=fila,
+                        columna=columna
+                        )
+                modificacion_stock = super().getDato(
+                        fila=fila_stock,
+                        columna=columna
+                        )
+                if modificacion_stock:
+                    modificacion_stock = int(modificacion_stock) - int(dato)
+                else:
+                    modificacion_stock = 0
+                super().putDato(
+                        dato=modificacion_stock,
+                        fila=fila_stock,
+                        columna=columna
+                        )
+        for columna in ["fecha","id"]:
             super().putDato(
-                dato=valor["dato"],
-                fila=params.INVENTARIOS["filaStockActual"],
+                    dato=datos.get(columna),
+                    fila=fila,
+                    columna=columna
+                    )
+
+    def modifica_stock(self, cantidad: str, columna: str) -> None:
+        super().putDato(
+                dato=int(cantidad),
+                fila=self.hoja_actual.get("filaStockActual"),
                 columna=columna
                 )
-        else:
-            return True
-        return False
 
+    def reversa_stock(self, fecha: str, id_cliente: str) -> None:
+        filas = super().buscadato(
+                dato=fecha,
+                columna="fecha",
+                buscartodo=True
+                )
+        for fila in filas:
+            idleido = super().getDato(
+                    fila=fila,
+                    columna="id"
+                    )
+            if idleido == id_cliente:
+                columnas = self.hoja_actual.get("columnas_ruta")
+                fila_stock = self.hoja_actual.get("filaStockActual")
+                for columna in columnas:
+                    dato = super().getDato(
+                        fila=fila,
+                        columna=columna
+                        )
+                    if dato:
+                        stock_actual = super().getDato(
+                            fila=fila_stock,
+                            columna=columna
+                            )
+                        stock_actual = int(stock_actual) + int(dato)
