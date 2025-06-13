@@ -18,6 +18,7 @@ class RutaActual(bdmediclean):
             return True
         return False
 
+
     def listar_rutaactual(self, columnas: list, idy: bool=False) -> map:
         listado = super().listar(columnas=columnas,idy=idy)
         listado["encabezados"].insert(0,"INDICE")
@@ -63,7 +64,7 @@ class RutaActual(bdmediclean):
                 )}
         datos["id_ruta"] = {"dato":self.id_ruta() + 2}
 
-        for dato in datos.keys():
+        for dato in self.hoja_actual["ncolumnas_todas"]:
             super().putDato(
                     dato=datos[dato]["dato"],
                     fila=ubicacion,
@@ -200,19 +201,189 @@ class RutaBD(bdmediclean):
                  columna="status"
                  )
          return dato
+   
+     def buscar_datos(self, busqueda: str, filtro: str, columnas: list=None) -> list:
+         # Devuelve un listado con encabezados y datos al estilo repository.listar
+         filas = super().buscadato(
+             dato=busqueda,
+             columna=filtro,
+             filtropuntuacion=True,
+             buscartodo=True)
+         return super().listar(filas=filas,columnas=columnas,idy=True) if filas else None
 
-     def registraMovimiento(self, datos: list) -> bool:
-         try:
-             super().ingresador(
-                     super().buscafila(),
-                     datos,
-                     self.hoja_actual["columnas"]["fecha"]
+     def clientes_enruta(self) -> dict:
+         cols_rutaactual = self.hoja_actual["rutaactual"]
+         resultados = {
+                 "encabezados":cols_rutaactual,
+                 "datos":[["Sin datos"]]
+                 }
+         filas = super().buscadato(
+                     dato="enruta",
+                     columna="status",
+                     buscartodo=True
+                 )
+         if filas != []:
+             resultados = super().listar(
+                     filas=filas,
+                     columnas=cols_rutaactual,
+                     idy=True
+                 )
+         return resultados
+
+     def cliente_a_ruta(self, mapdatos: dict, fecha: str, nombreruta: str=None) -> bool:
+         fila=super().buscafila()
+         mapdatos["fecha"] = {"dato":fecha}
+         if nombreruta:
+             mapdatos["ruta"] = {"dato":nombreruta}
+             cimprime(nombreruta=mapdatos["ruta"])
+         else:
+             fila_nombreruta = super().buscadato(
+                     dato=fecha,
+                     columna="fecha",
                      )
-         except Exception as e:
-             print(e)
+             mapdatos["ruta"] = {"dato":super().getDato(
+                 fila=fila_nombreruta,
+                 columna="ruta"
+                 )}
+         mapdatos["id_ruta"] = {"dato":len(super().buscadato(
+                 dato=fecha,
+                 columna="fecha",
+                 buscartodo=True
+                 )) + 1}
+         columnas_insercion = self.hoja_actual["rutaactual"].copy()
+         columnas_insercion.append("ruta")
+         for col in columnas_insercion:
+             super().putDato(
+                     fila=fila,
+                     columna=col,
+                     dato=mapdatos[col]["dato"]
+                     )
+             super().putDato(
+                     fila=fila,
+                     columna="status",
+                     dato="enruta"
+                     )
+         else:
+             return True
+         return False
+
+     def marcar_status(self, ubicacion: str, status: str) -> bool:
+         try:
+             super().putDato(
+                     fila=int(ubicacion),
+                     columna="status",
+                     dato=status
+                     )
+         except:
              return False
          else:
-              return True
+             return True
+
+     def cliente_confpos(self, ubicacion: str, observaciones: str, accion: str) -> str:
+         super().putDato(
+                 fila=int(ubicacion),
+                 columna="status",
+                 dato=accion
+                 )
+         super().putDato(
+                 fila=int(ubicacion),
+                 columna="detalleretiro",
+                 dato=observaciones
+                 )
+         if accion == "REALIZADO":
+             try:
+                 data_stock = self.obsdecoder(
+                         observacion=observaciones,
+                         fila=int(ubicacion)
+                         )
+             except:
+                 print("Error al intentar decodificar observacion, descartando")
+             else:
+                 for col in ["fecha","id"]:
+                     data_stock[col] = super().getDato(
+                             fila=int(ubicacion),
+                             columna=col
+                             )
+                 return data_stock
+
+     def obtener_rutas(self, filainicial: int=None) -> list:
+         rutas = []
+         filainicio = self.hoja_actual["filainicial"] if not filainicial else filainicial
+         for fila in range(filainicio, self.maxfilas + 1, 1):
+             dato = super().getDato(
+                     fila=fila,
+                     columna="fecha"
+                     )
+             if not dato:
+                 break
+             dato_siguiente = super().getDato(
+                     fila=fila+1,
+                     columna="fecha"
+                     )
+             if dato != dato_siguiente:
+                 rutas.append([
+                     dato,
+                     super().getDato(
+                     fila=fila-1,
+                     columna="ruta"
+                     )])
+         rutas.reverse()
+         return rutas
+
+     def obtener_ruta(self, fecharuta: str) -> dict:
+         filas = super().buscadato(
+                 dato=fecharuta,
+                 columna="fecha",
+                 buscartodo=True
+                 )
+         columnas_mostrar = self.hoja_actual["rutaactual"].copy()
+         columnas_mostrar.append("status")
+         columnas_mostrar.append("detalleretiro")
+         return super().listar(
+                 filas=filas,
+                 columnas=columnas_mostrar,
+                 idy=True
+                 )
+
+     def obtener_nombre_ruta(self, fecharuta: str) -> str:
+         fila = super().buscadato(
+                     dato=fecharuta,
+                     columna="fecha"
+                     )
+         if fila:
+             return super().getDato(
+                     fila=fila,
+                     columna="ruta"
+                     )
+         return None
+
+     def obtener_totales_ruta(self, fecharuta: str) -> list:
+         resultados = {}
+         filas = super().buscadato(
+                 dato=fecharuta,
+                 columna="fecha",
+                 buscartodo=True
+                 )
+         items_kilos = self.hoja_actual["kgcols"]
+         items_insumos = self.hoja_actual["itemscols"]
+         items = items_kilos + items_insumos
+         for item in items:
+             resultados[item] = [self.hoja_actual["columnas"][item]["encabezado"],0]
+             for fila in filas:
+                 data = super().getDato(
+                         fila=fila,
+                         columna=item
+                         )
+                 if data:
+                     resultados[item][1] += super().getDato(
+                             fila=fila,
+                             columna=item
+                             )
+         respuesta = []
+         for item in resultados.keys():
+             if resultados[item][1] > 0:
+                 respuesta.append(resultados[item])
+         return respuesta
 
      def _obtener_rangofecha(self, fechainicio: str=None, fechafinal: str=None) -> range: 
          filainicio = super().buscadato(dato=str(fechainicio),columna="fecha")
@@ -228,6 +399,23 @@ class RutaBD(bdmediclean):
                  filafinal = i
                  break
          return range(filainicio,filafinal,1)
+
+     def obsdecoder(self, observacion: str, fila: int) -> None:
+         codes = self.hoja_actual["obsdecoder"]
+         data = {}
+         if not observacion[-1].isspace():
+             observacion = observacion + " "
+         for code in codes.keys():
+             if code in observacion:
+                 col = codes[code]["columna"]
+                 cantidad = int(observacion.split(code)[1].split(" ")[0])
+                 super().putDato(
+                         dato=cantidad,
+                         columna=col,
+                         fila=fila
+                         )
+                 data[col] = int(cantidad)
+         return data
 
      def kgtotales(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
          items = {
@@ -347,6 +535,30 @@ class RutaBD(bdmediclean):
               return clientes
           return None
 
+     def importar_ruta(self, datos: dict) -> bool:
+         ruta = datos["nombreruta"]
+         columnas = datos["orden_columnas"]
+         filainsert = super().buscafila()
+         for fila in datos["datos"]:
+             for dato in fila:
+                 super().putDato(
+                         dato=dato,
+                         columna=columnas[fila.index(dato)],
+                         fila=filainsert
+                         )
+             super().putDato(
+                     dato=ruta,
+                     fila=filainsert,
+                     columna="ruta"
+                     )
+             super().putDato(
+                     dato="enruta",
+                     fila=filainsert,
+                     columna="status"
+                     )
+             filainsert += 1
+         else:
+             return True
 
      def disposicion_final(self, ubicacion: int, status: str) -> None:
          super().putDato(
@@ -364,7 +576,7 @@ class RutaImportar(bdmediclean):
 
      def extrae_ruta(self) -> map:
          filadatos = self.hoja_actual["filadatos"]
-         columnas_datos = ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"]
+         columnas_datos = params.RUTAS_BD["rutaactual"].copy()
          return {
                  "fecharuta": super().getDato(
                      fila=filadatos,

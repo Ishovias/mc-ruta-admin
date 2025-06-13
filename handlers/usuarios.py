@@ -10,22 +10,21 @@ class Usuariosbd(bdmediclean):
         dnombre = super().buscadato(dato=nombre,columna="usuario",exacto=True)
         dcontrasena = super().buscadato(dato=contrasena,columna="contrasena",exacto=True)
         if dnombre != None and dcontrasena != None:
-            resultado = True
-        else:
-            resultado = False
-        return resultado
+            return True
+        return False
     
     def elimina_token(self, token: str) -> bool:
         ubicacionUsuario = super().buscadato(dato=token,columna="token")
         if ubicacionUsuario:
             super().putDato(dato="",fila=ubicacionUsuario,columna="token")
+            return True
         return False
         
-    def token_registrado(self, usuario: str) -> bool:
+    def get_token_registrado(self, usuario: str) -> bool:
         ubicacionUsuario = super().buscadato(dato=usuario,columna="usuario")
         return super().getDato(fila=ubicacionUsuario,columna="token")
     
-    def token_existente(self, tokenDado: str) -> str: # nuevo metodo
+    def get_usuario(self, tokenDado: str) -> str: # nuevo metodo
         ubicacion = super().buscadato(dato=tokenDado,columna="token") 
         if ubicacion:
             return super().getDato(fila=ubicacion,columna="usuario")
@@ -33,4 +32,7 @@ class Usuariosbd(bdmediclean):
         
     def registra_token(self, usuario: str, token: str) -> bool:
         ubicacionUsuario = super().buscadato(dato=usuario,columna="usuario")
-        super().putDato(dato=token,fila=ubicacionUsuario,columna="token")
+        if ubicacionUsuario:
+            super().putDato(dato=token,fila=ubicacionUsuario,columna="token")
+            return True
+        return False

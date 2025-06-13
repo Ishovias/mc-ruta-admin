@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block body %}
+     <form class="formularioIngreso" id=uploadForm  enctype="multipart/form-data">
+          <span class="titulos">Importacion de ruta</span>
+          <label for="file">Archivo de ruta:</label>
+          <input type="file" name="file" id="fileInput" style="width: 83%">
+          <button type="submit" style="width: 90%">Upload</button>
+     </form>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='uploadruta.js') }}"></script>
+{% endblock %}

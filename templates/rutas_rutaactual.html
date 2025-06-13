@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Ruta actual</h3><hr><br>
+<div id="tablaResultados" class="tabla"></div>
+<br><hr><br>
+{% if datos.rango == "admin" %}
+<div id="clienteManual" class="formulario">
+    <form id="form-clte-manual">
+        <label for="fecha">
+            Fecha de ruta: 
+            <input name="fecha" id="fecha" type="text" required>
+        </label>
+        <label for="contrato">
+            Contrato: 
+            <input name="contrato" id="contrato" type="number" value="60" required>
+        </label>
+        <label for="rut">
+            Rut: 
+            <input name="rut" id="rut" type="text" required>
+        </label>
+        <label for="cliente">
+            Cliente: 
+            <input name="cliente" id="cliente" type="text" required>
+        </label>
+        <label for="direccion">
+            Direccion: 
+            <input name="direccion" id="direccion" type="text" required>
+        </label>
+        <label for="comuna">
+            Comuna: 
+            <input name="comuna" id="comuna" type="text" required>
+        </label>
+        <label for="telefono">
+            Telefono: 
+            <input name="telefono" id="telefono" type="text" required>
+        </label>
+        <label for="otro">
+            Otro: 
+            <input name="otro" id="otro" type="text" required>
+        </label>
+        <label for="id">
+            ID: 
+            <input name="id" id="id" type="number" value="9999" required>
+        </label>
+        <button type="submit" id="clienteManual" style="width: 200px;">Agregar a ruta</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename=datos.privilegios.btnRutaActual.js ) }}"></script>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'index_spectator.html' %}
+{% block body %}
+<h3>Ruta actual</h3><hr><br>
+<div id="tablaResultados" class="tabla"></div>
+<br><hr><br>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='rutaactual_spectator.js') }}"></script>
+{% endblock %}

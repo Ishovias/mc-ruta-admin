@@ -1,133 +1,24 @@
-{% extends 'layout.html' %}
+{% extends "index.html" %}
 
-{% block encabezado %}
-          <h1>Mediclean Ruta</h1>
-          <h2>Administrador de ruta</h2>
+{% block body %}
+<div class="cuadroBusquedaCliente">
+    <label for="buscacliente">Busqueda clientes:</label><br>
+    <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"><br>
+    <label for="filtro">Buscar por:</label><br>
+    <select name="filtro" id="filtro">
+        <option value="cliente" selected>Nombre</option>
+        <option value="rut">Rut</option>
+        <option value="telefono">Telefono</option>
+        <option value="direccion">Direccion</option>
+        <option value="comuna">Comuna</option>
+    </select>
+</div><hr>
+<div id="respuestaBuscaCliente"></div><hr>
+<form action={{ url_for('clientes_nuevo') }} method="GET">
+    <button type="submit" name="toClienteNuevo">Nuevo cliente</button>
+</form>
 {% endblock %}
 
-<!-- ------------------- BODY A ----------------------------- -->
-
-{% block body_a %}
-<div class="botoneraFormClientes">
-     <form name="buscacliente" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-          <div class="buscadorclientes">
-               <label for="dato">Ingresa una busqueda:
-                    <input name="dato" placeholder="ingresa parte del dato a buscar" required>
-               </label>
-               <label for="filtro">Busqueda por:
-                    <select name="filtro" required>
-                         <option value="" selected>-Selecciona-</option>
-                         {% for filtro in datos.filtros_busqueda %}
-                              <option value="{{ filtro }}">{{ datos["filtros_busqueda"][filtro]["encabezado"] }}</option>
-                         {% endfor %}
-                    </select>
-               </label>
-               <button name="buscacliente" type="submit" value="buscacliente">Buscar</button>
-          </div>
-     </form>
-          <div class="listaringresarclientes">
-               <form class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                    <button name="nuevocliente" value="formulario" style="background: green;"  {{ datos.newclienteEnabled }}>Nuevo cliente</button>
-               </form>
-          </div>
-     </form>
-</div>
-{% endblock %}
-
-<!-- -------------------------BODY B------------------------------- -->
-{% block body_b %}
-{% if "listaclientes" in datos and "listaretiros" not in datos %}
-     {% if datos.listaclientes == "Sin resultados" %}
-          <p class="textosinformativos">>>>>>>>>>>>>>  SIN RESULTADOS <<<<<<<<<<<<<<</p>
-     {% elif datos.listaclientes.datos != 0 and datos.listaclientes.datos != [] %}
-     <div class="tabla-contenedor">
-          <table class="tbresultados">
-          <thead>
-                    <th>Modificar</th>
-               {% for dato in datos.listaclientes.encabezados %}
-                    {% if dato != "idy" %}
-                         <th>{{ dato }}</th>
-                    {% endif %}
-               {% endfor %}
-                    <th>Acciones</th>
-          </thead>
-          <tbody>
-               {% for fila in datos.listaclientes.datos %}
-                    <tr>
-                         <td>
-                              <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="aRuta" value="{{ fila.1 }}" {{ datos.arutaEnabled }}>A Ruta</button>
-                              </form>
-                         </td>
-                    {% for data in fila %}
-                         {% if data != fila[-1] %}
-                              <td>{{ data }}</td>
-                         {% endif %}
-                    {% endfor %}
-                         <td>
-                              <form method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-                                   <button type="submit" name="modificacliente" value="{{ fila[-1] }}" {{ datos.modclienteEnabled }}>Modificar datos</button>
-                                   <button type="submit" name="bdretiros" value="{{ fila[-1] }}">Retiros</button>
-                              </form>
-                         </td>
-                    </tr>
-               {% endfor %}
-          </tbody>
-          </table>
-     </div>
-     {% endif %}
-     <br><hr><br>
-{% endif %}
-{% if "listaretiros" in datos %}
-     <label>Lista de retiros del cliente:</label><br>
-     <label>Rut: {{ datos.bdrut }}</label><br>
-     <label>Nombre: {{ datos.bdnombre }}</label><br>
-     <hr>
-     <table class="tbresultados">
-          <thead>
-               {% for dato in datos.listaretiros.encabezados %}
-               <th>{{ dato }}</th>
-               {% endfor %}
-          </thead>
-          <tbody>
-               {% for fila in datos.listaretiros.datos %}
-               <tr {% if fila.10 == "POSPUESTO" %} style="background-color: pink" {% endif %}>
-                    {% for dato in fila %}
-                    <td>{{ dato }}</td>
-                    {% endfor %}
-               </tr>
-               {% endfor %}
-          </tbody>
-     </table>
-
-{% endif %}
-{% if "modificacion" in datos %}
-     <form name="moddelete" class="formularioIngreso" method="post" action="{{ url_for('clientes', aut=datos.aut) }}">
-          <label for="nombre">Nombre:</label><br>
-          <input name="nombre" value="{{ datos.modificacion.0 }}" required>
-          <label for="rut">RUT:</label><br>
-          <input name="rut" value="{{ datos.modificacion.1 }}" required>
-          <label for="estado">ESTADO:</label><br>
-          <select name="estado">
-               <option value="default">{{ datos.modificacion.2 }}</option>
-               <option value="activo">Activo</option>
-               <option value="de baja">De Baja</option>
-               <option value="suspendido">Suspendido</option>
-          </select>
-          <label for="direccion">Direccion:</label><br>
-          <input name="direccion" value="{{ datos.modificacion.3 }}" required>
-          <label for="comuna">Comuna:</label><br>
-          <input name="comuna" value="{{ datos.modificacion.4 }}" required>
-          <label for="telefono">Telefono:</label><br>
-          <input type="number" name="telefono" value="{{ datos.modificacion.5 }}">
-          <label for="gps">Contrato:</label><br>
-          <input name="gps" value="{{ datos.modificacion.6 }}">
-          <label for="otros">Otros:</label><br>
-          <input name="otros" value="{{ datos.modificacion.7 }}">
-          <br><hr><br>
-          <button type="submit" name="guardamod" value="guardamod">Guardar modificacion</button>
-          <button type="submit" name="darbaja" value="darbaja">Dar de baja Cliente</button>
-          <button type="submit" name="cancelar" value="cancelar">Cancelar edicion</button>
-     </form>
-{% endif %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='clientes.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Formulario de nuevo cliente</h3><hr><br>
+<form id="nuevoClienteForm" method="post">
+    {% for campo in datos.keys() %}
+        <label for="{{ campo }}">
+            {{ datos[campo]["encabezado"] }}
+        </label><br>
+        <input type="text" name="{{ campo }}"
+        {% if datos[campo]["dato"] %}
+            value="{{ datos[campo]["dato"] }}" readonly
+        {% endif %}><br><br>
+    {% endfor %}
+    <button id="btnSubmit" type="submit">Crear cliente</button>
+    <div id="respuestaServidor"></div><br>
+</form>
+<hr>
+{% endblock %}
+{% block script %}
+    <script>
+        procesarFormCliente("nuevoClienteForm","/clientes/newclient","/clientes");
+    </script>
+{% endblock %}
