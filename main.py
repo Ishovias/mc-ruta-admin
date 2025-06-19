@@ -16,6 +16,14 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = params.RUTA_IMPORTACION
 sesion = SessionSingleton()
 
+@app.route('/getapikey', methods=['POST'])
+def getapikey():
+    json = request.get_json()
+    usuario = json.get("user")
+    contrasena = json.get("pswd")
+    token = sesion.iniciar_sesion(usuario, contrasena)
+    return jsonify({"token":token} if token else {"error":"Usuario o contraseña incorrecto"})
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     datos = {

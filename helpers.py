@@ -87,15 +87,17 @@ class VariablesCompartidas:
           
 # ---------------------- VERIFICATOKEN  --------------------------
 def verifica_token(request: object) -> bool:
-    if "aut" in request.cookies:
+    auth_header = request.headers.get("aut")
+    sesion = SessionSingleton()
+    aut = None
+    if request.cookies:
         aut = request.cookies.get("aut")
-        sesion = SessionSingleton()
-        if not sesion.get_autenticado(aut):
-            return False
-        else:
+    if auth_header:
+        aut = auth_header
+    if aut:
+        if sesion.get_autenticado(aut):
             return True
-    else:
-        return False
+    return False
 
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
 

@@ -37,23 +37,6 @@ function getDatosRutabd() {
     });
 }
 
-function marcarStatus(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
-    return fetch(apiurl, {
-            "method":"post"
-        })
-            .then(response => {
-                if (response.ok) {
-                    return true;
-                }
-            })
-            .catch(error => {
-                alert("Error: "+error);
-                console.error(error);
-                return false;
-            });
-}
-
 function obtenerTotales(fecharuta) {
     const apiurl = `${urlBase}/rutas/rutabd/getTotales/${fecharuta}`;
     fetch(apiurl, {
@@ -112,19 +95,13 @@ function muestraRuta(fecharuta) {
                         const td = document.createElement('td');
                         td.textContent = dato;
                         if (/pospuesto/i.test(dato)) {
-                            tr.style.backgroundColor = "rgba(255,0,0,0.6)";
+                            tr.style.backgroundColor = "rgba(255,0,0,0.5)";
                         }
                         if (/enruta/i.test(dato)) {
                             tr.style.backgroundColor = "rgba(0,255,0,0.5)";
                         }
                         tr.appendChild(td);
                     });
-                    const tdaruta = document.createElement('td');
-                    tdaruta.innerHTML = `<button class="btn-aruta" data-idy=${fila[fila.length - 1]}>ARUTA</button>`;
-                    tr.appendChild(tdaruta);
-                    const tdelim = document.createElement('td');
-                    tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
-                    tr.appendChild(tdelim);
                 } else {
                     const td = document.createElement('td');
                     td.innerHTML = "Sin datos";
@@ -134,29 +111,6 @@ function muestraRuta(fecharuta) {
             });
             tabla.appendChild(encabezado);
             tabla.appendChild(cuerpo);
-            tabla.addEventListener('click' , (e) => {
-                const fila = e.target.closest('tr');
-                const ubicacion = e.target.dataset.idy;
-                if (e.target.classList.contains('btn-aruta')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "blue";
-                    }
-                    marcarStatus(ubicacion).then(response => {
-                        muestraRuta(fecharuta)
-                    });
-                }
-                if (e.target.classList.contains('btn-eliminar')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "gray";
-                    }
-                    eliminaRegistro(ubicacion).then(response => {
-                        alert(response);
-                        if (response) {
-                            fila.remove();
-                        }
-                    });
-                }
-            });
             areaResultado.appendChild(tabla)
         })
         .catch(error => {
@@ -165,22 +119,6 @@ function muestraRuta(fecharuta) {
         });
 }
 
-function eliminaRegistro(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
-    return fetch(apiurl, {
-            "method":"post"
-        })
-            .then(response => {
-                if (response.ok) {
-                    return true;
-                }
-            })
-            .catch(error => {
-                alert("Error: "+error);
-                console.error(error);
-                return false;
-            });
-}
 
 document.getElementById('buscacliente').addEventListener('input', (e) => {
     let temporizador;
@@ -201,9 +139,6 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                         const encabezado = document.createElement('thead');
                         const filaEncabezado = document.createElement('tr');
                         
-                        const th = document.createElement('th');
-                        th.textContent = "Accion";
-                        filaEncabezado.appendChild(th);
                         data.encabezados.forEach(encabezado => {
                             const th = document.createElement('th');
                             th.textContent = encabezado;
@@ -236,19 +171,6 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                         });
                         tabla.appendChild(encabezado);
                         tabla.appendChild(cuerpo);
-                        tabla.addEventListener('click' , (e) => {
-                            const fila = e.target.closest('tr');
-                            const ubicacion = e.target.dataset.idy;
-                            if (e.target.classList.contains('btn-eliminar')) {
-                                if (fila) {
-                                    fila.style.backgroundColor = "gray";
-                                }
-                                const res = eliminaRegistro(ubicacion);
-                                if (res) {
-                                    fila.remove();
-                                }
-                            }
-                        });
                         contenedor.appendChild(tabla);
                     } else {
                         contenedor.innerHTML = data.sindatos;
@@ -259,7 +181,7 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                     alert(error)
                     document.getElementById('tablaResultados').innerHTML = "Error al cargar datos";
                 });
-        }, 300);
+        }, 1000);
     }
 });
 
