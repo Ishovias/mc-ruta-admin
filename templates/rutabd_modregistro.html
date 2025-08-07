@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Modificar registro</h3><hr><br>
+<form id="modificaRegistroForm" method="put">
+    {% for campo in datos.keys() %}
+        {% if campo != "idy" and campo != "privilegios" and campo != "rango" %}
+            <label for="{{ campo }}">
+                {{ datos[campo]["encabezado"] }}
+                <input type="text" name="{{ campo }}"
+                {% if datos[campo]["dato"] %}
+                    value="{{ datos[campo]["dato"] }}"
+                {% endif %}>
+            </label>
+        {% endif %}
+    {% endfor %}
+    <button id="btnSubmit" type="submit" value="{{ datos.idy.dato }}">Modificar</button>
+    <div id="respuestaServidor"></div><br>
+</form>
+<hr>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='rutabd_modregistro.js') }}"></script>
+{% endblock %}

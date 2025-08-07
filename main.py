@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from handlers.clientes import Clientes
 from handlers.rutas import RutaActual, RutaRegistros, RutaBD, RutaImportar
 from handlers.inventarios import Inventario
-from helpers import SessionSingleton, verifica_token, privilegios
+from helpers import SessionSingleton, privilegios, login_required
 from coder.codexpy import Codexpy
 from coder.codexpy2 import Codexpy2
 from urllib.parse import quote, unquote
@@ -51,8 +51,6 @@ def login():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     token = request.cookies.get("aut")
     sesion.del_user(token)
     response = make_response(redirect('login'))
@@ -60,9 +58,8 @@ def logout():
     return response
 
 @app.route('/')
+@login_required
 def index():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     token = request.cookies.get("aut")
     usuario = sesion.get_usuario(token)
     datos = privilegios(usuario)
@@ -71,6 +68,7 @@ def index():
     return render_template('bienvenida.html', datos=datos)
 
 @app.route('/coder')
+@login_required
 def coder():
     datos = {
             "tituloPagina":"CODER"
@@ -78,42 +76,37 @@ def coder():
     return render_template('coder.html', datos=datos)
 
 @app.route('/coder1/frcod')
+@login_required
 def coder1():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     frase = request.args.get("fr")
     coder = Codexpy()
     return jsonify({"frproc":coder.procesa(frase)})
 
 @app.route('/coder2/frcod')
+@login_required
 def coder2():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     frase = request.args.get("fr")
     coder = Codexpy2()
     return jsonify({"frproc":coder.encripta(frase) if frase else "- Ingresa palabra -"})
 
 @app.route('/coder2/frdec')
+@login_required
 def coder2deco():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     frase = request.args.get("fr")
     coder = Codexpy2()
     return jsonify({"frproc":coder.desencripta(frase) if frase else "- Ingresa palabra -"})
 
 @app.route('/clientes')
+@login_required
 def clientes():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     usuario = sesion.get_usuario(request.cookies.get("aut"))
     datos = privilegios(usuario)
     datos["tituloPagina"] = "Administracion clientes"
     return render_template('clientes.html', datos=datos)
 
 @app.route('/clientes/buscar')
+@login_required
 def clientes_buscar():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     busqueda = request.args.get("search")
     filtro = request.args.get("filtro")
     sindatos = {"sindatos":"No se encontraron clientes coincidentes con esa busqueda"}
@@ -128,17 +121,15 @@ def clientes_buscar():
     return jsonify(resultados)
 
 @app.route('/clientes/getid/<idcliente>')
+@login_required
 def cliente_get_nombre(idcliente):
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with Clientes() as cl:
         cliente = cl.get_cliente(idcliente,"id")
     return jsonify(cliente)
 
 @app.route('/clientes/newclient', methods=['GET','POST'])
+@login_required
 def clientes_nuevo():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     if request.method == 'GET':
         with Clientes() as cl:
             campos = cl.mapdatos(
@@ -160,25 +151,22 @@ def clientes_nuevo():
 # ============== RUTAS ========================
 
 @app.route('/rutas/rutaactual', methods=['POST','GET'])
+@login_required
 def rutaactual():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     usuario = sesion.get_usuario(request.cookies.get("aut"))
     datos = privilegios(usuario)
     datos["tituloPagina"] = "Gestor de ruta actual"
     return render_template('rutas_rutaactual.html', datos=datos)
 
 @app.route('/rutas/rutaactual/getData', methods=["POST"])
+@login_required
 def rutaactual_getdata():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         return jsonify(rbd.clientes_enruta())
 
 @app.route('/rutas/rutaactual/aruta', methods=["POST"])
+@login_required
 def rutaactual_cliente_aruta():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     statuscode = 200
     with Clientes() as cl:
         datos_cliente = cl.get_cliente(
@@ -197,16 +185,14 @@ def rutaactual_cliente_aruta():
     return '', statuscode
 
 @app.route('/rutas/rutaactual/eliminarcliente/<ubicacion>', methods=["POST"])
+@login_required
 def rutaactual_eliminarcliente(ubicacion):
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         return jsonify({"resultado":rbd.eliminar(ubicacion)})
 
 @app.route('/rutas/rutaactual/confpos', methods=["POST"])
+@login_required
 def rutaactual_confpos():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         data = rbd.cliente_confpos(
                 ubicacion=request.args.get("idclte"),
@@ -219,6 +205,7 @@ def rutaactual_confpos():
     return jsonify({"accion_cliente":request.args.get("accion")})
 
 @app.route('/rutas/rutaactual/clientemanual', methods=["POST"])
+@login_required
 def rutaactual_clientemanual():
     with RutaBD() as rbd:
         mapdatos = {}
@@ -234,38 +221,33 @@ def rutaactual_clientemanual():
 
 # ============== RUTAS BD ========================
 @app.route('/rutas/rutabd')
+@login_required
 def rutabd():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))
     datos["tituloPagina"] = "Registros de ruta"
     return render_template('rutas_bd.html', datos=datos)
 
 @app.route('/rutas/rutabd/getData', methods=["POST"])
+@login_required
 def rutabd_getlista():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         return jsonify(rbd.obtener_rutas())
 
 @app.route('/rutas/rutabd/getRuta/<fecharuta>', methods=["POST"])
+@login_required
 def rutabd_getruta(fecharuta):
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         return jsonify(rbd.obtener_ruta(fecharuta))
 
 @app.route('/rutas/rutabd/getTotales/<fecharuta>', methods=["POST"])
+@login_required
 def rutabd_gettotales(fecharuta):
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with RutaBD() as rbd:
         return jsonify({"totales":rbd.obtener_totales_ruta(fecharuta)})
 
 @app.route('/rutas/rutabd/marcarStatus', methods=["POST"])
+@login_required
 def rutabd_marcarstatus():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     ubicacion = request.args.get('ubicacion')
     status = request.args.get('status')
     with RutaBD() as rbd:
@@ -278,9 +260,8 @@ def rutabd_marcarstatus():
     return jsonify({"message":"ok"}), 200
 
 @app.route('/rutas/rutabd/buscar')
+@login_required
 def rutabd_busqueda():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     busqueda = request.args.get("search")
     filtro = request.args.get("filtro")
     sindatos = {"sindatos":"No se encontraron clientes coincidentes con esa busqueda"}
@@ -294,26 +275,48 @@ def rutabd_busqueda():
             resultados = resultados if resultados else sindatos
     return jsonify(resultados)
 
+@app.route('/rutas/rutabd/modregistro/<idy>', methods=["GET","PUT"])
+@login_required
+def rutabd_mod_registro(idy):
+    if request.method == "GET":
+        with RutaBD() as r:
+            data = r.mapdatos(fila=int(idy),columnas=r.hoja_actual["rutabd_busquedas"], idy=True)
+            data = privilegios(sesion.get_usuario(request.cookies.get("aut")), data)
+        return render_template('rutabd_modregistro.html',datos=data)
+    elif request.method == "PUT":
+        datos = request.form.to_dict()
+        with RutaBD() as rbd:
+            try:
+                for campo in datos.keys():
+                    rbd.putDato(
+                            fila=int(idy),
+                            columna=campo,
+                            dato=datos[campo]
+                            )
+            except Exception as e:
+                cimprime(titulo="Error en servidor",error=e)
+                return jsonify({"resultado":False})
+            else:
+                return jsonify({"resultado":True})
+
+
 # ------------------- INVENTARIO ----------------------------
 @app.route('/inventario')
+@login_required
 def inventario():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))
     datos["tituloPagina"] = "Inventario de insumos en stock"
     return render_template('inventario.html', datos=datos)
 
 @app.route('/inventario/getstock')
+@login_required
 def inventario_getstock():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     with Inventario() as inv:
         return jsonify(inv.get_stock())
 
 @app.route('/inventario/modifica', methods=['POST','GET'])
+@login_required
 def inventario_modifica():
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     if request.method == "POST":
         cantidad = request.args.get("cant")
         columna = request.args.get("col")
@@ -328,9 +331,8 @@ def inventario_modifica():
         return render_template('inventario_mod.html', datos=datos)
 
 @app.route('/uploadRuta', methods=['POST','GET'])
+@login_required
 def uploadRuta() -> render_template:
-    if not verifica_token(request):
-        return redirect(url_for('login'))
     if request.method == 'POST':
         statuscode = 400
         jsondata = {"message":"Error en archivo o archivo no permitido"}
@@ -368,10 +370,16 @@ def uploadRuta() -> render_template:
                 with RutaBD() as rbd:
                     if rbd.importar_ruta(datos):
                         statuscode = 200
-                        jsondata = {"message":"Importacion realizada con éxito"}
+                        jsondata = {
+                                "message":"Importacion realizada con éxito",
+                                "resultado":True
+                                }
                     else:
                         statuscode = 400
-                        jsondata = {"message":"Error al intentar escribir los datos"}
+                        jsondata = {
+                                "message":"Error al intentar escribir los datos",
+                                "resultado":False
+                                }
         return jsonify(jsondata), statuscode
     elif request.method == 'GET':
         datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))

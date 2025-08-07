@@ -53,6 +53,9 @@ function getDatos() {
                 const tdelim = document.createElement('td');
                 tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[10]}>ELIM</button>`;
                 tr.appendChild(tdelim);
+                const tdmod = document.createElement('td');
+                tdmod.innerHTML = `<button class="btn-modificar" data-idy=${fila[10]}>MOD</button>`;
+                tr.appendChild(tdmod);
             } else {
                 const td = document.createElement('td');
                 td.innerHTML = "Sin datos";
@@ -98,10 +101,16 @@ function getDatos() {
                 }
                 eliminarCliente(ubicacion).then(response => {
                     if (response) {
-                        fila.remove();
+                        getDatos();
+                        //fila.remove();
                     }
                 });
-            } 
+            } else if (e.target.classList.contains('btn-modificar')) {
+                    if (fila) {
+                        fila.style.backgroundColor = "blue";
+                    }
+                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
+                }
         });
         areaResultados.appendChild(tabla)
 

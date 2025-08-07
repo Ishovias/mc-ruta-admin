@@ -209,7 +209,11 @@ class RutaBD(bdmediclean):
              columna=filtro,
              filtropuntuacion=True,
              buscartodo=True)
-         return super().listar(filas=filas,columnas=columnas,idy=True) if filas else None
+         busqueda = None
+         if filas:
+             busqueda = super().listar(filas=filas,columnas=columnas,idy=True)
+             busqueda["datos"].reverse()
+         return busqueda
 
      def clientes_enruta(self) -> dict:
          cols_rutaactual = self.hoja_actual["rutaactual"]

@@ -125,6 +125,9 @@ function muestraRuta(fecharuta) {
                     const tdelim = document.createElement('td');
                     tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
                     tr.appendChild(tdelim);
+                    const tdmod = document.createElement('td');
+                    tdmod.innerHTML = `<button class="btn-modificar" data-idy=${fila[fila.length - 1]}>MOD</button>`;
+                    tr.appendChild(tdmod);
                 } else {
                     const td = document.createElement('td');
                     td.innerHTML = "Sin datos";
@@ -155,6 +158,12 @@ function muestraRuta(fecharuta) {
                             fila.remove();
                         }
                     });
+                }
+                if (e.target.classList.contains('btn-modificar')) {
+                    if (fila) {
+                        fila.style.backgroundColor = "blue";
+                    }
+                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
                 }
             });
             areaResultado.appendChild(tabla)

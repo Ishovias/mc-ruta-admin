@@ -1,6 +1,8 @@
 from handlers.usuarios import Usuariosbd
 from datetime import datetime
 from coder.codexpy2 import Codexpy2
+from functools import wraps
+from flask import request, redirect, url_for
 import params
 import secrets
 
@@ -99,13 +101,26 @@ def verifica_token(request: object) -> bool:
             return True
     return False
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not verifica_token(request):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
 
-def privilegios(usuario: str) -> map:
+def privilegios(usuario: str, paquete: dict=None) -> map:
     for rango in ["admin","user","spectator"]:
         if usuario in params.PRIVILEGIOS[rango]["usuarios"]:
-            return {
-                    "privilegios":params.PRIVILEGIOS[rango]["privilegios"],
-                    "rango":rango
-                    }
+            if not paquete:
+                return {
+                        "privilegios":params.PRIVILEGIOS[rango]["privilegios"],
+                        "rango":rango
+                        }
+            else:
+                paquete["privilegios"] = params.PRIVILEGIOS[rango]["privilegios"]
+                paquete["rango"] = rango
+                return paquete
 
