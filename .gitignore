@@ -1,5 +1,6 @@
 venv/
 .venv/
+bd/mediclean_bd.xlsx
 __pycache__/
 *.swp
 *.xlsx
