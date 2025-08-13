@@ -53,6 +53,9 @@ function getDatos() {
                 const tdelim = document.createElement('td');
                 tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[10]}>ELIM</button>`;
                 tr.appendChild(tdelim);
+                const tdmod = document.createElement('td');
+                tdmod.innerHTML = `<button class="btn-modificar" data-idy=${fila[10]}>MOD</button>`;
+                tr.appendChild(tdmod);
             } else {
                 const td = document.createElement('td');
                 td.innerHTML = "Sin datos";
@@ -98,10 +101,16 @@ function getDatos() {
                 }
                 eliminarCliente(ubicacion).then(response => {
                     if (response) {
-                        fila.remove();
+                        getDatos();
+                        //fila.remove();
                     }
                 });
-            } 
+            } else if (e.target.classList.contains('btn-modificar')) {
+                    if (fila) {
+                        fila.style.backgroundColor = "blue";
+                    }
+                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
+                }
         });
         areaResultados.appendChild(tabla)
 
@@ -161,6 +170,30 @@ function eliminaRegistro(ubicacion) {
                 return false;
             });
 }
+
+document.getElementById('btn-movpos').addEventListener('click', function(e) {
+    const boton = e.target;
+    boton.textContet = "Moviendo...";
+    boton.disabled = true;
+    const posA = document.getElementById('pos-a');
+    const posB = document.getElementById('pos-b');
+    const url = `${urlBase}/rutas/rutaactual/movpos/${posA.value}-${posB.value}`;
+    fetch(url, {
+        "method":"put"
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.resultado) {
+                alert("Error en servidor");
+            }
+            boton.textContet = "Mover";
+            boton.disabled = false;
+            getDatos();
+        })
+        .catch(error => {
+            alert(`Error en fetch: ${error} - ${error.message}`)
+        });
+});
 
 document.getElementById('form-clte-manual').addEventListener('submit', function(e) {
     e.preventDefault();

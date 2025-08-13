@@ -1,19 +1,20 @@
 {% extends "index.html" %}
 
 {% block body %}
+<br>
 <div class="cuadroBusquedaCliente">
-    <label for="buscacliente">Busqueda clientes:</label><br>
-    <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"><br>
-    <label for="filtro">Buscar por:</label><br>
-    <select name="filtro" id="filtro">
+    <label for="buscacliente">Busqueda clientes:
+    <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"></label>
+    <label for="filtro">Buscar por:
+    <select name="filtro" id="filtro" style="max-width: 100px;">
         <option value="cliente" selected>Nombre</option>
         <option value="rut">Rut</option>
         <option value="telefono">Telefono</option>
         <option value="direccion">Direccion</option>
         <option value="comuna">Comuna</option>
-    </select>
-</div><hr>
-<div id="respuestaBuscaCliente"></div><hr>
+    </select></label>
+</div><br><hr>
+<div id="respuestaBuscaCliente" class="tabla"></div><hr><br>
 <form action={{ url_for('clientes_nuevo') }} method="GET">
     <button type="submit" name="toClienteNuevo">Nuevo cliente</button>
 </form>

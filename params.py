@@ -1,5 +1,5 @@
 # hoja de parametros generales
-IMPRESION_LOGS = False
+IMPRESION_LOGS = True
 
 # Privilegios usuarios
 PRIVILEGIOS = {
@@ -28,22 +28,23 @@ PRIVILEGIOS = {
          "usuarios":["invitado"],
          "privilegios":{
              "btnRutaActual":{"pagina":"rutas_rutaactual.html","js":"rutaactual_spectator.js"},
-             "btnInventario":{"pagina":"inventario.html","js":"inventario.js"}
+             "btnInventario":{"pagina":"inventario.html","js":"inventario.js"},
+             "btnRutas":{"pagina":"rutas_bd.html","js":"rutabd_spectator.js"}
              }
          }
 }
 
 # ---------- RUTAS DE DESARROLLO --------------
-#LIBRODATOS = "./bd/mediclean_bd.xlsx"
-#LIBROTODO = "./bd/todo_bd.xlsx"
-#LIBRORUTA = "./bd/ruta.xlsx"
-#RUTA_IMPORTACION = "./ruta_import"
+LIBRODATOS = "./bd/mediclean_bd.xlsx"
+LIBROTODO = "./bd/todo_bd.xlsx"
+LIBRORUTA = "./bd/ruta.xlsx"
+RUTA_IMPORTACION = "./ruta_import"
 
 # ---------- RUTAS DE PRODUCCION --------------
-LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
-LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
-LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
-RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
+#LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
+#LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
+#LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
+#RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
 # UPLOAD_FOLDER = "/home/iberoiza/mediclean/ruta_import"
 
 EXTENSIONES_PERMITDAS = {"xlsx", "xls"}

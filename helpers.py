@@ -1,6 +1,8 @@
 from handlers.usuarios import Usuariosbd
 from datetime import datetime
 from coder.codexpy2 import Codexpy2
+from functools import wraps
+from flask import request, redirect, url_for
 import params
 import secrets
 
@@ -56,7 +58,8 @@ class SessionSingleton:
     def del_user(self, token: str):
         with Usuariosbd() as ubd:
             ubd.elimina_token(token)
-        del(self.__usr[token])
+        if self.__usr.get(token):
+            del(self.__usr[token])
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
@@ -87,23 +90,38 @@ class VariablesCompartidas:
           
 # ---------------------- VERIFICATOKEN  --------------------------
 def verifica_token(request: object) -> bool:
-    if "aut" in request.cookies:
+    auth_header = request.headers.get("aut")
+    sesion = SessionSingleton()
+    aut = None
+    if request.cookies:
         aut = request.cookies.get("aut")
-        sesion = SessionSingleton()
-        if not sesion.get_autenticado(aut):
-            return False
-        else:
+    if auth_header:
+        aut = auth_header
+    if aut:
+        if sesion.get_autenticado(aut):
             return True
-    else:
-        return False
+    return False
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not verifica_token(request):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
 
-def privilegios(usuario: str) -> map:
+def privilegios(usuario: str, paquete: dict=None) -> map:
     for rango in ["admin","user","spectator"]:
         if usuario in params.PRIVILEGIOS[rango]["usuarios"]:
-            return {
-                    "privilegios":params.PRIVILEGIOS[rango]["privilegios"],
-                    "rango":rango
-                    }
+            if not paquete:
+                return {
+                        "privilegios":params.PRIVILEGIOS[rango]["privilegios"],
+                        "rango":rango
+                        }
+            else:
+                paquete["privilegios"] = params.PRIVILEGIOS[rango]["privilegios"]
+                paquete["rango"] = rango
+                return paquete
 
