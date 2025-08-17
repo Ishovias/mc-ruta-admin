@@ -10,36 +10,25 @@ function getDatos() {
     .then(data => {
         const areaResultados = document.getElementById('tablaResultados');
         areaResultados.innerHTML = "";
-        const tabla = document.createElement('table');
-        const encabezado = document.createElement('thead');
-        const filaEncabezado = document.createElement('tr');
-        
-        data.encabezados.forEach(encabezado => {
-            const th = document.createElement('th');
-            th.textContent = encabezado;
-            filaEncabezado.appendChild(th);
-        });
+        const listado = document.createElement('ul');
 
-        encabezado.appendChild(filaEncabezado);
-
-        const cuerpo = document.createElement('tbody');
         data.datos.forEach(fila => {
-            const tr = document.createElement('tr');
+            const li = document.createElement('li');
             if (fila[0] != "Sin datos") {
+                const item = "";
                 fila.forEach(dato => {
-                    const td = document.createElement('td');
                     if (dato != "None") {
-                        td.textContent = dato;
+                        item.concat(" ", dato);
                     } else {
-                        td.textContent = "-";
+                        item.concat(" ", "-");
                     }
                     if (/deuda/i.test(dato)){
-                        tr.style.backgroundColor = "#d99191";
+                        li.style.backgroundColor = "#d99191";
                     }
                     if (/nuevo/i.test(dato)){
-                        tr.style.backgroundColor = "#f2ef46";
+                        li.style.backgroundColor = "#f2ef46";
                     }
-                    tr.appendChild(td);
+                    li.appendChild(td);
                 });
                 const tdobs = document.createElement('td');
                 tdobs.innerHTML = `<input class="observaciones" type="text", placeholder="Observaciones">`;

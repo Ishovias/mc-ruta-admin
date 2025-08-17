@@ -1,8 +1,9 @@
 from handlers.usuarios import Usuariosbd
-from datetime import datetime
+from datetime import datetime, timedelta
 from coder.codexpy2 import Codexpy2
 from functools import wraps
 from flask import request, redirect, url_for
+from cimprime import cimprime
 import params
 import secrets
 
@@ -58,7 +59,8 @@ class SessionSingleton:
     def del_user(self, token: str):
         with Usuariosbd() as ubd:
             ubd.elimina_token(token)
-        del(self.__usr[token])
+        if self.__usr.get(token):
+            del(self.__usr[token])
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
@@ -124,3 +126,16 @@ def privilegios(usuario: str, paquete: dict=None) -> map:
                 paquete["rango"] = rango
                 return paquete
 
+def get_hora_actual(obtener_clase: bool=False) -> str:
+    hora_servidor = datetime.now()
+    mes_actual = datetime.today().month
+    if mes_actual in params.MESES_HORARIO_INVIERNO:
+        diferencia_hr = timedelta(hours=params.DIF_HR_INVIERNO)
+    elif mes_actual in params.MESES_HORARIO_VERANO:
+        diferencia_hr = timedelta(hours=params.DIF_HR_VERANO)
+    hora_calculada = hora_servidor + diferencia_hr
+    return hora_calculada if obtener_clase else hora_calculada.strftime(params.FORMATO_HORA)
+
+if __name__ == "__main__":
+    cimprime(titulo="Hora en formato string",hora=get_hora_actual())
+    cimprime(titulo="Hora en formato clase",hora=get_hora_actual(obtener_clase=True))

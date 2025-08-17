@@ -166,9 +166,19 @@ class bdmediclean:
 
      def putDato(self, dato: str = None, fila: int = None, columna: str = None) -> bool:
           if not fila:
-               fila = self.maxfilas + 1
-          celda = self.hojabd.cell(row=fila, column=self.hoja_actual["columnas"][columna]["num"])
-          celda.value = dato
+               fila = [self.maxfilas + 1]
+          elif type(fila) != list:
+              fila = [fila]
+          if type(columna) != list:
+              columna = [columna]
+          if type(dato) != list:
+              dato = [dato]
+          for f in fila:
+              indice = 0
+              for c in columna:
+                  celda = self.hojabd.cell(row=f, column=self.hoja_actual["columnas"][c]["num"])
+                  celda.value = dato[indice]
+                  indice += 1
           self.datosPorGuardar = True
           return True
 

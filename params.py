@@ -1,5 +1,5 @@
 # hoja de parametros generales
-IMPRESION_LOGS = False
+IMPRESION_LOGS = True
 
 # Privilegios usuarios
 PRIVILEGIOS = {
@@ -35,22 +35,27 @@ PRIVILEGIOS = {
 }
 
 # ---------- RUTAS DE DESARROLLO --------------
-#LIBRODATOS = "./bd/mediclean_bd.xlsx"
-#LIBROTODO = "./bd/todo_bd.xlsx"
-#LIBRORUTA = "./bd/ruta.xlsx"
-#RUTA_IMPORTACION = "./ruta_import"
+LIBRODATOS = "./bd/mediclean_bd.xlsx"
+LIBROTODO = "./bd/todo_bd.xlsx"
+LIBRORUTA = "./bd/ruta.xlsx"
+RUTA_IMPORTACION = "./ruta_import"
 
 # ---------- RUTAS DE PRODUCCION --------------
-LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
-LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
-LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
-RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
+#LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
+#LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
+#LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
+#RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
 # UPLOAD_FOLDER = "/home/iberoiza/mediclean/ruta_import"
 
 EXTENSIONES_PERMITDAS = {"xlsx", "xls"}
 MAX_FILAS = 10000
 FORMATO_FECHA = "%Y-%m-%d"
 FORMATO_FECHA_CODIGO = "%Y%m%d"
+FORMATO_HORA = "%H:%M:%S"
+DIF_HR_INVIERNO = -4
+DIF_HR_VERANO = -3
+MESES_HORARIO_INVIERNO = [3,4,5,6,7,8]
+MESES_HORARIO_VERANO = [9,10,11,12,1,2]
 
 CLIENTES = {
      "nombrehoja": "clientes",

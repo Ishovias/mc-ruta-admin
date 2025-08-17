@@ -18,7 +18,6 @@ class RutaActual(bdmediclean):
             return True
         return False
 
-
     def listar_rutaactual(self, columnas: list, idy: bool=False) -> map:
         listado = super().listar(columnas=columnas,idy=idy)
         listado["encabezados"].insert(0,"INDICE")
@@ -571,6 +570,19 @@ class RutaBD(bdmediclean):
                  columna="status"
                  )
          pass
+
+     def movpos(self, pos_a: int, pos_b: int) -> bool:
+        cols = list(self.hoja_actual["columnas"].keys())
+        try:
+            datos_a = super().getDato(fila=pos_a,columna=cols)
+            super().eliminar(pos_a)
+            super().insertar_fila(pos_b)
+            super().putDato(dato=datos_a,fila=pos_b,columna=cols)
+        except Exception as e:
+            cimprime(titulo="Error en handler RutaBD",error=e)
+            return False
+        else:
+            return True
 
 class RutaImportar(bdmediclean):
 

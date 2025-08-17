@@ -70,9 +70,12 @@ def index():
 @app.route('/coder')
 @login_required
 def coder():
+    token = request.cookies.get("aut")
+    usuario = sesion.get_usuario(token)
     datos = {
             "tituloPagina":"CODER"
             }
+    datos = privilegios(usuario,datos)
     return render_template('coder.html', datos=datos)
 
 @app.route('/coder1/frcod')
@@ -219,7 +222,17 @@ def rutaactual_clientemanual():
                 )
     return jsonify({"message":"Exito"}), 200
 
-# ============== RUTAS BD ========================
+@app.route('/rutas/rutaactual/movpos/<pos_pos>', methods=["PUT"])
+@login_required
+def rutaactual_movpos(pos_pos):
+    ubicaciones = pos_pos.split("-")
+    pos_a = int(ubicaciones[0])
+    pos_b = int(ubicaciones[1])
+    cimprime(pos_a=pos_a,pos_b=pos_b)
+    with RutaBD() as r:
+        return jsonify({"resultado":r.movpos(pos_a,pos_b)})
+
+    # ============== RUTAS BD ========================
 @app.route('/rutas/rutabd')
 @login_required
 def rutabd():

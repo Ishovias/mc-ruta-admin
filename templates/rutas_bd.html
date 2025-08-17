@@ -3,11 +3,13 @@
 <h3>Rutas</h3><hr><br>
 <div class="contenedores">
     <div class="selectores-de-ruta">
-        <div id="listaRutas" class="selector"></div><br><hr><br>
+        <div id="listaRutas" class="selector">
+            <h3>Cargando lista rutas...</h3>
+        </div><br><hr><br>
         <div class="cuadroBusquedaCliente">
-            <label for="buscacliente">Busqueda clientes:</label><br>
+            <label for="buscacliente">Busqueda clientes:</label>
             <input type="text" id="buscacliente" name="buscacliente" style="width: 50%;"><br>
-            <label for="filtro">Buscar por:</label><br>
+            <label for="filtro">Buscar por:</label>
             <select name="filtro" id="filtro">
                 <option value="cliente" selected>Nombre</option>
                 <option value="rut">Rut</option>
@@ -16,7 +18,7 @@
                 <option value="comuna">Comuna</option>
             </select>
         </div>
-    </div>
+    </div><br>
     <div class="contenedor-resultados">
         <div class="resultados">
             <div id="totales" class="lista"></div><br><hr><br>

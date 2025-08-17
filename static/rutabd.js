@@ -13,6 +13,7 @@ function getDatosRutabd() {
         const selectorRutas = document.getElementById('listaRutas');
         selectorRutas.innerHTML = "";
         const selector = document.createElement('select');
+        selector.style.maxWidth = "300px";
         const defaultOption = document.createElement('option');
         defaultOption.selected = true;
         defaultOption.textContent = "--Selecciona ruta--";
@@ -24,6 +25,10 @@ function getDatosRutabd() {
             selector.appendChild(option);
         });
         selector.addEventListener('change' , function() {
+            const areaTotales = document.getElementById('totales');
+            areaTotales.innerHTML = '<h2>Cargando totales...</h2>';
+            const areaTablaRes = document.getElementById('tablaResultados');
+            areaTablaRes.innerHTML = '<h2>Cargando tabla...</h2>';
             fecharuta = this.value;
             if (fecharuta) {
                 muestraRuta(fecharuta);
@@ -62,6 +67,7 @@ function obtenerTotales(fecharuta) {
         .then(response => response.json())
         .then(data => {
             const resultados = document.getElementById("totales");
+            resultados.innerHTML = '';
             resultados.innerHTML = `<h3>Totales de la ruta</h3>`;
             if (data.totales.length > 0) {
                 const lista = document.createElement('ul');

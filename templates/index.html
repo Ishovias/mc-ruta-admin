@@ -16,32 +16,52 @@
         <nav class="botonera">
             {% if "btnClientes" in datos.privilegios %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('clientes') }}" method="get">
-                <button id="clientes" name="clientes">Clientes</button>
+                <button id="clientes" name="clientes">
+                    Clientes 
+                    <span class="icon">&#x263A</span>
+                </button>
             </form>
             {% endif %}
             {% if "btnRutaActual" in datos.privilegios %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('rutaactual') }}" method="get">
-                <button id="rutaactual" name="rutaactual">Ruta Actual</button>
+                <button id="rutaactual" name="rutaactual">
+                    Ruta Actual 
+                    <span class="icon">&#x1F690</span>
+                </button>
             </form>
             {% endif %}
             {% if "btnRutas" in datos.privilegios %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('rutabd') }}" method="get">
-                <button id="rutas" name="rutas">Rutas</button>
+                <button id="rutas" name="rutas">
+                    Rutas
+                    <span class="icon">&#x1F4DC</span>
+                </button>
             </form>
             {% endif %}
             {% if "btnRutaImportar" in datos.privilegios %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('uploadRuta') }}" method="get">
-                <button id="rutaimportar" name="rutaimportar">Ruta Importar</button>
+                <button id="rutaimportar" name="rutaimportar">
+                    Ruta Importar
+                    <span class="icon">&#x1F9F3</span>
+                </button>
             </form>
             {% endif %}
             {% if "btnInventario" in datos.privilegios %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('inventario') }}" method="get">
-                <button id="inventario" name="inventario">Inventario</button>
+                <button id="inventario" name="inventario">
+                    Inventario
+                    <span class="icon">&#x1F4DD</span>
+                </button>
             </form>
             {% endif %}
+            {% if datos.tituloPagina != "Login" %}
             <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('logout') }}" method="post">
-                <button id="cierresesion" name="cierresesion">Cerrar sesion</button>
+                <button id="cierresesion" name="cierresesion">
+                    Cerrar sesion
+                    <span class="icon">&#x1F512</span>
+                </button>
             </form>
+            {% endif %}
         </nav>
         <hr>
     </header>

@@ -1,11 +1,25 @@
 {% extends 'index.html' %}
 {% block body %}
 <h3>Ruta actual</h3><hr><br>
-<div id="tablaResultados" class="tabla"></div>
+<div id="tablaResultados" class="tabla">
+    <h2>Cargando...</h2>
+</div>
 <br><hr><br>
 {% if datos.rango == "admin" %}
+<div>
+    <label for="pos-a">
+        Posicion a mover:
+        <input class="posicionador" name="pos-a" id="pos-a" type="number">
+    </label>
+    <label for="pos-b">
+        Posicion destino:
+        <input class="posicionador" name="pos-b" id="pos-b" type="number">
+    </label>
+    <button id="btn-movpos">Mover</button>
+</div>
 <div id="clienteManual" class="formulario">
     <form id="form-clte-manual">
+        <h2>Agregar cliente manual</h2>
         <label for="fecha">
             Fecha de ruta: 
             <input name="fecha" id="fecha" type="text" required>
