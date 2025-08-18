@@ -15,12 +15,15 @@ function getDatos() {
         data.datos.forEach(fila => {
             const li = document.createElement('li');
             if (fila[0] != "Sin datos") {
-                const item = "";
+                const datosCliente = document.createElement('p');
+                let indexEncabezado = 0;
+                let item = "";
                 fila.forEach(dato => {
+                    const encabezado = data.encabezados[indexEncabezado];
                     if (dato != "None") {
-                        item.concat(" ", dato);
+                        item = item + encabezado + " : " + "<strong>" + dato + "</strong>" + "<br>"
                     } else {
-                        item.concat(" ", "-");
+                        item.concat(" ", encabezado, " : ", "-", "<br>");
                     }
                     if (/deuda/i.test(dato)){
                         li.style.backgroundColor = "#d99191";
@@ -28,80 +31,72 @@ function getDatos() {
                     if (/nuevo/i.test(dato)){
                         li.style.backgroundColor = "#f2ef46";
                     }
-                    li.appendChild(td);
+                    indexEncabezado += 1;
                 });
-                const tdobs = document.createElement('td');
-                tdobs.innerHTML = `<input class="observaciones" type="text", placeholder="Observaciones">`;
-                tr.appendChild(tdobs);
-                const td = document.createElement('td');
-                td.innerHTML = `<button class="btn-marcar-realizado" data-idy=${fila[10]}>&#x1F44D</button>`;
-                tr.appendChild(td);
-                const tdposp = document.createElement('td');
-                tdposp.innerHTML = `<button class="btn-marcar-pospuesto" data-idy=${fila[10]}>&#x1F44E</button>`;
-                tr.appendChild(tdposp);
-                const tdelim = document.createElement('td');
-                tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[10]}>&#x26D4</button>`;
-                tr.appendChild(tdelim);
-                const tdmod = document.createElement('td');
-                tdmod.innerHTML = `<button class="btn-modificar" data-idy=${fila[10]}>&#x1F4DD</button>`;
-                tr.appendChild(tdmod);
+                datosCliente.innerHTML = item;
+                const botonera = document.createElement('div');
+                botonera.innerHTML = `<br><input class="observaciones" type="text", placeholder="Observaciones"><br><br>
+                    <button class="btn-marcar-realizado" data-idy=${fila[10]}>&#x1F44D</button>
+                    <button class="btn-marcar-pospuesto" data-idy=${fila[10]}>&#x1F44E</button>
+                    <button class="btn-eliminar" data-idy=${fila[10]}>&#x26D4</button>
+                    <button class="btn-modificar" data-idy=${fila[10]}>&#x1F4DD</button>
+                    <br><br><hr><br>`
+                li.appendChild(datosCliente);
+                li.appendChild(botonera);
             } else {
-                const td = document.createElement('td');
-                td.innerHTML = "Sin datos";
-                tr.appendChild(td);
+                const li = document.createElement('li');
+                li.innerHTML = "<p>Sin datos</p>";
             }
-            cuerpo.appendChild(tr);
+            listado.appendChild(li);
         });
-        tabla.appendChild(encabezado);
-        tabla.appendChild(cuerpo);
-        tabla.addEventListener('click' , (e) => {
-            const fila = e.target.closest('tr');
-            const observaciones = fila.querySelector('.observaciones').value
+        listado.addEventListener('click' , (e) => {
+            const li = e.target.closest('li');
+            const observaciones = li.querySelector('.observaciones').value
             const ubicacion = e.target.dataset.idy;
             if (e.target.classList.contains('btn-marcar-realizado')) {
-                if (fila) {
-                    if (fila.style.backgroundColor == "lightgreen") {
-                        fila.style.backgroundColor = "";
+                if (li) {
+                    if (li.style.backgroundColor == "lightgreen") {
+                        li.style.backgroundColor = "";
                     } else {
-                        fila.style.backgroundColor = "lightgreen";
+                        li.style.backgroundColor = "lightgreen";
                     }
                     confpos(ubicacion,observaciones,"REALIZADO").then(resultado => {
                         if (resultado) {
-                            fila.remove();
+                            li.remove();
                         }
                     });
                 }
             } else if (e.target.classList.contains('btn-marcar-pospuesto')) {
-                if (fila) {
-                    if (fila.style.backgroundColor == "red") {
-                        fila.style.backgroundColor = "";
+                if (li) {
+                    if (li.style.backgroundColor == "red") {
+                        li.style.backgroundColor = "";
                     } else {
-                        fila.style.backgroundColor = "red";
+                        li.style.backgroundColor = "red";
                     }
                     confpos(ubicacion,observaciones,"POSPUESTO").then(resultado => {
                         if (resultado) {
-                            fila.remove();
+                            li.remove();
                         }
                     });
                 }
             } else if (e.target.classList.contains('btn-eliminar')) {
-                if (fila) {
-                    fila.style.backgroundColor = "gray";
+                if (li) {
+                    li.style.backgroundColor = "gray";
                 }
                 eliminarCliente(ubicacion).then(response => {
                     if (response) {
                         getDatos();
-                        //fila.remove();
+                        //li.remove();
                     }
                 });
             } else if (e.target.classList.contains('btn-modificar')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "blue";
+                    if (li) {
+                        li.style.backgroundColor = "blue";
                     }
                     window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
                 }
         });
-        areaResultados.appendChild(tabla)
+        areaResultados.appendChild(listado);
 
     })
     .catch(error => {
