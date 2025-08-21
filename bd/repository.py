@@ -84,9 +84,10 @@ class bdmediclean:
                if celda.value == None:
                     return fila
 
-     def buscadato(self, dato: str, filainicio: int = None, columna: str = None, exacto: bool = False, filtropuntuacion: bool = False, buscartodo: bool = False) -> int:
-          def buscador(filainicio: int) -> int:
-               for fila in range(filainicio, maxfilas, 1):
+     def buscadato(self, dato: str, filainicio: int = None, columna: str = None, exacto: bool = False, filtropuntuacion: bool = False, buscartodo: bool = False, haciaAdelante: bool = True) -> int:
+          def buscador(filainicio: int, haciaAdelante: bool) -> int:
+               rango = range(filainicio, maxfilas, 1) if haciaAdelante else range(maxfilas, filainicio - 1, -1)
+               for fila in rango:
                     celda = self.hojabd.cell(row=fila, column=self.hoja_actual["columnas"][columna]["num"])
                     try:
                          valorcelda = str(celda.value) if exacto else str(celda.value).lower()
@@ -112,7 +113,7 @@ class bdmediclean:
           if buscartodo:
                filas = []
                while (filainicio <= maxfilas):
-                    hallado = buscador(filainicio)
+                    hallado = buscador(filainicio,haciaAdelante)
                     if hallado:
                          filas.append(hallado)
                     else:
@@ -120,7 +121,7 @@ class bdmediclean:
                     filainicio = hallado + 1
                return filas
           else:
-               return buscador(filainicio)
+               return buscador(filainicio,haciaAdelante)
 
      def listar(self, filainicial: int = None, filas: list=None, columnas: list = None, encabezados: int = None, solodatos: bool = False, idy: bool=False) -> map:
           if not filainicial:
@@ -165,9 +166,19 @@ class bdmediclean:
 
      def putDato(self, dato: str = None, fila: int = None, columna: str = None) -> bool:
           if not fila:
-               fila = self.maxfilas + 1
-          celda = self.hojabd.cell(row=fila, column=self.hoja_actual["columnas"][columna]["num"])
-          celda.value = dato
+               fila = [self.maxfilas + 1]
+          elif type(fila) != list:
+              fila = [fila]
+          if type(columna) != list:
+              columna = [columna]
+          if type(dato) != list:
+              dato = [dato]
+          for f in fila:
+              indice = 0
+              for c in columna:
+                  celda = self.hojabd.cell(row=f, column=self.hoja_actual["columnas"][c]["num"])
+                  celda.value = dato[indice]
+                  indice += 1
           self.datosPorGuardar = True
           return True
 

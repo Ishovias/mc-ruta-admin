@@ -1,8 +1,13 @@
 import { URL_BASE as urlBase } from './config.js';
 
-document.getElementById('uploadForm').addEventListener('submit', function(e) {
+const form = document.getElementById('uploadForm');
+
+form.addEventListener('submit', function(e) {
     e.preventDefault();
     const apiUrl = `${urlBase}/uploadRuta`;
+    const boton = e.target.querySelector('#btn-uploadRuta')
+    boton.textContent = "Espere...";
+    boton.disabled = true;
     const formData = new FormData();
     const fileInput = document.getElementById('fileInput');
     formData.append('file', fileInput.files[0]);
@@ -13,8 +18,14 @@ document.getElementById('uploadForm').addEventListener('submit', function(e) {
         .then(response => response.json())
         .then(data => {
             alert(data.message);
+            if (data.resultado) {
+                window.location.href = `${urlBase}/rutas/rutaactual`;
+            } 
+            boton.textContent = "Upload";
+            boton.disabled = false;
         })
         .catch(error => {
             alert("Error en peticion: "+error);
+            window.location.href = `${urlBase}/rutas/rutaactual`;
         });
 });

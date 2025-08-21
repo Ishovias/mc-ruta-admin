@@ -1,271 +1,206 @@
-/* Variables globales */
-:root {
-  --color-primary: #3498db;
-  --color-primary-dark: #2980b9; 
-  --color-secondary: #2ecc71;
-  --color-secondary-dark: #27ae60;
-  --color-background: #f8f9fa;
-  --color-text: #333;
-  --color-text-light: #666;
-  --color-border: #ddd;
-  --border-radius: 8px;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s ease;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-}
-
-/* Reset y estilos base */
+/* ==== RESET BÁSICO ==== */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  line-height: 1.6;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+    padding: 0 10px;
 }
 
-/* Encabezado */
+/* ==== HEADER ==== */
 header {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: white;
-  padding: var(--spacing-md) var(--spacing-lg);
-  box-shadow: var(--box-shadow);
-  text-align: center;
+    text-align: center;
+    padding: 15px 0;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 header h1 {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-sm);
-  font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
 }
 
 header h2 {
-  font-size: 1.5rem;
-  font-weight: 400;
-  opacity: 0.9;
-  margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+    font-weight: normal;
+    opacity: 0.9;
 }
 
-/* Navegación */
-.botonera {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) 0;
+/* ==== NAV MENU ==== */
+/* ==== BOTONERA PRINCIPAL ==== */
+nav.botonera {
+    display: grid;
+    gap: 12px; /* espacio entre botones */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    margin: 20px auto;
+    max-width: 900px;
+    padding: 0 10px;
 }
 
+/* Contenedor del botón */
 .botonera-menu {
-  margin: 0;
+    margin: 0;
 }
 
-.botonera button {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 0.7rem 1.2rem;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: var(--transition);
-  font-weight: 600;
-  min-width: 140px;
+/* Estilo del botón */
+.botonera-menu button {
+    display: flex;
+    flex-direction: column; /* ícono arriba, texto abajo */
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    height: 80px; /* alto uniforme */
+    background-color: white;
+    color: #007BFF; /* azul por defecto */
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-.botonera button:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
+/* Efecto hover */
+.botonera-menu button:hover {
+    background-color: #007BFF;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.botonera button:active {
-  transform: translateY(0);
+/* Ícono del botón */
+.botonera-menu .icon {
+    font-size: 1.8rem; /* tamaño del ícono */
+    line-height: 1;
 }
 
-.botonera button:disabled {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
-  cursor: not-allowed;
-  transform: none;
+/* Texto del botón */
+.botonera-menu .text {
+    font-size: 0.9rem;
 }
 
-hr {
-  border: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: var(--spacing-md) 0;
-}
-
-/* Contenido principal */
-h3 {
-  color: var(--color-primary-dark);
-  font-size: 1.8rem;
-  margin: var(--spacing-lg) 0 var(--spacing-sm);
-  text-align: center;
-  font-weight: 600;
-}
-
-#listaRutas, #totales, #tablaResultados {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 var(--spacing-md);
-}
-
-/* Estilos para la sección de selector */
-.selector {
-  background-color: white;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: var(--box-shadow);
-}
-
-/* Estilos para la sección de lista */
-.lista {
-  background-color: white;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: var(--box-shadow);
-}
-
-/* Estilos para la tabla */
+/* ==== TABLAS ==== */
 .tabla {
-  overflow-x: auto;
-  background-color: white;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: var(--box-shadow);
+    width: 100%;
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    -webkit-overflow-scrolling: touch; /* Mejor desplazamiento en dispositivos móviles */
+    margin-bottom: 1rem;
 }
 
-/* Estilos para posibles tablas dentro de .tabla */
 .tabla table {
-  width: 100%;
-  border-collapse: collapse;
+    min-width: 100%; /* La tabla será al menos tan ancha como el contenedor */
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .tabla th, .tabla td {
-  border: 1px solid var(--color-border);
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
 }
 
 .tabla th {
-  background-color: rgba(52, 152, 219, 0.1);
-  font-weight: 600;
-  color: var(--color-primary-dark);
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .tabla tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.02);
+    background-color: #f9f9f9;
 }
 
 .tabla tr:hover {
-  background-color: rgba(52, 152, 219, 0.05);
+    background-color: #e6f0ff;
 }
-
-/* Pie de página */
-footer {
-  margin-top: auto;
-  padding: var(--spacing-lg);
-  text-align: center;
-  color: var(--color-text-light);
-  font-size: 0.9rem;
-}
-
-/* Estilos responsivos */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 2rem;
-  }
-  
-  header h2 {
-    font-size: 1.2rem;
-  }
-  
-  .botonera {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .botonera button {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  h3 {
-    font-size: 1.5rem;
-  }
-  
-  .selector, .lista, .tabla {
-    padding: var(--spacing-md);
-  }
-}
-
-/* Animaciones y transiciones adicionales */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.selector, .lista, .tabla {
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Estilos adicionales para posibles formularios */
+/* ==== FORMULARIOS ==== */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+    display: flex;
+    flex-wrap: nowrap;
+    max-width: 70%;
+    flex-direction: column;
+    gap: 15px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.posicionador {
+    max-width: 100px;
 }
 
 input, select, textarea {
-  padding: 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  font-family: inherit;
-  font-size: 1rem;
-  transition: var(--transition);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0,123,255,0.3);
 }
 
-/* Botones dentro del contenido */
-button:not(.botonera button) {
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: var(--transition);
-  font-weight: 600;
+/* ==== BOTONES GENERALES ==== */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
 }
 
-button:not(.botonera button):hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-button:not(.botonera button):active {
-  transform: translateY(0);
+#clienteManual button {
+    width: 200px;
 }
 
-button:not(.botonera button):disabled {
-  background-color: var(--color-border);
-  cursor: not-allowed;
+/* ==== FOOTER ==== */
+footer {
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 10px;
+    margin-top: 20px;
+    color: #555;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 768px) {
+    nav.botonera {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    form {
+        flex-direction: column;
+    }
 }

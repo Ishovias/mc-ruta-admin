@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Descripción breve de la página para SEO">
+        <title>Mediclean Ruta (Isaias B)</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <!--<link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+    </head>
+<body>
+    <header>
+        <h1>MedicleanRuta</h1>
+        <h2>{{ datos.tituloPagina }}</h2>
+        <hr>
+        <nav class="botonera">
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('rutaactual') }}" method="get">
+                <button id="rutaactual" name="rutaactual">Ruta Actual</button>
+            </form>
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('inventario') }}" method="get">
+                <button id="inventario" name="inventario">Inventario</button>
+            </form>
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('logout') }}" method="post">
+                <button id="cierresesion" name="cierresesion">Cerrar sesion</button>
+            </form>
+        </nav>
+        <hr>
+    </header>
+    {% block body %}
+    {% endblock %}
+    <footer>
+        {% block footer %}
+        {% endblock %}
+    </footer>
+    <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

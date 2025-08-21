@@ -2,18 +2,23 @@
 
 {% block body %}
 <div class="cuadroCodificador">
-    <label for="frase">Entrada:</label><br>
-    <input type="text" id="frase" style="width: 50%;"><br>
-    <label for="tipoaccion">Tipo de coder:</label><br>
-    <select name="tipoaccion" id="tipoaccion">
-        <option value="coder1" selected>Coder1-(cod-decod)</option>
-        <option value="coder2cod">Coder2-(cod)</option>
-        <option value="coder2deco">Coder2-(decod)</option>
-    </select>
-</div><hr>
+    <br>
+    <label for="frase">
+        Entrada:<br>
+        <input type="text" id="frase" style="width: 50%;">
+    </label>
+    <label for="tipoaccion">
+        Tipo de coder:<br>
+        <select name="tipoaccion" id="tipoaccion" style="max-width: 170px;">
+            <option value="coder1" selected>Coder1-(cod-decod)</option>
+            <option value="coder2cod">Coder2-(cod)</option>
+            <option value="coder2deco">Coder2-(decod)</option>
+        </select>
+    </label>
+</div><br><hr><br>
 <div id="respuestaServidor">
     <textarea id="frproc" style="width: 50%;" readonly></textarea>
-</div><hr>
+</div><br><hr>
 {% endblock %}
 
 {% block script %}

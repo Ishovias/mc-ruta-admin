@@ -68,6 +68,7 @@ class Inventario(bdmediclean):
                 columna="fecha",
                 buscartodo=True
                 )
+        fila.reverse()
         for fila in filas:
             idleido = super().getDato(
                     fila=fila,

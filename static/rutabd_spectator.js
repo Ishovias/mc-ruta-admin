@@ -13,7 +13,6 @@ function getDatosRutabd() {
         const selectorRutas = document.getElementById('listaRutas');
         selectorRutas.innerHTML = "";
         const selector = document.createElement('select');
-        selector.style.maxWidth = "300px";
         const defaultOption = document.createElement('option');
         defaultOption.selected = true;
         defaultOption.textContent = "--Selecciona ruta--";
@@ -25,10 +24,6 @@ function getDatosRutabd() {
             selector.appendChild(option);
         });
         selector.addEventListener('change' , function() {
-            const areaTotales = document.getElementById('totales');
-            areaTotales.innerHTML = '<h2>Cargando totales...</h2>';
-            const areaTablaRes = document.getElementById('tablaResultados');
-            areaTablaRes.innerHTML = '<h2>Cargando tabla...</h2>';
             fecharuta = this.value;
             if (fecharuta) {
                 muestraRuta(fecharuta);
@@ -42,23 +37,6 @@ function getDatosRutabd() {
     });
 }
 
-function marcarStatus(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
-    return fetch(apiurl, {
-            "method":"post"
-        })
-            .then(response => {
-                if (response.ok) {
-                    return true;
-                }
-            })
-            .catch(error => {
-                alert("Error: "+error);
-                console.error(error);
-                return false;
-            });
-}
-
 function obtenerTotales(fecharuta) {
     const apiurl = `${urlBase}/rutas/rutabd/getTotales/${fecharuta}`;
     fetch(apiurl, {
@@ -67,7 +45,6 @@ function obtenerTotales(fecharuta) {
         .then(response => response.json())
         .then(data => {
             const resultados = document.getElementById("totales");
-            resultados.innerHTML = '';
             resultados.innerHTML = `<h3>Totales de la ruta</h3>`;
             if (data.totales.length > 0) {
                 const lista = document.createElement('ul');
@@ -118,22 +95,13 @@ function muestraRuta(fecharuta) {
                         const td = document.createElement('td');
                         td.textContent = dato;
                         if (/pospuesto/i.test(dato)) {
-                            tr.style.backgroundColor = "rgba(255,0,0,0.6)";
+                            tr.style.backgroundColor = "rgba(255,0,0,0.5)";
                         }
                         if (/enruta/i.test(dato)) {
                             tr.style.backgroundColor = "rgba(0,255,0,0.5)";
                         }
                         tr.appendChild(td);
                     });
-                    const tdaruta = document.createElement('td');
-                    tdaruta.innerHTML = `<button class="btn-aruta" data-idy=${fila[fila.length - 1]}>ARUTA</button>`;
-                    tr.appendChild(tdaruta);
-                    const tdelim = document.createElement('td');
-                    tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
-                    tr.appendChild(tdelim);
-                    const tdmod = document.createElement('td');
-                    tdmod.innerHTML = `<button class="btn-modificar" data-idy=${fila[fila.length - 1]}>MOD</button>`;
-                    tr.appendChild(tdmod);
                 } else {
                     const td = document.createElement('td');
                     td.innerHTML = "Sin datos";
@@ -143,35 +111,6 @@ function muestraRuta(fecharuta) {
             });
             tabla.appendChild(encabezado);
             tabla.appendChild(cuerpo);
-            tabla.addEventListener('click' , (e) => {
-                const fila = e.target.closest('tr');
-                const ubicacion = e.target.dataset.idy;
-                if (e.target.classList.contains('btn-aruta')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "blue";
-                    }
-                    marcarStatus(ubicacion).then(response => {
-                        muestraRuta(fecharuta)
-                    });
-                }
-                if (e.target.classList.contains('btn-eliminar')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "gray";
-                    }
-                    eliminaRegistro(ubicacion).then(response => {
-                        alert(response);
-                        if (response) {
-                            fila.remove();
-                        }
-                    });
-                }
-                if (e.target.classList.contains('btn-modificar')) {
-                    if (fila) {
-                        fila.style.backgroundColor = "blue";
-                    }
-                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
-                }
-            });
             areaResultado.appendChild(tabla)
         })
         .catch(error => {
@@ -180,22 +119,6 @@ function muestraRuta(fecharuta) {
         });
 }
 
-function eliminaRegistro(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
-    return fetch(apiurl, {
-            "method":"post"
-        })
-            .then(response => {
-                if (response.ok) {
-                    return true;
-                }
-            })
-            .catch(error => {
-                alert("Error: "+error);
-                console.error(error);
-                return false;
-            });
-}
 
 document.getElementById('buscacliente').addEventListener('input', (e) => {
     let temporizador;
@@ -216,9 +139,6 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                         const encabezado = document.createElement('thead');
                         const filaEncabezado = document.createElement('tr');
                         
-                        const th = document.createElement('th');
-                        th.textContent = "Accion";
-                        filaEncabezado.appendChild(th);
                         data.encabezados.forEach(encabezado => {
                             const th = document.createElement('th');
                             th.textContent = encabezado;
@@ -251,19 +171,6 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                         });
                         tabla.appendChild(encabezado);
                         tabla.appendChild(cuerpo);
-                        tabla.addEventListener('click' , (e) => {
-                            const fila = e.target.closest('tr');
-                            const ubicacion = e.target.dataset.idy;
-                            if (e.target.classList.contains('btn-eliminar')) {
-                                if (fila) {
-                                    fila.style.backgroundColor = "gray";
-                                }
-                                const res = eliminaRegistro(ubicacion);
-                                if (res) {
-                                    fila.remove();
-                                }
-                            }
-                        });
                         contenedor.appendChild(tabla);
                     } else {
                         contenedor.innerHTML = data.sindatos;
@@ -274,7 +181,7 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                     alert(error)
                     document.getElementById('tablaResultados').innerHTML = "Error al cargar datos";
                 });
-        }, 300);
+        }, 1000);
     }
 });
 

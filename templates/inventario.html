@@ -1,10 +1,12 @@
 {% extends 'index.html' %}
 {% block body %}
 <h3>Stock actual:</h3><hr><br>
-<div id="stock" class="lista"></div><br><hr>
-<form id="modificar-inv-btn" action="{{ url_for('inventario_modifica') }}" method="get">
-    <button style="width: 30%; margin-left: 10px;">Modificar inventario</button><br>
-</form>
+<div id="stock" class="lista"><h3>Cargando...</h3></div><br><hr>
+{% if datos.rango == "admin" %}
+    <form id="modificar-inv-btn" action="{{ url_for('inventario_modifica') }}" method="get">
+        <button style="width: 50%; margin-left: 10px;">Modificar inventario</button><br>
+    </form>
+{% endif %}
 <div id="tablaRegistros" class="tabla"></div><br><hr><br>
 {% endblock %}
 {% block script %}

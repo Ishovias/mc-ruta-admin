@@ -1,6 +1,9 @@
 from handlers.usuarios import Usuariosbd
-from datetime import datetime
+from datetime import datetime, timedelta
 from coder.codexpy2 import Codexpy2
+from functools import wraps
+from flask import request, redirect, url_for
+from cimprime import cimprime
 import params
 import secrets
 
@@ -45,9 +48,7 @@ class SessionSingleton:
                      return True
         return False
       
-    def get_usuario(self, request: object, token: str=None) -> str:
-        if not token:
-            token = request.args.get("aut")
+    def get_usuario(self, token: str) -> str:
         if token in self.__usr:
             return self.__usr[token]
         return None
@@ -58,7 +59,8 @@ class SessionSingleton:
     def del_user(self, token: str):
         with Usuariosbd() as ubd:
             ubd.elimina_token(token)
-        del(self.__usr[token])
+        if self.__usr.get(token):
+            del(self.__usr[token])
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         pass
@@ -89,54 +91,51 @@ class VariablesCompartidas:
           
 # ---------------------- VERIFICATOKEN  --------------------------
 def verifica_token(request: object) -> bool:
-    if "aut" in request.cookies:
+    auth_header = request.headers.get("aut")
+    sesion = SessionSingleton()
+    aut = None
+    if request.cookies:
         aut = request.cookies.get("aut")
-        sesion = SessionSingleton()
-        if not sesion.get_autenticado(aut):
-            return False
-        else:
+    if auth_header:
+        aut = auth_header
+    if aut:
+        if sesion.get_autenticado(aut):
             return True
-    else:
-        return False
+    return False
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not verifica_token(request):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
-priv = {
-    "iberoiza":{
-        "cpEnabled":"enabled",
-        "finEnabled":"enabled",
-        "inirutaEnabled":"enabled",
-        "newclienteEnabled":"enabled",
-        "arutaEnabled":"enabled",
-        "modclienteEnabled":"enabled",
-        "reubicarEnabled":"enabled"
-    },
-    "mjose":{
-        "cpEnabled":"enabled",
-        "finEnabled":"disabled",
-        "inirutaEnabled":"disabled",
-        "newclienteEnabled":"disabled",
-        "arutaEnabled":"disabled",
-        "modclienteEnabled":"disabled",
-        "reubicarEnabled":"enabled"
-    },
-    "invitado":{
-        "cpEnabled":"disabled",
-        "finEnabled":"disabled",
-        "inirutaEnabled":"disabled",
-        "newclienteEnabled":"disabled",
-        "arutaEnabled":"disabled",
-        "modclienteEnabled":"disabled",
-        "reubicarEnabled":"enabled"
-        }
-}
 
-def privilegios(request: object, paquete: map, retornaUser: bool=False) -> map:
-    with SessionSingleton() as sesion:
-        usuario = sesion.getUsuario(request)
-    if usuario in priv:
-        for boton in priv[usuario]:
-            paquete[boton] = priv[usuario][boton]
-    if retornaUser:
-        return {"paquete":paquete, "usuario":usuario}
-    return paquete
+def privilegios(usuario: str, paquete: dict=None) -> map:
+    for rango in ["admin","user","spectator"]:
+        if usuario in params.PRIVILEGIOS[rango]["usuarios"]:
+            if not paquete:
+                return {
+                        "privilegios":params.PRIVILEGIOS[rango]["privilegios"],
+                        "rango":rango
+                        }
+            else:
+                paquete["privilegios"] = params.PRIVILEGIOS[rango]["privilegios"]
+                paquete["rango"] = rango
+                return paquete
 
+def get_hora_actual(obtener_clase: bool=False) -> str:
+    hora_servidor = datetime.now()
+    mes_actual = datetime.today().month
+    if mes_actual in params.MESES_HORARIO_INVIERNO:
+        diferencia_hr = timedelta(hours=params.DIF_HR_INVIERNO)
+    elif mes_actual in params.MESES_HORARIO_VERANO:
+        diferencia_hr = timedelta(hours=params.DIF_HR_VERANO)
+    hora_calculada = hora_servidor + diferencia_hr
+    return hora_calculada if obtener_clase else hora_calculada.strftime(params.FORMATO_HORA)
+
+if __name__ == "__main__":
+    cimprime(titulo="Hora en formato string",hora=get_hora_actual())
+    cimprime(titulo="Hora en formato clase",hora=get_hora_actual(obtener_clase=True))

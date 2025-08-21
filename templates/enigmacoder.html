@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block body %}
+<div class="cuadroCodificador">
+    <br>
+    <label for="clave">
+        Clave maestra:<br>
+        <input type="password" id="clave" style="width: 50%;">
+    </label>
+    <label for="frase">
+        Entrada:<br>
+        <input type="text" id="frase" style="width: 50%;">
+    </label>
+</div><br><hr><br>
+<div id="respuestaServidor">
+    <textarea id="frproc" style="width: 50%;" readonly></textarea>
+</div><br><hr>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='enigmacoder.js') }}"></script>
+{% endblock %}
