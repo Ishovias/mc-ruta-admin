@@ -1,9 +1,13 @@
 {% extends 'index.html' %}
 {% block body %}
-<h3>Ruta actual</h3><hr><br>
-<div id="tablaResultados" class="tabla">
-    <h2>Cargando...</h2>
+<div>
+    <br>
+    <h2>Ruta actual</h2>
+    <br><hr>
+    <div id="sumario"></div>
 </div>
+<hr><br>
+<div id="tablaResultados" class="tabla"></div>
 <br><hr><br>
 {% if datos.rango == "admin" %}
 <div>

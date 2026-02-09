@@ -1,5 +1,5 @@
 # hoja de parametros generales
-IMPRESION_LOGS = True
+IMPRESION_LOGS = False
 
 # Privilegios usuarios
 PRIVILEGIOS = {
@@ -35,22 +35,23 @@ PRIVILEGIOS = {
 }
 
 # ---------- RUTAS DE DESARROLLO --------------
-#LIBRODATOS = "./bd/mediclean_bd.xlsx"
-#LIBROTODO = "./bd/todo_bd.xlsx"
-#LIBRORUTA = "./bd/ruta.xlsx"
-#RUTA_IMPORTACION = "./ruta_import"
+LIBRODATOS = "./bd/mediclean_bd.xlsx"
+LIBROTODO = "./bd/todo_bd.xlsx"
+LIBRORUTA = "./bd/ruta.xlsx"
+RUTA_IMPORTACION = "./ruta_import"
 
 # ---------- RUTAS DE PRODUCCION --------------
-LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
-LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
-LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
-RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
+#LIBRODATOS = "/home/iberoiza/mediclean/bd/mediclean_bd.xlsx"
+#LIBROTODO = "/home/iberoiza/mediclean/bd/todo_bd.xlsx"
+#LIBRORUTA= "/home/iberoiza/mediclean/bd/ruta.xlsx"
+#RUTA_IMPORTACION = "/home/iberoiza/mediclean/ruta_import"
 # UPLOAD_FOLDER = "/home/iberoiza/mediclean/ruta_import"
 
 EXTENSIONES_PERMITDAS = {"xlsx", "xls"}
 MAX_FILAS = 10000
-FORMATO_FECHA = "%Y-%m-%d"
+FORMATO_FECHA = "%d-%m-%Y"
 FORMATO_FECHA_CODIGO = "%Y%m%d"
+FORMATO_FECHA_EXPLORADOR = "%Y-%m-%d"
 FORMATO_HORA = "%H:%M:%S"
 DIF_HR_INVIERNO = -4
 DIF_HR_VERANO = -3
@@ -58,7 +59,7 @@ MESES_HORARIO_INVIERNO = [3,4,5,6,7,8]
 MESES_HORARIO_VERANO = [9,10,11,12,1,2]
 
 CLIENTES = {
-     "nombrehoja": "clientes",
+     "nombrehoja": "clientes",# {{{
      "filainicial": 2,
      "columnas": {
           "id": {"num": 1, "encabezado": "ID"},
@@ -75,11 +76,11 @@ CLIENTES = {
      },
      "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
      "ncolumnas":["id","estado","contrato","rut","cliente","direccion","comuna","telefono","otro"],
-     "encabezados": 1
+     "encabezados": 1# }}}
 }
 
 USUARIO = {
-     "nombrehoja": "usuarios",
+     "nombrehoja": "usuarios",# {{{
      "filainicial": 2,
      "columnas": {
           "usuario": {"num": 1, "encabezado": "USUARIO"},
@@ -87,11 +88,11 @@ USUARIO = {
           "token": {"num": 3, "encabezado": "TOKEN"}
      },
      "columnas_todas": [1, 2, 3],
-     "encabezados": 1
+     "encabezados": 1# }}}
 }
 
 RUTA_ACTUAL = {
-     "nombrehoja": "ruta_actual",
+     "nombrehoja": "ruta_actual",# {{{
      "filainicial": 3,
      "filadatos": 1,
      "columnas": {
@@ -115,11 +116,11 @@ RUTA_ACTUAL = {
      "columnas_datos": [2,3,4,5],
      "ncolumnas_datos":["fecharuta","nombreruta"],
      "ncolumnas_todas": ["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"],
-     "encabezados": 2
+     "encabezados": 2# }}}
 }
 
 RUTAS_BD = {
-     "nombrehoja": "rutas_bd",
+     "nombrehoja": "rutas_bd",# {{{
      "filainicial": 2,
      "columnas": {
           "fecha": {"num": 1, "encabezado": "FECHA"},
@@ -188,11 +189,11 @@ RUTAS_BD = {
           "ba":{"columna":"bolsaamarilla", "nombre": "BOLSA AMARILLA"},
           "bid":{"columna":"bidon_5", "nombre": "BIDON 5 lts"},
           "fram":{"columna":"frascoamalgama", "nombre": "FRASCO AMALGAMAS"}
-         }
+         }# }}}
 }
 
 RUTAS_REGISTROS = {
-    "nombrehoja": "rutas_registros",
+    "nombrehoja": "rutas_registros",# {{{
     "filainicial": 2,
     "columnas": {
         "fecharuta": {"num": 1, "encabezado": "FECHA"},
@@ -209,18 +210,22 @@ RUTAS_REGISTROS = {
         "insumos_usados": {"num": 12, "encabezado": "RESUMEN INSUMOS"}
         },
     "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "encabezados": 1
+    "encabezados": 1# }}}
     }
 
 GASTOS_BD = {
      "nombrehoja": "gastos_bd",
      "filainicial": 2,
      "columnas": {
-          "fecha": 1,
-          "monto": 2,
-          "descripcion": 3,
-          "todas": [1, 2, 3]
+          "fecha": {"num": 1, "encabezado": "Fecha", "type":"date"},
+          "monto": {"num": 2, "encabezado": "Monto", "type":"number"},
+          "descripcion": {"num":3,"encabezado":"Descripcion", "type":"text"},
+          "vigencia": {"num":4,"encabezado":"Vigencia", "type":"text"},
+          "diferencia": {"num":5,"encabezado":"Diferencia final", "type":"text"}
      },
+     "columnas_todas": [1, 2, 3, 4, 5],
+     "ncolumnas_todas": ["fecha","monto","descripcion","vigencia"],
+     "ncolumnas_mostrar":["fecha","monto","descripcion"],
      "encabezados": 1
 }
 

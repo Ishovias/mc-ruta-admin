@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% block body %}
+<h3>Rendicion</h3><hr><br>
+<div>
+    <button id="btn-rendicion-cerrar" value="{{ datos.fecha }}" {% if datos.cerrado %}disabled>Rendicion cerrada{% else %}>Cerrar rendicion{% endif %}</button>
+</div><hr><br>
+<div class="contenedores">
+    <iframe src="{{ url_for('static', filename="rendicion.pdf") }}" width="100%" height="600px">
+        <p>Tu navegador no soporta la visualización de PDFs. 
+        <a href="{{ url_for ('static', filename='rendicion.pdf') }}">Descarga el PDF</a></p>
+    </iframe>
+</div>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='rendicion.js') }}"></script>
+{% endblock %}

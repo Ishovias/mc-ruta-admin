@@ -1,4 +1,3 @@
-import { URL_BASE as urlBase } from './config.js';
 
 const form = document.getElementById('modificaRegistroForm')
 
@@ -9,7 +8,7 @@ form.addEventListener('submit', function(e){
     const idy = boton.value;
     boton.disabled = true;
     boton.textContent = "Espere...";
-    const url = `${urlBase}/rutas/rutabd/modregistro/${idy}`;
+    const url = `/rutas/rutabd/modregistro/${idy}`;
     fetch(url, {
         "method":"put",
         "body":formData

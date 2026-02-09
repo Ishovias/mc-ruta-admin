@@ -1,9 +1,8 @@
-import { URL_BASE as urlBase } from './config.js'
 let temporizador;
 
 document.getElementById('buscacliente').addEventListener('input', (e) => {
     if (e.target.value != "") {
-        const apiUrl = `${urlBase}/clientes/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
+        const apiUrl = `/clientes/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         
         temporizador = setTimeout(() => {
@@ -83,7 +82,7 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
 
 function enviarARutaConNombre(id, fecha) {
     const nombreruta = prompt("Ingresa por favor un nombre de ruta: ");
-    const apiurl = `${urlBase}/rutas/rutaactual/aruta?idclte=${id}&fecha=${fecha}&nombreruta=${encodeURIComponent(nombreruta)}`;
+    const apiurl = `/rutas/rutaactual/aruta?idclte=${id}&fecha=${fecha}&nombreruta=${encodeURIComponent(nombreruta)}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -101,7 +100,7 @@ function enviarARutaConNombre(id, fecha) {
 
 function enviarARuta(id) {
     const fecha = prompt("Ingresa fecha de ruta: ")
-    const apiurl = `${urlBase}/rutas/rutaactual/aruta?idclte=${id}&fecha=${fecha}`
+    const apiurl = `/rutas/rutaactual/aruta?idclte=${id}&fecha=${fecha}`
     fetch(apiurl, {
         "method":"post"
     })

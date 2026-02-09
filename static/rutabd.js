@@ -1,9 +1,8 @@
-import { URL_BASE as urlBase } from './config.js';
 
 let fecharuta;
 
 function getDatosRutabd() {
-    const apiUrl = `${urlBase}/rutas/rutabd/getData`;
+    const apiUrl = `/rutas/rutabd/getData`;
 
     fetch(apiUrl, {
         method: 'POST'
@@ -43,7 +42,24 @@ function getDatosRutabd() {
 }
 
 function marcarStatus(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
+    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
+    return fetch(apiurl, {
+            "method":"post"
+        })
+            .then(response => {
+                if (response.ok) {
+                    return true;
+                }
+            })
+            .catch(error => {
+                alert("Error: "+error);
+                console.error(error);
+                return false;
+            });
+}
+// Trabajando en esta funcion
+function devolverStock(ubicacion) {
+    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
     return fetch(apiurl, {
             "method":"post"
         })
@@ -60,7 +76,7 @@ function marcarStatus(ubicacion) {
 }
 
 function obtenerTotales(fecharuta) {
-    const apiurl = `${urlBase}/rutas/rutabd/getTotales/${fecharuta}`;
+    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -90,7 +106,7 @@ function obtenerTotales(fecharuta) {
 }
 
 function muestraRuta(fecharuta) {
-    const apiurl = `${urlBase}/rutas/rutabd/getRuta/${fecharuta}`;
+    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -150,6 +166,7 @@ function muestraRuta(fecharuta) {
                     if (fila) {
                         fila.style.backgroundColor = "blue";
                     }
+                    devolverStock(ubicacion);
                     marcarStatus(ubicacion).then(response => {
                         muestraRuta(fecharuta)
                     });
@@ -169,7 +186,7 @@ function muestraRuta(fecharuta) {
                     if (fila) {
                         fila.style.backgroundColor = "blue";
                     }
-                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
+                    window.location.href = `/rutas/rutabd/modregistro/${ubicacion}`;
                 }
             });
             areaResultado.appendChild(tabla)
@@ -181,7 +198,7 @@ function muestraRuta(fecharuta) {
 }
 
 function eliminaRegistro(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
     return fetch(apiurl, {
             "method":"post"
         })
@@ -200,7 +217,7 @@ function eliminaRegistro(ubicacion) {
 document.getElementById('buscacliente').addEventListener('input', (e) => {
     let temporizador;
     if (e.target.value != "") {
-        const apiUrl = `${urlBase}/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
+        const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         
         temporizador = setTimeout(() => {
@@ -209,7 +226,8 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                 .then(data => {
                     const contenedor = document.getElementById('tablaResultados')
                     contenedor.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
-                    console.log(data);
+                    const contenedorTotales = document.getElementById('totales');
+                    contenedorTotales.innerHTML = ''; // Limpiar el contenedor de totales
                     if (data.encabezados) {
                         const tabla = document.createElement('table');
                         tabla.className = 'table table-striped table-hover table-bordered';

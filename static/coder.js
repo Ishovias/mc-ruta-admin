@@ -1,4 +1,3 @@
-import { URL_BASE as urlBase } from './config.js'
 let temporizador;
 document.getElementById('frase').addEventListener('input', (e) => {
     if (e.target.value != "") {
@@ -9,7 +8,7 @@ document.getElementById('frase').addEventListener('input', (e) => {
         } else if (tipoCoder.value == "coder2cod") {
             coder = '/coder2/frcod?fr=';
         }
-        const apiUrl = `${urlBase}${coder}${encodeURIComponent(e.target.value)}`;
+        const apiUrl = `${coder}${encodeURIComponent(e.target.value)}`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         temporizador = setTimeout(() => {
             fetch(apiUrl)

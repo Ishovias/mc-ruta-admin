@@ -1,9 +1,8 @@
-import { URL_BASE as urlBase } from './config.js';
 
 let fecharuta;
 
 function getDatosRutabd() {
-    const apiUrl = `${urlBase}/rutas/rutabd/getData`;
+    const apiUrl = `/rutas/rutabd/getData`;
 
     fetch(apiUrl, {
         method: 'POST'
@@ -38,7 +37,7 @@ function getDatosRutabd() {
 }
 
 function obtenerTotales(fecharuta) {
-    const apiurl = `${urlBase}/rutas/rutabd/getTotales/${fecharuta}`;
+    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -67,7 +66,7 @@ function obtenerTotales(fecharuta) {
 }
 
 function muestraRuta(fecharuta) {
-    const apiurl = `${urlBase}/rutas/rutabd/getRuta/${fecharuta}`;
+    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -123,7 +122,7 @@ function muestraRuta(fecharuta) {
 document.getElementById('buscacliente').addEventListener('input', (e) => {
     let temporizador;
     if (e.target.value != "") {
-        const apiUrl = `${urlBase}/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
+        const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         
         temporizador = setTimeout(() => {

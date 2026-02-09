@@ -1,73 +1,14 @@
-from handlers.usuarios import Usuariosbd
 from datetime import datetime, timedelta
-from coder.codexpy2 import Codexpy2
 from functools import wraps
 from flask import request, redirect, url_for
 from cimprime import cimprime
+import conector
 import params
-import secrets
 
-class SessionSingleton:
-     
-    __instance = None
-    __usr = {}
-
-    def __new__(cls):
-        if cls.__instance is None:
-            cls.__instance = super().__new__(cls)
-        return cls.__instance
-
-    def __enter__(self) -> object:
-        return self
-
-    def iniciar_sesion(self, usuario: str, contrasena: str) -> bool:
-        codex = Codexpy2()
-        passwd = codex.encripta(contrasena)
-        with Usuariosbd() as userbd:
-            result = userbd.comprueba_usuario(usuario,passwd)
-            if result:
-                token = secrets.token_urlsafe(32)
-                self.__usr[token] = usuario
-                userbd.registra_token(usuario=usuario,token=token)
-                return token
-        return result
-      
-    def cierra_sesion(self, token: str) -> None:
-        with Usuariosbd() as ubd:
-            ubd.elimina_token(token)
-        del(self.__usr[token])
-      
-    def get_autenticado(self, token: str) -> bool:
-        if token in self.__usr:
-            return True
-        else: # Comprobacion token largo plazo
-            with Usuariosbd() as ubd:
-                usuario = ubd.get_usuario(token)
-                if usuario:
-                     self.__usr[token] = usuario
-                     return True
-        return False
-      
-    def get_usuario(self, token: str) -> str:
-        if token in self.__usr:
-            return self.__usr[token]
-        return None
-
-    def get_users_map(self) -> map:
-        return self.__usr
-
-    def del_user(self, token: str):
-        with Usuariosbd() as ubd:
-            ubd.elimina_token(token)
-        if self.__usr.get(token):
-            del(self.__usr[token])
-
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
-        pass
 
 class VariablesCompartidas:
      
-    __instance = None
+    __instance = None# {{{
     variables = {}
 
     def __new__(cls):
@@ -87,12 +28,12 @@ class VariablesCompartidas:
     def del_variable(self, variable: str) -> bool:
         if variable not in self.variables:
             return False
-        del(self.variables[variable])
+        del(self.variables[variable])# }}}
           
 # ---------------------- VERIFICATOKEN  --------------------------
 def verifica_token(request: object) -> bool:
-    auth_header = request.headers.get("aut")
-    sesion = SessionSingleton()
+    auth_header = request.headers.get("aut")# {{{
+    sesion = conector.SessionSingleton()
     aut = None
     if request.cookies:
         aut = request.cookies.get("aut")
@@ -101,20 +42,20 @@ def verifica_token(request: object) -> bool:
     if aut:
         if sesion.get_autenticado(aut):
             return True
-    return False
+    return False# }}}
 
 def login_required(f):
-    @wraps(f)
+    @wraps(f)# {{{
     def decorated_function(*args, **kwargs):
         if not verifica_token(request):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
-    return decorated_function
+    return decorated_function# }}}
 
 # ---------------------- RETORNO DE PRIVILEGIOS ----------------------
 
 def privilegios(usuario: str, paquete: dict=None) -> map:
-    for rango in ["admin","user","spectator"]:
+    for rango in ["admin","user","spectator"]:# {{{
         if usuario in params.PRIVILEGIOS[rango]["usuarios"]:
             if not paquete:
                 return {
@@ -124,18 +65,6 @@ def privilegios(usuario: str, paquete: dict=None) -> map:
             else:
                 paquete["privilegios"] = params.PRIVILEGIOS[rango]["privilegios"]
                 paquete["rango"] = rango
-                return paquete
+                return paquete# }}}
 
-def get_hora_actual(obtener_clase: bool=False) -> str:
-    hora_servidor = datetime.now()
-    mes_actual = datetime.today().month
-    if mes_actual in params.MESES_HORARIO_INVIERNO:
-        diferencia_hr = timedelta(hours=params.DIF_HR_INVIERNO)
-    elif mes_actual in params.MESES_HORARIO_VERANO:
-        diferencia_hr = timedelta(hours=params.DIF_HR_VERANO)
-    hora_calculada = hora_servidor + diferencia_hr
-    return hora_calculada if obtener_clase else hora_calculada.strftime(params.FORMATO_HORA)
 
-if __name__ == "__main__":
-    cimprime(titulo="Hora en formato string",hora=get_hora_actual())
-    cimprime(titulo="Hora en formato clase",hora=get_hora_actual(obtener_clase=True))

@@ -1,4 +1,3 @@
-import { URL_BASE as urlBase } from './config.js'
 let temporizador;
 document.getElementById('frase').addEventListener('input', (e) => {
     if (e.target.value != "") {
@@ -6,7 +5,7 @@ document.getElementById('frase').addEventListener('input', (e) => {
             frase: e.target.value,
             clave: document.getElementById('clave').value
         };
-        const apiUrl = `${urlBase}/enicod`;
+        const apiUrl = `/enicod`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         temporizador = setTimeout(() => {
             fetch(apiUrl, {
