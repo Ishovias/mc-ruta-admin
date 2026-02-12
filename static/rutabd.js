@@ -59,7 +59,7 @@ function marcarStatus(ubicacion) {
 }
 // Trabajando en esta funcion
 function devolverStock(ubicacion) {
-    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
+    const apiurl = `/rutas/inventario/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
     return fetch(apiurl, {
             "method":"post"
         })

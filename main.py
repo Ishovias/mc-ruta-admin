@@ -215,7 +215,7 @@ def rutaactual_movpos(pos_pos):# {{{
     return jsonify({"resultado":conector.movpos(pos_a,pos_b)})# }}}
 # }}}
 
-# ============== RUTAS BD ========================
+# ============== RUTAS BD ===================
 # {{{
 @app.route('/rutas/rutabd')
 @login_required
@@ -267,9 +267,20 @@ def rutabd_mod_registro(idy):# {{{
         return render_template('rutabd_modregistro.html',datos=modregistro.get("render"))
     else:
         return jsonify(modregistro)#}}}
+
+@app.route('/rutas/rutabd/devstock/<idy>', methods=["GET","PUT"])
+@login_required
+def rutabd_devstock(idy):
+    ubicacion = int(idy)
+    detalle = conector.get_dato("rutabd",fila=ubicacion,columna="detalleretiro")
+    decodificado = conector.rutabd_obsdecode(detalle)
+    if type(decodificado) == dict:
+        for col in decodificado:
+
+
 # }}}
 
-# ------------------- INVENTARIO ----------------------------
+# ------------ INVENTARIO -------------------
 # {{{
 @app.route('/inventario')
 @login_required
@@ -298,6 +309,7 @@ def inventario_modifica():# {{{
         datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))
         datos["tituloPagina"] = "Modificacion de inventario"
         return render_template('inventario_mod.html', datos=datos)#}}}
+
 # }}}
 
 # ========== UPLOAD RUTA  ===============

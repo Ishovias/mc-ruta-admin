@@ -18,6 +18,7 @@ __all__ = [
         'rutabd_modregistro',
         'inv_registra_mov',
         'inv_get_stock',
+        'inv_suma_stock',
         'inv_mod_stock',
         'extrae_ruta',
         'importa_datos',
@@ -210,6 +211,11 @@ def rutabd_modregistro(request: object, idy: int) -> dict:
                 return {"resultado":False}
             else:
                 return {"resultado":True}# }}}
+
+def rutabd_obsdecode(obs: str) -> dict:
+    with handlers.RutaBD() as rbd:
+        return rbd.obsdecoder(obs,solo_decodifica=True)
+
 # }}}
 # ------------ CONEXIONES INVENTARIO ----------
 # {{{
@@ -220,6 +226,22 @@ def inv_registra_mov(data: dict) -> None:
 def inv_get_stock() -> dict:
     with handlers.Inventario() as inv:# {{{
         return inv.get_stock()# }}}
+
+def inv_suma_stock(cantidad: any=None, columna: any=None, conjunto: dict=None, resta: bool=False) -> None:
+    with handlers.Inventario() as inv:
+        if conjunto:
+            for col in conjunto:
+                stock = int(inv.getDato(
+                        fila=inv.hoja_actual.get("filaStockActual"),
+                        columna=col
+                        ))
+                print("Stock actual ",col,": ",stock) # test
+                cantidad = int(conjunto.get(col))
+                print("Stock resultante: ",stock + cantidad if not resta else stock - cantidad)
+                inv.modifica_stock(
+                        cantidad=stock + cantidad if not resta else stock - cantidad, # test
+                        columna=col
+                        )
 
 def inv_mod_stock(cantidad: any, columna: any) -> None:
     with handlers.Inventario() as inv:# {{{
