@@ -454,21 +454,22 @@ class RutaBD(bdmediclean):
                  break
          return range(filainicio,filafinal,1)
 
-     def obsdecoder(self, observacion: str, fila: int) -> None:
+     def obsdecoder(self, observacion: str, fila: int=None, solo_decodifica: bool=False) -> None:
          codes = self.hoja_actual["obsdecoder"]
          data = {}
          if not observacion[-1].isspace():
              observacion = observacion + " "
          for code in codes.keys():
              if code in observacion:
-                 col = codes[code]["columna"]
                  cantidad = int(observacion.split(code)[1].split(" ")[0])
-                 super().putDato(
-                         dato=cantidad,
-                         columna=col,
-                         fila=fila
-                         )
+                 col = codes[code]["columna"]
                  data[col] = int(cantidad)
+                 if not solo_decodifica:
+                     super().putDato(
+                             dato=cantidad,
+                             columna=col,
+                             fila=fila
+                             )
          return data
 
      def kgtotales(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:

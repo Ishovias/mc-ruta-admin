@@ -16,12 +16,15 @@ __all__ = [
         'marcar_status',
         'rutas_buscar_dato',
         'rutabd_modregistro',
+        'rutabd_obsdecoder',
         'inv_registra_mov',
         'inv_get_stock',
         'inv_mod_stock',
+        'inv_suma_stock',
         'extrae_ruta',
         'importa_datos',
         'eliminar_ubicacion',
+        'get_dato',
         'rendicion',
         'get_campos_formulario',
         'get_data',
@@ -210,6 +213,13 @@ def rutabd_modregistro(request: object, idy: int) -> dict:
                 return {"resultado":False}
             else:
                 return {"resultado":True}# }}}
+
+def rutabd_obsdecoder(obs: str) -> dict:
+    with handlers.RutaBD() as rbd:# {{{
+        data = rbd.obsdecoder(obs,solo_decodifica=True)
+    return data
+    # }}}
+
 # }}}
 # ------------ CONEXIONES INVENTARIO ----------
 # {{{
@@ -220,6 +230,27 @@ def inv_registra_mov(data: dict) -> None:
 def inv_get_stock() -> dict:
     with handlers.Inventario() as inv:# {{{
         return inv.get_stock()# }}}
+
+def inv_suma_stock(cantidad: any=None, columna: any=None, conjunto: dict=None, resta: bool=False) -> bool:
+    try:# {{{
+        with handlers.Inventario() as inv:
+            if conjunto:
+                for col in conjunto:
+                    stock = int(inv.getDato(
+                            fila=inv.hoja_actual.get("filaStockActual"),
+                            columna=col
+                            ))
+                    cantidad = int(conjunto.get(col))
+                    inv.modifica_stock(
+                            cantidad=stock + cantidad if not resta else stock - cantidad,
+                            columna=col
+                            )
+    except Exception as e:
+        print("Error en conector/inv_suma_stock: ",e)
+        return False
+    else:
+        return True
+    # }}}
 
 def inv_mod_stock(cantidad: any, columna: any) -> None:
     with handlers.Inventario() as inv:# {{{

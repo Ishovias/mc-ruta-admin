@@ -1,9 +1,7 @@
-#from handlers.gastos import Gastos
-from utils import formato_moneda
-import os
+from handlers import RutaBD
+from conector import inv_suma_stock
 
-print(formato_moneda("-1000000"))
-print(formato_moneda("-100000"))
-print(formato_moneda("-10000"))
-print(formato_moneda("-1000"))
-print(formato_moneda("-100"))
+with RutaBD() as rbd:
+    conjunto = rbd.obsdecoder("ca3l1 ba1", solo_decodifica=True)
+inv_suma_stock(conjunto=conjunto)
+

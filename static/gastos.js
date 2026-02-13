@@ -2,8 +2,8 @@
 function getFechas() {
     const select = document.getElementById('fechas-almacenadas');//{{{
     select.innerHTML = '<option value="" default selected>Cargando fechas ...</option>'
-    const url = `${urlBase}/gastos/getFechas`;
-    fetch(url)
+    const url = `/gastos/getFechas`;
+    return fetch(url)
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('fechas-almacenadas');
@@ -29,6 +29,7 @@ function getFechas() {
             const botonFormulario = document.getElementById('btn-add-gasto');
             botonFormulario.textContent = "Agregar gasto";
             botonFormulario.disabled = false;
+            return data
         })
         .catch(error => {
             alert(`Error en fetch: ${error} - ${error.message}`)
@@ -40,8 +41,8 @@ function getDatos(fecha="vigente") {
     areaTotales.innerHTML = '<h3>Cargando totales...</h3>';
     const areaResultados = document.getElementById('tablaResultados');
     areaResultados.innerHTML = '<h3>Cargando...</h3>';
-    const url = `${urlBase}/gastos/getData/${fecha}`;
-    fetch(url)
+    const url = `/gastos/getData/${fecha}`;
+    return fetch(url)
     .then(response => response.json())
     .then(data => {
         areaResultados.innerHTML = '';
@@ -88,6 +89,7 @@ function getDatos(fecha="vigente") {
         areaResultados.appendChild(tabla);
         // AREA TOTALES
         insertarSumarioRendir(areaTotales,data,fecha);
+        return data
     })
     .catch(error => {
         console.error(error);
@@ -182,7 +184,5 @@ function insertarSumarioRendir(areaInsertar,data,fecha){
     });//}}}
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    getFechas();
-    getDatos();
-});
+getFechas().then(() => getDatos());
+

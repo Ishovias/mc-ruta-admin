@@ -57,16 +57,14 @@ function marcarStatus(ubicacion) {
                 return false;
             });
 }
-// Trabajando en esta funcion
+
 function devolverStock(ubicacion) {
-    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
+    const apiurl = `/rutas/rutabd/devstock/${ubicacion}`;
     return fetch(apiurl, {
-            "method":"post"
+        "method":"put"
         })
             .then(response => {
-                if (response.ok) {
-                    return true;
-                }
+                return response.json();
             })
             .catch(error => {
                 alert("Error: "+error);
@@ -166,10 +164,13 @@ function muestraRuta(fecharuta) {
                     if (fila) {
                         fila.style.backgroundColor = "blue";
                     }
-                    devolverStock(ubicacion);
-                    marcarStatus(ubicacion).then(response => {
-                        muestraRuta(fecharuta)
-                    });
+                    devolverStock(ubicacion).then(data => {
+                        if (!data.resultado) {
+                            alert("Error al intentar devolver el stock!");
+                        }
+                    })
+                    .then(() => marcarStatus(ubicacion))
+                    .then(() => muestraRuta(fecharuta));
                 }
                 if (e.target.classList.contains('btn-eliminar')) {
                     if (fila) {
