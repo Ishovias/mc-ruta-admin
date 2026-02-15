@@ -1,17 +1,16 @@
-import { URL_BASE as urlBase } from './config.js';
 
 function getDatos() {
-    const apiUrl = `${urlBase}/rutas/rutaactual/getData`;
+    const apiUrl = `/rutas/rutaactual/getData`;//{{{
+    const areaResultados = document.getElementById('tablaResultados');
+    areaResultados.innerHTML = "<h2>Cargando...</h2>";
 
     fetch(apiUrl, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
-        const areaResultados = document.getElementById('tablaResultados');
         areaResultados.innerHTML = "";
         const listado = document.createElement('ul');
-
         data.datos.forEach(fila => {
             const li = document.createElement('li');
             if (fila[0] != "Sin datos") {
@@ -63,6 +62,7 @@ function getDatos() {
                     confpos(ubicacion,observaciones,"REALIZADO").then(resultado => {
                         if (resultado) {
                             li.remove();
+                            getSumario();
                         }
                     });
                 }
@@ -76,6 +76,7 @@ function getDatos() {
                     confpos(ubicacion,observaciones,"POSPUESTO").then(resultado => {
                         if (resultado) {
                             li.remove();
+                            getSumario();
                         }
                     });
                 }
@@ -93,19 +94,40 @@ function getDatos() {
                     if (li) {
                         li.style.backgroundColor = "blue";
                     }
-                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
+                    window.location.href = `/rutas/rutabd/modregistro/${ubicacion}`;
                 }
         });
         areaResultados.appendChild(listado);
-
+        getSumario();
     })
     .catch(error => {
         console.log(error)
-    });
+    });//}}}
+}
+
+function getSumario() {
+    const url = `/rutas/sumario/rutaactual`;//{{{
+    const sumario = document.getElementById('sumario');
+    sumario.innerHTML = "<h3>Cargando sumario...</h3>";
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if ('realizados' in data) {
+                sumario.innerHTML = `
+                    <h3>Clientes restantes: ${data.enruta}</h3>
+                    <h3>Clientes postergados: ${data.postergados}</h3>
+                    <h3>Clientes realizados: ${data.realizados}</h3>`;
+            } else {
+                sumario.innerHTML = `<h3>No hay ruta en curso</h3>`;
+            }
+        })
+        .catch(error => {
+            alert(`Error en fetch: ${error}`);
+        });//}}}
 }
 
 function confpos(idcliente,observaciones,accion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/confpos?idclte=${idcliente}&accion=${accion}&observaciones=${observaciones}`;
+    const apiurl = `/rutas/rutaactual/confpos?idclte=${idcliente}&accion=${accion}&observaciones=${observaciones}`;//{{{
     return fetch(apiurl, {
             "method":"post"
         })
@@ -118,11 +140,11 @@ function confpos(idcliente,observaciones,accion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
 function eliminarCliente(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;//{{{
     return fetch(apiurl, {
             "method":"post"
         })
@@ -135,11 +157,11 @@ function eliminarCliente(ubicacion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
 function eliminaRegistro(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;//{{{
     return fetch(apiurl, {
             "method":"post"
         })
@@ -152,16 +174,16 @@ function eliminaRegistro(ubicacion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
 document.getElementById('btn-movpos').addEventListener('click', function(e) {
-    const boton = e.target;
+    const boton = document.getElementById('btn-movpos');//{{{
     boton.textContet = "Moviendo...";
     boton.disabled = true;
     const posA = document.getElementById('pos-a');
     const posB = document.getElementById('pos-b');
-    const url = `${urlBase}/rutas/rutaactual/movpos/${posA.value}-${posB.value}`;
+    const url = `/rutas/rutaactual/movpos/${posA.value}-${posB.value}`;
     fetch(url, {
         "method":"put"
     })
@@ -172,16 +194,18 @@ document.getElementById('btn-movpos').addEventListener('click', function(e) {
             }
             boton.textContet = "Mover";
             boton.disabled = false;
+            posA.value = "";
+            posB.value = "";
             getDatos();
         })
         .catch(error => {
             alert(`Error en fetch: ${error} - ${error.message}`)
-        });
+        });//}}}
 });
 
 document.getElementById('form-clte-manual').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const apiUrl = `${urlBase}/rutas/rutaactual/clientemanual`;
+    e.preventDefault();//{{{
+    const apiUrl = `/rutas/rutaactual/clientemanual`;
     const formData = new FormData(this);
     fetch(apiUrl, {
             method: 'POST',
@@ -195,7 +219,7 @@ document.getElementById('form-clte-manual').addEventListener('submit', function(
         })
         .catch(error => {
             alert("Error en peticion: "+error);
-        });
+        });//}}}
 });
 
 getDatos();

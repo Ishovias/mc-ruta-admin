@@ -1,8 +1,7 @@
-import { URL_BASE as urlBase } from './config.js'
 let temporizador;
 
 function enviarARuta(idcliente) {
-    const apiUrl = `${urlBase}/clientes/aruta/${idcliente}`;
+    const apiUrl = `/clientes/aruta/${idcliente}`;
     fetch(apiUrl)
         .then(response => {
             if (!response.ok) throw new Error("Error en la respuesta");
@@ -17,7 +16,7 @@ function enviarARuta(idcliente) {
 
 function escuchadorCoder2() {
     document.getElementById('coder2').addEventListener('input', (e) => {
-        const apiUrl = `${urlBase}/coder2/frcod?fr=${encodeURIComponent(e.target.value)}`;
+        const apiUrl = `/coder2/frcod?fr=${encodeURIComponent(e.target.value)}`;
         
         clearTimeout(temporizador); // Limpia el temporizador anterior
         
@@ -47,7 +46,7 @@ function procesarFormCliente(elementoId, rutaApi, rutaRedireccion) {
         const textoBoton = btnSubmit.textContent;
         btnSubmit.disabled = true;
         btnSubmit.textContent = "Enviando...";
-        const apiUrl = `${urlBase}${rutaApi}`;
+        const apiUrl = `${rutaApi}`;
 
         fetch(apiUrl ,{
             method: 'POST',
@@ -70,7 +69,7 @@ function procesarFormCliente(elementoId, rutaApi, rutaRedireccion) {
             if (data.newClienteOK) {
                 areaRespuesta.insertAdjacentHTML('beforeend','<span>Exito!!... redirigiendo</span>');
                 setTimeout(() => {
-                    window.location.href = `${urlBase}${rutaRedireccion}`;
+                    window.location.href = `${rutaRedireccion}`;
                 },3000);
             } else {
                 areaRespuesta.insertAdjacentHTML('beforeend','<span>Error en datos... Reintentar</span>');
@@ -87,7 +86,7 @@ function procesarFormCliente(elementoId, rutaApi, rutaRedireccion) {
 function escuchaBuscaCliente() {
     document.getElementById('buscacliente').addEventListener('input', (e) => {
         if (e.target.value != "") {
-            const apiUrl = `${urlBase}/clientes/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
+            const apiUrl = `/clientes/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
             clearTimeout(temporizador); // Limpia el temporizador anterior
             
             temporizador = setTimeout(() => {

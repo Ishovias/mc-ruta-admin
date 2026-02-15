@@ -1,7 +1,6 @@
-import { URL_BASE as urlBase } from './config.js';
 
 function getDatos() {
-    const apiUrl = `${urlBase}/rutas/rutaactual/getData`;
+    const apiUrl = `/rutas/rutaactual/getData`;
 
     fetch(apiUrl, {
         method: 'POST'
@@ -109,7 +108,7 @@ function getDatos() {
                     if (fila) {
                         fila.style.backgroundColor = "blue";
                     }
-                    window.location.href = `${urlBase}/rutas/rutabd/modregistro/${ubicacion}`;
+                    window.location.href = `/rutas/rutabd/modregistro/${ubicacion}`;
                 }
         });
         areaResultados.appendChild(tabla)
@@ -121,7 +120,7 @@ function getDatos() {
 }
 
 function confpos(idcliente,observaciones,accion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/confpos?idclte=${idcliente}&accion=${accion}&observaciones=${observaciones}`;
+    const apiurl = `/rutas/rutaactual/confpos?idclte=${idcliente}&accion=${accion}&observaciones=${observaciones}`;
     return fetch(apiurl, {
             "method":"post"
         })
@@ -138,7 +137,7 @@ function confpos(idcliente,observaciones,accion) {
 }
 
 function eliminarCliente(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
     return fetch(apiurl, {
             "method":"post"
         })
@@ -155,7 +154,7 @@ function eliminarCliente(ubicacion) {
 }
 
 function eliminaRegistro(ubicacion) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
     return fetch(apiurl, {
             "method":"post"
         })
@@ -177,7 +176,7 @@ document.getElementById('btn-movpos').addEventListener('click', function(e) {
     boton.disabled = true;
     const posA = document.getElementById('pos-a');
     const posB = document.getElementById('pos-b');
-    const url = `${urlBase}/rutas/rutaactual/movpos/${posA.value}-${posB.value}`;
+    const url = `/rutas/rutaactual/movpos/${posA.value}-${posB.value}`;
     fetch(url, {
         "method":"put"
     })
@@ -197,7 +196,7 @@ document.getElementById('btn-movpos').addEventListener('click', function(e) {
 
 document.getElementById('form-clte-manual').addEventListener('submit', function(e) {
     e.preventDefault();
-    const apiUrl = `${urlBase}/rutas/rutaactual/clientemanual`;
+    const apiUrl = `/rutas/rutaactual/clientemanual`;
     const formData = new FormData(this);
     fetch(apiUrl, {
             method: 'POST',

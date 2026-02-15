@@ -4,7 +4,7 @@ import params
 
 class RutaActual(bdmediclean):
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:# {{{
         super().__init__(params.RUTA_ACTUAL, otrolibro=params.LIBRORUTA)
 
     def ruta_existente(self) -> bool:
@@ -101,11 +101,11 @@ class RutaActual(bdmediclean):
                         )
             filalibre += 1
         else:
-            return True
+            return True# }}}
 
 class RutaRegistros(bdmediclean):
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:# {{{
         super().__init__(params.RUTAS_REGISTROS)
 
     def nueva_ruta(self, fecha: str, ruta: str) -> None:
@@ -178,11 +178,11 @@ class RutaRegistros(bdmediclean):
                     dato=datos[col],
                     columna=col
                     )
-        return True
+        return True# }}}}}}
 
 class RutaBD(bdmediclean):
 
-     kilosItems = {
+     kilosItems = {# {{{
             "farmaco":0,
             "patologico":0,
             "contaminado":0,
@@ -232,6 +232,44 @@ class RutaBD(bdmediclean):
                      idy=True
                  )
          return resultados
+
+     def get_nf_rutaactual(self) -> map:
+         fila = super().buscadato(
+                 dato="enruta",
+                 columna="status"
+                 )
+         return {
+                 "fecha":super().getDato(
+                         fila=fila,
+                         columna="fecha"
+                         ),
+                 "nombre":super().getDato(
+                         fila=fila,
+                         columna="ruta"
+                         )
+                 } if fila else None
+
+     def sumario(self, status: str="enruta", fecha: str=None) -> int:
+         count = 0
+         if fecha:
+             filas = super().buscadato(
+                     dato=fecha,
+                     columna="fecha",
+                     buscartodo=True
+                     )
+             datos = super().listar(filas=filas,solodatos=True)
+             index = self.hoja_actual["columnas"]["status"]["num"] - 1
+             for fila in datos:
+                 if fila[index] == status:
+                     count += 1
+         else:
+             filas = super().buscadato(
+                     dato=status,
+                     columna="status",
+                     buscartodo=True
+                     )
+             count = len(filas)
+         return count
 
      def cliente_a_ruta(self, mapdatos: dict, fecha: str, nombreruta: str=None) -> bool:
          fila=super().buscafila()
@@ -367,6 +405,17 @@ class RutaBD(bdmediclean):
                  columna="fecha",
                  buscartodo=True
                  )
+         clts_realizados = 0
+         clts_pospuestos = 0
+         for fila in filas:
+             status = super().getDato(
+                     fila=fila,
+                     columna="status"
+                     )
+             if status == "REALIZADO":
+                 clts_realizados += 1
+             elif status == "POSPUESTO":
+                 clts_pospuestos += 1
          items_kilos = self.hoja_actual["kgcols"]
          items_insumos = self.hoja_actual["itemscols"]
          items = items_kilos + items_insumos
@@ -386,6 +435,8 @@ class RutaBD(bdmediclean):
          for item in resultados.keys():
              if resultados[item][1] > 0:
                  respuesta.append(resultados[item])
+         respuesta.append(["Clientes realizados", clts_realizados])
+         respuesta.append(["Clientes pospuestos", clts_pospuestos])
          return respuesta
 
      def _obtener_rangofecha(self, fechainicio: str=None, fechafinal: str=None) -> range: 
@@ -403,21 +454,22 @@ class RutaBD(bdmediclean):
                  break
          return range(filainicio,filafinal,1)
 
-     def obsdecoder(self, observacion: str, fila: int) -> None:
+     def obsdecoder(self, observacion: str, fila: int=None, solo_decodifica: bool=False) -> None:
          codes = self.hoja_actual["obsdecoder"]
          data = {}
          if not observacion[-1].isspace():
              observacion = observacion + " "
          for code in codes.keys():
              if code in observacion:
-                 col = codes[code]["columna"]
                  cantidad = int(observacion.split(code)[1].split(" ")[0])
-                 super().putDato(
-                         dato=cantidad,
-                         columna=col,
-                         fila=fila
-                         )
+                 col = codes[code]["columna"]
                  data[col] = int(cantidad)
+                 if not solo_decodifica:
+                     super().putDato(
+                             dato=cantidad,
+                             columna=col,
+                             fila=fila
+                             )
          return data
 
      def kgtotales(self, fechainicio: str=None, fechafinal: str=None, filaCliente: int=None) -> str:
@@ -582,11 +634,11 @@ class RutaBD(bdmediclean):
             cimprime(titulo="Error en handler RutaBD",error=e)
             return False
         else:
-            return True
+            return True# }}}
 
 class RutaImportar(bdmediclean):
 
-     def __init__(self, archivo: str) -> None:
+     def __init__(self, archivo: str) -> None:# {{{
           super().__init__(params.RUTA_ACTUAL, otrolibro=str(archivo))
           self.hoja_actual = params.RUTA_ACTUAL
 
@@ -607,4 +659,4 @@ class RutaImportar(bdmediclean):
                      solodatos=True
                      ),
                  "orden_columnas":columnas_datos
-                 }
+                 }# }}}

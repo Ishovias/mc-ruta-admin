@@ -1,7 +1,6 @@
-import { URL_BASE as urlBase } from './config.js';
 
 function getDatos() {
-    const apiUrl = `${urlBase}/rutas/rutaactual/getData`;
+    const apiUrl = `/rutas/rutaactual/getData`;
 
     fetch(apiUrl, {
         method: 'POST'

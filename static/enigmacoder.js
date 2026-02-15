@@ -1,17 +1,20 @@
 let temporizador;
 document.getElementById('frase').addEventListener('input', (e) => {
     if (e.target.value != "") {
-        const tipoCoder = document.getElementById('tipoaccion');
-        let coder = '/coder2/frdec?fr=';
-        if (tipoCoder.value == "coder1") {
-            coder = '/coder1/frcod?fr=';
-        } else if (tipoCoder.value == "coder2cod") {
-            coder = '/coder2/frcod?fr=';
-        }
-        const apiUrl = `${coder}${encodeURIComponent(e.target.value)}`;
+        const datos = {
+            frase: e.target.value,
+            clave: document.getElementById('clave').value
+        };
+        const apiUrl = `/enicod`;
         clearTimeout(temporizador); // Limpia el temporizador anterior
         temporizador = setTimeout(() => {
-            fetch(apiUrl)
+            fetch(apiUrl, {
+                "method": "post",
+                "headers": {
+                    'Content-Type':'application/json'
+                },
+                "body": JSON.stringify(datos)
+            })
                 .then(response => response.json())
                 .then(data => {
                     const contenedor = document.getElementById('frproc');

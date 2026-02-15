@@ -193,6 +193,10 @@ footer {
     color: #555;
 }
 
+.observaciones {
+    width: 400px;
+}
+
 /* ==== RESPONSIVE ==== */
 @media (max-width: 768px) {
     nav.botonera {

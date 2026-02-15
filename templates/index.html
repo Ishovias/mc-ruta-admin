@@ -6,7 +6,7 @@
         <meta name="description" content="Descripción breve de la página para SEO">
         <title>Mediclean Ruta (Isaias B)</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <!--<link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" sizes="32x32">
     </head>
 <body>
     <header>
@@ -51,6 +51,14 @@
                 <button id="inventario" name="inventario">
                     Inventario
                     <span class="icon">&#x1F4DD</span>
+                </button>
+            </form>
+            {% endif %}
+            {% if "btnInventario" in datos.privilegios %}
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('gastos') }}" method="get">
+                <button id="gastos" name="gastos">
+                    Gastos
+                    <span class="icon">&#128176</span>
                 </button>
             </form>
             {% endif %}

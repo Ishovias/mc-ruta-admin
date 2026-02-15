@@ -1,7 +1,6 @@
-import { URL_BASE as urlBase } from './config.js';
 
 function getStock() {
-        const apiUrl = `${urlBase}/inventario/getstock`;
+        const apiUrl = `/inventario/getstock`;
         fetch(apiUrl, {
             method: 'GET'
         })
@@ -52,7 +51,7 @@ function getStock() {
 }
 
 function modificaStock(columna, cantidad) {
-    const apiurl = `${urlBase}/inventario/modifica?col=${columna}&cant=${cantidad}`;
+    const apiurl = `/inventario/modifica?col=${columna}&cant=${cantidad}`;
     fetch(apiurl, {
         "method":"post"
     })
@@ -68,7 +67,7 @@ function modificaStock(columna, cantidad) {
 }
 
 function eliminarCliente(ubicacion, funcionCallback, argumento = null) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
     fetch(apiurl, {
         "method":"post"
     })

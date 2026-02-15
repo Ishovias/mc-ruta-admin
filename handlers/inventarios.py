@@ -8,7 +8,7 @@ class Inventario(bdmediclean):
         super().__init__(params.INVENTARIOS)
 
     def get_stock(self) -> list:
-        columnas = list(self.hoja_actual["columnas"].keys())
+        columnas = list(self.hoja_actual["columnas"].keys())# {{{
         columnas.remove("fecha")
         columnas.remove("id")
         resultado = []
@@ -21,10 +21,10 @@ class Inventario(bdmediclean):
                     columna=columna
                     )
                 ])
-        return resultado
+        return resultado# }}}
 
     def registra_movimiento(self, datos: dict) -> None:
-        columnas = self.hoja_actual["columnas_ruta"].copy()
+        columnas = self.hoja_actual["columnas_ruta"].copy()# {{{
         fila = super().buscafila()
         fila_stock = self.hoja_actual.get("filaStockActual")
         for columna in columnas:
@@ -53,17 +53,17 @@ class Inventario(bdmediclean):
                     dato=datos.get(columna),
                     fila=fila,
                     columna=columna
-                    )
+                    )# }}}
 
     def modifica_stock(self, cantidad: str, columna: str) -> None:
-        super().putDato(
+        super().putDato(# {{{
                 dato=int(cantidad),
                 fila=self.hoja_actual.get("filaStockActual"),
                 columna=columna
-                )
+                )# }}}
 
     def reversa_stock(self, fecha: str, id_cliente: str) -> None:
-        filas = super().buscadato(
+        filas = super().buscadato(# {{{
                 dato=fecha,
                 columna="fecha",
                 buscartodo=True
@@ -87,4 +87,4 @@ class Inventario(bdmediclean):
                             fila=fila_stock,
                             columna=columna
                             )
-                        stock_actual = int(stock_actual) + int(dato)
+                        stock_actual = int(stock_actual) + int(dato)# }}}

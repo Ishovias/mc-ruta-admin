@@ -1,7 +1,6 @@
-import { URL_BASE as urlBase } from './config.js';
 
 function getStock() {
-    const apiUrl = `${urlBase}/inventario/getstock`;
+    const apiUrl = `/inventario/getstock`;
 
     fetch(apiUrl, {
         method: 'GET'
@@ -32,7 +31,7 @@ function getStock() {
 
 
 function eliminarCliente(ubicacion, funcionCallback, argumento = null) {
-    const apiurl = `${urlBase}/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
     fetch(apiurl, {
         "method":"post"
     })
