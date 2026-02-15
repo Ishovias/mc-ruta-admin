@@ -19,6 +19,7 @@ __all__ = [
         'rutabd_obsdecoder',
         'inv_registra_mov',
         'inv_get_stock',
+        'inv_suma_stock',
         'inv_mod_stock',
         'inv_suma_stock',
         'extrae_ruta',
