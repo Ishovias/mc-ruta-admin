@@ -3,9 +3,8 @@ function getDatos() {
     const apiUrl = `/rutas/rutaactual/getData`;//{{{
     const areaResultados = document.getElementById('tablaResultados');
     areaResultados.innerHTML = "<h2>Cargando...</h2>";
-
     fetch(apiUrl, {
-        method: 'POST'
+        method: 'POST'//{{{
     })
     .then(response => response.json())
     .then(data => {
@@ -101,9 +100,35 @@ function getDatos() {
         getSumario();
     })
     .catch(error => {
-        console.log(error)
-    });//}}}
-}
+        console.log(error)//}}}
+    });
+    const apiUrlStock = `/inventario/getstock`;
+    fetch(apiUrlStock, {
+        method: 'GET'//{{{
+    })
+    .then(response => response.json())
+    .then(data => {
+        const areaStock = document.getElementById('stock');
+        areaStock.innerHTML = "";
+        const ulf = document.createElement('ul');
+        data.forEach(item => {
+            const li = document.createElement('li');
+            let color = "#ec7c7cfd";
+            if (Number(item[3]) > 0 && Number(item[3]) < 50) {
+                color = "#e7da28fd";
+            } else if (Number(item[3]) >= 50) {
+                color = "#6ab13cfd";
+            }
+            li.innerHTML = `${item[1]}: <strong style="background-color: ${color};">${item[3]} unids</strong>`;
+            ulf.appendChild(li);
+        });
+        areaStock.appendChild(ulf);
+    })
+    .catch(error => {
+        console.log(error);//}}}
+    });
+
+}//}}}
 
 function getSumario() {
     const url = `/rutas/sumario/rutaactual`;//{{{

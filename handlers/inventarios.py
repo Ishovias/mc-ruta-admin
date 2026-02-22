@@ -19,6 +19,10 @@ class Inventario(bdmediclean):
                 super().getDato(
                     fila=self.hoja_actual.get("filaStockActual"),
                     columna=columna
+                    ),
+                super().getDato(
+                    fila=self.hoja_actual.get("filaStockFurgon"),
+                    columna=columna
                     )
                 ])
         return resultado# }}}
@@ -26,7 +30,7 @@ class Inventario(bdmediclean):
     def registra_movimiento(self, datos: dict) -> None:
         columnas = self.hoja_actual["columnas_ruta"].copy()# {{{
         fila = super().buscafila()
-        fila_stock = self.hoja_actual.get("filaStockActual")
+        fila_stock = [self.hoja_actual.get("filaStockActual"),self.hoja_actual.get("filaStockFurgon")]
         for columna in columnas:
             if columna in datos.keys():
                 dato = datos.get(columna)
@@ -35,19 +39,20 @@ class Inventario(bdmediclean):
                         fila=fila,
                         columna=columna
                         )
-                modificacion_stock = super().getDato(
-                        fila=fila_stock,
-                        columna=columna
-                        )
-                if modificacion_stock:
-                    modificacion_stock = int(modificacion_stock) - int(dato)
-                else:
-                    modificacion_stock = 0
-                super().putDato(
-                        dato=modificacion_stock,
-                        fila=fila_stock,
-                        columna=columna
-                        )
+                for fstock in fila_stock:
+                    modificacion_stock = super().getDato(
+                            fila=fstock,
+                            columna=columna
+                            )
+                    if modificacion_stock:
+                        modificacion_stock = int(modificacion_stock) - int(dato)
+                    else:
+                        modificacion_stock = 0
+                    super().putDato(
+                            dato=modificacion_stock,
+                            fila=fstock,
+                            columna=columna
+                            )
         for columna in ["fecha","id"]:
             super().putDato(
                     dato=datos.get(columna),
@@ -55,10 +60,10 @@ class Inventario(bdmediclean):
                     columna=columna
                     )# }}}
 
-    def modifica_stock(self, cantidad: str, columna: str) -> None:
+    def modifica_stock(self, cantidad: str, columna: str, fila: str="filaStockActual") -> None:
         super().putDato(# {{{
                 dato=int(cantidad),
-                fila=self.hoja_actual.get("filaStockActual"),
+                fila=self.hoja_actual.get(fila),
                 columna=columna
                 )# }}}
 

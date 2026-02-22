@@ -19,7 +19,6 @@ __all__ = [
         'rutabd_obsdecoder',
         'inv_registra_mov',
         'inv_get_stock',
-        'inv_suma_stock',
         'inv_mod_stock',
         'inv_suma_stock',
         'extrae_ruta',
@@ -237,15 +236,17 @@ def inv_suma_stock(cantidad: any=None, columna: any=None, conjunto: dict=None, r
         with handlers.Inventario() as inv:
             if conjunto:
                 for col in conjunto:
-                    stock = int(inv.getDato(
-                            fila=inv.hoja_actual.get("filaStockActual"),
-                            columna=col
-                            ))
-                    cantidad = int(conjunto.get(col))
-                    inv.modifica_stock(
-                            cantidad=stock + cantidad if not resta else stock - cantidad,
-                            columna=col
-                            )
+                    for fstock in ["filaStockActual","filaStockFurgon"]:
+                        stock = int(inv.getDato(
+                                fila=inv.hoja_actual.get(fstock),
+                                columna=col
+                                ))
+                        cantidad = int(conjunto.get(col))
+                        inv.modifica_stock(
+                                cantidad=stock + cantidad if not resta else stock - cantidad,
+                                columna=col,
+                                fila=fstock
+                                )
     except Exception as e:
         print("Error en conector/inv_suma_stock: ",e)
         return False
@@ -253,11 +254,12 @@ def inv_suma_stock(cantidad: any=None, columna: any=None, conjunto: dict=None, r
         return True
     # }}}
 
-def inv_mod_stock(cantidad: any, columna: any) -> None:
+def inv_mod_stock(cantidad: any, columna: any, fila: any) -> None:
     with handlers.Inventario() as inv:# {{{
         inv.modifica_stock(
             cantidad=cantidad,
-            columna=columna
+            columna=columna,
+            fila=fila
             )# }}}
 # }}}
 # ------------ CONEXIONES UPLOADRUTA ----------

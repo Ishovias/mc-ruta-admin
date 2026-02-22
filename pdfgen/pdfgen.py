@@ -1,14 +1,15 @@
 from fpdf import FPDF
 from pdfgen.cord import Cord
 import os
+import params
 
 class PDFGen(FPDF):
 
     def __init__(self, pdf_output: str="rendicion.pdf") -> None:
         super().__init__()# {{{
         self.set_auto_page_break(auto=False, margin=0)
-        self.path = os.getcwd() + "/pdfgen/"
-        self.path_output = os.getcwd() + "/static/"
+        self.path = os.getcwd() + params.RUTA_PDFGEN
+        self.path_output = os.getcwd() + params.RUTA_STATIC
         self.nombre_pdf = pdf_output
         # Agregar nueva página
         self.add_page()

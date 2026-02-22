@@ -306,9 +306,13 @@ def inventario_modifica():# {{{
     if request.method == "POST":
         cantidad = request.args.get("cant")
         columna = request.args.get("col")
+        fila = "filaStockActual"
+        if "furgon" in request.args:
+            fila = "filaStockFurgon"
         conector.inv_mod_stock(
             cantidad=cantidad,
-            columna=columna
+            columna=columna,
+            fila=fila
             )
         return '', 200
     elif request.method == "GET":
