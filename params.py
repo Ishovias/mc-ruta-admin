@@ -1,6 +1,6 @@
 # hoja de parametros generales
 IMPRESION_LOGS = False
-RUTAS_PRODUCCION = False
+RUTAS_PRODUCCION = True
 
 # Privilegios usuarios
 PRIVILEGIOS = {
