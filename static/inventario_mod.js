@@ -11,27 +11,27 @@ function getStock() {
             // Area stock general
             const ul = document.createElement('ul');
             data.forEach(item => {
-                const li = document.createElement('li');
+                const li = document.createElement('li');//{{{
                 li.innerHTML = `
                     ${item[1]}: <strong>${item[2]} unids</strong><br>
-                    <input id="modificador${item[1]}" type="number" value="${item[2]}" style="width: 90px;">
-                    <button class="btn-mod-inv" data-col="${item[0]}">MOD</button>
-                    <input id="sumador-${item[1]} "type="number" style="width: 90px;">
-                    <button class="btn-suma">+</button><hr><br>
+                    <input id="modificador-a${item[1]}" type="number" value="${item[2]}" style="width: 90px;">
+                    <button class="btn-mod-inv-a" data-col="${item[0]}">MOD</button>
+                    <input id="sumador-a-${item[1]} "type="number" style="width: 90px;">
+                    <button class="btn-suma-a">+</button><hr><br>
                     `;
                 ul.appendChild(li);
             });
             ul.addEventListener('click', (e) => {
-                const inputMod = e.target.closest('li').querySelector('[id*="modificador"]');
-                if (e.target.classList.contains('btn-mod-inv')) {
+                const inputMod = e.target.closest('li').querySelector('[id*="modificador-a"]');
+                if (e.target.classList.contains('btn-mod-inv-a')) {
                     const columna = e.target.dataset.col;
-                    const btnMod = e.target.closest('li').querySelector('.btn-mod-inv');
+                    const btnMod = e.target.closest('li').querySelector('.btn-mod-inv-a');
                     if (inputMod) {
                         modificaStock(columna, Number(inputMod.value));
                         btnMod.style.backgroundColor = "#8cf48cfd";
                     }
-                } else if (e.target.classList.contains('btn-suma')) {
-                    const inputSum = e.target.closest('li').querySelector('[id*="sumador"]');
+                } else if (e.target.classList.contains('btn-suma-a')) {
+                    const inputSum = e.target.closest('li').querySelector('[id*="sumador-a"]');
                     if (inputSum) {
                         if (inputMod.value == null) {
                             inputMod.value = 0
@@ -40,15 +40,15 @@ function getStock() {
                         inputMod.style.backgroundColor = "#8cf48cfd";
                         inputSum.value = null;
                     }
-                }
+                }//}}}
             });
             areaStock.appendChild(ul);
             // Area stock FURGON
-            areaStock.innerHTML += "<br><br><hr><hr><br><br>";
-            areaStock.innerHTML += "<h3>Stock Furgon</h3>";
+            const areaFurgon = document.getElementById('stock-furgon');
+            areaFurgon.innerHTML = "<h3>Stock Furgon</h3>";
             const ulf = document.createElement('ul');
             data.forEach(item => {
-                const li = document.createElement('li');
+                const li = document.createElement('li');//{{{
                 li.innerHTML = `
                     ${item[1]}: <strong>${item[3]} unids</strong><br>
                     <input id="modificador${item[1]}" type="number" value="${item[3]}" style="width: 90px;">
@@ -77,9 +77,9 @@ function getStock() {
                         inputMod.style.backgroundColor = "#8cf48cfd";
                         inputSum.value = null;
                     }
-                }
+                }//}}}
             });
-            areaStock.appendChild(ulf);
+            areaFurgon.appendChild(ulf);
         })
         .catch(error => {
             console.log(error);
