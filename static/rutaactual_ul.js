@@ -102,6 +102,31 @@ function getDatos() {
     .catch(error => {
         console.log(error)//}}}
     });
+    getStockFurgon();
+}//}}}
+
+function getSumario() {
+    const url = `/rutas/sumario/rutaactual`;//{{{
+    const sumario = document.getElementById('sumario');
+    sumario.innerHTML = "<h3>Cargando sumario...</h3>";
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if ('realizados' in data) {
+                sumario.innerHTML = `
+                    <h3>Clientes restantes: ${data.enruta}</h3>
+                    <h3>Clientes postergados: ${data.postergados}</h3>
+                    <h3>Clientes realizados: ${data.realizados}</h3>`;
+            } else {
+                sumario.innerHTML = `<h3>No hay ruta en curso</h3>`;
+            }
+        })
+        .catch(error => {
+            alert(`Error en fetch: ${error}`);
+        });//}}}
+}
+
+function getStockFurgon() {
     const apiUrlStock = `/inventario/getstock`;
     fetch(apiUrlStock, {
         method: 'GET'//{{{
@@ -127,28 +152,6 @@ function getDatos() {
     .catch(error => {
         console.log(error);//}}}
     });
-
-}//}}}
-
-function getSumario() {
-    const url = `/rutas/sumario/rutaactual`;//{{{
-    const sumario = document.getElementById('sumario');
-    sumario.innerHTML = "<h3>Cargando sumario...</h3>";
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if ('realizados' in data) {
-                sumario.innerHTML = `
-                    <h3>Clientes restantes: ${data.enruta}</h3>
-                    <h3>Clientes postergados: ${data.postergados}</h3>
-                    <h3>Clientes realizados: ${data.realizados}</h3>`;
-            } else {
-                sumario.innerHTML = `<h3>No hay ruta en curso</h3>`;
-            }
-        })
-        .catch(error => {
-            alert(`Error en fetch: ${error}`);
-        });//}}}
 }
 
 function confpos(idcliente,observaciones,accion) {

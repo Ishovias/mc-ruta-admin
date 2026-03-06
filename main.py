@@ -169,12 +169,10 @@ def rutaactual():# {{{
     return render_template('rutas_rutaactual.html', datos=datos)# }}}
 
 @app.route('/rutas/rutaactual/getData', methods=["POST"])
-@login_required
 def rutaactual_getdata():# {{{
     return jsonify(conector.get_cl_enruta())# }}}
 
 @app.route('/rutas/sumario/rutaactual', methods=["GET"])
-@login_required
 def rutaactual_sumario():# {{{
     return jsonify(conector.get_sumario())# }}}
 
@@ -296,7 +294,6 @@ def inventario():# {{{
     return render_template('inventario.html', datos=datos)# }}}
 
 @app.route('/inventario/getstock')
-@login_required
 def inventario_getstock():# {{{
     return jsonify(conector.inv_get_stock())# }}}
 
@@ -448,6 +445,14 @@ def gastos_eliminar(idy) -> jsonify:
         status = 200
     return jsonify({"resultado":resultado}),400
 # }}}
+
+# =========== RUTAS VISITANTE ===========
+@app.route('/rutaviewer')
+def rutaviewer() -> render_template:
+    datos = {"tituloPagina":"Vista estado de la ruta actual"}
+    return render_template('rutas_rutaactual_spectator.html', datos=datos)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

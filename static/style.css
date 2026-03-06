@@ -208,3 +208,64 @@ footer {
         flex-direction: column;
     }
 }
+
+
+/* ==== probando estilos tarjetas ==== */
+body {
+  background-color: #d1d1d1;
+}
+
+.card {
+  background-color: #f3f0e8;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.card-header, .card-body, .card-footer {
+  padding: 20px;
+}
+
+.card-header h3 {
+  color: #1a3c5a;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.card-header .rut {
+  color: #6a6e71;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #add8e6;
+  margin: 0;
+}
+
+.info-group p {
+  margin: 5px 0;
+  font-weight: bold;
+  color: black;
+}
+
+.info-group p span {
+  font-weight: normal;
+  color: #333;
+}
+
+.card-footer p {
+  margin: 0;
+  font-weight: bold;
+  color: black;
+}
+
+.card-footer p span {
+  font-weight: normal;
+  color: #333;
+}

@@ -1,9 +1,18 @@
 {% extends 'index_spectator.html' %}
 {% block body %}
-<h3>Ruta actual</h3><hr><br>
+<div>
+    <br>
+    <h2>Ruta actual</h2>
+    <br><hr>
+    <div id="sumario"></div>
+</div>
+<hr><br>
 <div id="tablaResultados" class="tabla"></div>
+<br><hr><br>
+<h3>Stock en furgon</h3>
+<div id="stock"></div>
 <br><hr><br>
 {% endblock %}
 {% block script %}
-    <script type="module" src="{{ url_for('static', filename='rutaactual_spectator.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='ractual.js' ) }}"></script>
 {% endblock %}
