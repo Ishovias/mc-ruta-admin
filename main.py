@@ -184,7 +184,7 @@ def rutaactual_cliente_aruta():# {{{
 @app.route('/rutas/rutaactual/eliminarcliente/<ubicacion>', methods=["POST"])
 @login_required
 def rutaactual_eliminarcliente(ubicacion):# {{{
-    return jsonify({"resultado":conector.eliminar_ubicacion("clientes",ubicacion)})# }}}
+    return jsonify({"resultado":conector.eliminar_ubicacion("rutabd",ubicacion)})# }}}
 
 @app.route('/rutas/rutaactual/confpos', methods=["POST"])
 @login_required
