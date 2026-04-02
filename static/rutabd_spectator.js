@@ -148,9 +148,6 @@ document.getElementById('buscacliente').addEventListener('input', (e) => {
                         const cuerpo = document.createElement('tbody');
                         data.datos.forEach(fila => {
                             const tr = document.createElement('tr');
-                            const tdelim = document.createElement('td');
-                            tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
-                            tr.appendChild(tdelim);
                             fila.forEach(celda => {
                                 const td = document.createElement('td');
                                 if (celda != "None") {
