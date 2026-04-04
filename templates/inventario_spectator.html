@@ -1,0 +1,9 @@
+{% extends 'index_spectator.html' %}
+{% block body %}
+<h3>Stock general:</h3><hr><br>
+<div id="stock" class="lista"><h3>Cargando...</h3></div><br><hr>
+<div id="tablaRegistros" class="tabla"></div><br><hr><br>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='inventario_spectator.js') }}"></script>
+{% endblock %}

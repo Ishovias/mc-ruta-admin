@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'index_spectator.html' %}
 {% block body %}
 <h3>Rutas</h3><hr><br>
 <div class="contenedores">
@@ -27,5 +27,5 @@
 </div>
 {% endblock %}
 {% block script %}
-    <script type="module" src="{{ url_for('static', filename=datos.privilegios.btnRutas.js) }}"></script>
+    <script type="module" src="{{ url_for('static', filename='rutabd_spectator.js') }}"></script>
 {% endblock %}

@@ -1,15 +1,17 @@
 
 let fecharuta;
+const mensajeCargaServidor = '<h3>Solicitando datos al servidor...</h3>';
+const mensajeErrorServidor = '<h3 style="background: red;">Error en respuesta del servidor, reintente</h3>';
+const mensajeCargaLista = '<h3>Cargando lista rutas...</h3>';
 
+// Carga lista desplegable de rutas almacenadas
 function getDatosRutabd() {
-    const apiUrl = `/rutas/rutabd/getData`;
-
-    fetch(apiUrl, {
-        method: 'POST'
-    })
+    const apiUrl = `/rutas/rutabd/getData`;//{{{
+    const selectorRutas = document.getElementById('listaRutas');
+    selectorRutas.innerHTML = mensajeCargaLista;
+    return fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
-        const selectorRutas = document.getElementById('listaRutas');
         selectorRutas.innerHTML = "";
         const selector = document.createElement('select');
         const defaultOption = document.createElement('option');
@@ -25,25 +27,25 @@ function getDatosRutabd() {
         selector.addEventListener('change' , function() {
             fecharuta = this.value;
             if (fecharuta) {
-                muestraRuta(fecharuta);
-                obtenerTotales(fecharuta);
+                muestraRuta(fecharuta).then(obtenerTotales(fecharuta));
             }
         });
         selectorRutas.appendChild(selector);
+        return data
     })
     .catch(error => {
         console.log(error);
     });
-}
+}//}}}
 
+// Carga Totales de ruta seleccionada
 function obtenerTotales(fecharuta) {
-    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;
-    fetch(apiurl, {
-        "method":"post"
-    })
+    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;//{{{
+    const resultados = document.getElementById("totales");
+    resultados.innerHTML = mensajeCargaServidor;
+    return fetch(apiurl)
         .then(response => response.json())
         .then(data => {
-            const resultados = document.getElementById("totales");
             resultados.innerHTML = `<h3>Totales de la ruta</h3>`;
             if (data.totales.length > 0) {
                 const lista = document.createElement('ul');
@@ -58,18 +60,20 @@ function obtenerTotales(fecharuta) {
                 comentario.textContent = "Sin registros";
                 resultados.appendChild(comentario);
             }
+            return data;
         })
         .catch(error => {
-            alert("Error: "+error);
+            areaResultado.innerHTML = mensajeErrorServidor;
             console.error(error);
         });
-}
+}//}}}
 
+// Carga Datos de ruta seleccionada
 function muestraRuta(fecharuta) {
-    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;
-    fetch(apiurl, {
-        "method":"post"
-    })
+    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;//{{{
+    const areaResultado = document.getElementById("tablaResultados");
+    areaResultado.innerHTML = mensajeCargaServidor;
+    return fetch(apiurl)
         .then(response => response.json())
         .then(data => {
             const areaResultado = document.getElementById("tablaResultados");
@@ -77,15 +81,12 @@ function muestraRuta(fecharuta) {
             const tabla = document.createElement('table');
             const encabezado = document.createElement('thead');
             const filaEncabezado = document.createElement('tr');
-            
             data.encabezados.forEach(encabezado => {
                 const th = document.createElement('th');
                 th.textContent = encabezado;
                 filaEncabezado.appendChild(th);
             });
-
             encabezado.appendChild(filaEncabezado);
-
             const cuerpo = document.createElement('tbody');
             data.datos.forEach(fila => {
                 const tr = document.createElement('tr');
@@ -111,77 +112,85 @@ function muestraRuta(fecharuta) {
             tabla.appendChild(encabezado);
             tabla.appendChild(cuerpo);
             areaResultado.appendChild(tabla)
+            return data;
         })
         .catch(error => {
-            alert("Error: "+error);
+            areaResultado.innerHTML = mensajeErrorServidor;
             console.error(error);
         });
+}//}}}
+
+function muestraResultadoBusqueda(apiUrl, contenedor) {
+    return fetch(apiUrl)//{{{
+        .then(response => response.json())
+        .then(data => {
+            contenedor.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
+            console.log(data);
+            if (data.encabezados) {
+                const tabla = document.createElement('table');
+                tabla.className = 'table table-striped table-hover table-bordered';
+                const encabezado = document.createElement('thead');
+                const filaEncabezado = document.createElement('tr');
+                
+                data.encabezados.forEach(encabezado => {
+                    const th = document.createElement('th');
+                    th.textContent = encabezado;
+                    filaEncabezado.appendChild(th);
+                });
+                encabezado.appendChild(filaEncabezado);
+                
+                const cuerpo = document.createElement('tbody');
+                data.datos.forEach(fila => {
+                    const tr = document.createElement('tr');
+                    fila.forEach(celda => {
+                        const td = document.createElement('td');
+                        if (celda != "None") {
+                            td.textContent = celda;
+                        } else {
+                            td.textContent = "-";
+                        }
+                        if (/pospuesto/i.test(celda)) {
+                            tr.style.backgroundColor = "rgba(255,0,0,0.5)";
+                        }
+                        if (/enruta/i.test(celda)) {
+                            tr.style.backgroundColor = "rgba(0,255,0,0.5)";
+                        }
+                        tr.appendChild(td);
+                    });
+                    cuerpo.appendChild(tr);
+                });
+                tabla.appendChild(encabezado);
+                tabla.appendChild(cuerpo);
+                contenedor.appendChild(tabla);
+            } else {
+                contenedor.innerHTML = data.sindatos;
+            }
+            return data;
+        })
+        .catch(error => {
+            contenedor.innerHTML = mensajeErrorServidor;
+        });//}}}
 }
 
+function ejecutarBusqueda(e) {
+    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
+    const contenedor = document.getElementById('tablaResultados')
+    const totales = document.getElementById('totales');
+    contenedor.innerHTML = mensajeCargaServidor; // Limpiar el contenedor antes de agregar nuevos elementos
+    totales.innerHTML = ''; // Limpiar totales, no los usaremos en estos resultados
+    muestraResultadoBusqueda(apiUrl, contenedor);
+}
 
-document.getElementById('buscacliente').addEventListener('input', (e) => {
-    let temporizador;
-    if (e.target.value != "") {
-        const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
-        clearTimeout(temporizador); // Limpia el temporizador anterior
-        
-        temporizador = setTimeout(() => {
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const contenedor = document.getElementById('tablaResultados')
-                    contenedor.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
-                    console.log(data);
-                    if (data.encabezados) {
-                        const tabla = document.createElement('table');
-                        tabla.className = 'table table-striped table-hover table-bordered';
-                        const encabezado = document.createElement('thead');
-                        const filaEncabezado = document.createElement('tr');
-                        
-                        data.encabezados.forEach(encabezado => {
-                            const th = document.createElement('th');
-                            th.textContent = encabezado;
-                            filaEncabezado.appendChild(th);
-                        });
-                        encabezado.appendChild(filaEncabezado);
-                        
-                        const cuerpo = document.createElement('tbody');
-                        data.datos.forEach(fila => {
-                            const tr = document.createElement('tr');
-                            const tdelim = document.createElement('td');
-                            tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
-                            tr.appendChild(tdelim);
-                            fila.forEach(celda => {
-                                const td = document.createElement('td');
-                                if (celda != "None") {
-                                    td.textContent = celda;
-                                } else {
-                                    td.textContent = "-";
-                                }
-                                if (/pospuesto/i.test(celda)) {
-                                    tr.style.backgroundColor = "rgba(255,0,0,0.5)";
-                                }
-                                if (/enruta/i.test(celda)) {
-                                    tr.style.backgroundColor = "rgba(0,255,0,0.5)";
-                                }
-                                tr.appendChild(td);
-                            });
-                            cuerpo.appendChild(tr);
-                        });
-                        tabla.appendChild(encabezado);
-                        tabla.appendChild(cuerpo);
-                        contenedor.appendChild(tabla);
-                    } else {
-                        contenedor.innerHTML = data.sindatos;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert(error)
-                    document.getElementById('tablaResultados').innerHTML = "Error al cargar datos";
-                });
-        }, 1000);
+// EventListener de buscador de clientes
+const buscacliente = document.getElementById('buscacliente');
+buscacliente.addEventListener('keypress', (e) => {
+    if (e.target.value != "" && e.key == 'Enter') {
+        ejecutarBusqueda(e);
     }
+});//}}}
+const botonbuscar = document.getElementById('botonBuscar');
+botonbuscar.addEventListener('click', (e) => {
+    ejecutarBusqueda(e);
 });
 
 getDatosRutabd();
