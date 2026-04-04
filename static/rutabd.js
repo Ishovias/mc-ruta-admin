@@ -1,48 +1,49 @@
 
 let fecharuta;
+const msjGetDatos = '<h3>Solicitando datos al servidor...</h3>'
+const msjErrorServidor = '<h3>Error en respuesta del servidor, reintente.</h3>'
 
 function getDatosRutabd() {
-    const apiUrl = `/rutas/rutabd/getData`;
-
-    fetch(apiUrl, {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
-        const selectorRutas = document.getElementById('listaRutas');
-        selectorRutas.innerHTML = "";
-        const selector = document.createElement('select');
-        selector.style.maxWidth = "300px";
-        const defaultOption = document.createElement('option');
-        defaultOption.selected = true;
-        defaultOption.textContent = "--Selecciona ruta--";
-        selector.appendChild(defaultOption);
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item[0];
-            option.textContent = `${item[0]} - ${item[1]}`;
-            selector.appendChild(option);
-        });
-        selector.addEventListener('change' , function() {
-            const areaTotales = document.getElementById('totales');
-            areaTotales.innerHTML = '<h2>Cargando totales...</h2>';
-            const areaTablaRes = document.getElementById('tablaResultados');
-            areaTablaRes.innerHTML = '<h2>Cargando tabla...</h2>';
-            fecharuta = this.value;
-            if (fecharuta) {
-                muestraRuta(fecharuta);
-                obtenerTotales(fecharuta);
-            }
-        });
-        selectorRutas.appendChild(selector);
-    })
-    .catch(error => {
-        console.log(error);
-    });
+    const apiUrl = `/rutas/rutabd/getData`;//{{{
+    const selectorRutas = document.getElementById('listaRutas');
+    selectorRutas.innerHTML = msgGetDatos;
+    return fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            selectorRutas.innerHTML = "";
+            const selector = document.createElement('select');
+            selector.style.maxWidth = "300px";
+            const defaultOption = document.createElement('option');
+            defaultOption.selected = true;
+            defaultOption.textContent = "--Selecciona ruta--";
+            selector.appendChild(defaultOption);
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[0];
+                option.textContent = `${item[0]} - ${item[1]}`;
+                selector.appendChild(option);
+            });
+            selector.addEventListener('change' , function() {
+                const areaTotales = document.getElementById('totales');
+                areaTotales.innerHTML = '<h2>Cargando totales...</h2>';
+                const areaTablaRes = document.getElementById('tablaResultados');
+                areaTablaRes.innerHTML = '<h2>Cargando tabla...</h2>';
+                fecharuta = this.value;
+                if (fecharuta) {
+                    muestraRuta(fecharuta).then(obtenerTotales(fecharuta));
+                }
+            });
+            selectorRutas.appendChild(selector);
+            return data;
+        })
+        .catch(error => {
+            selectorRutas.innerHTML = msjErrorServidor;
+            console.log(error);
+        });//}}}
 }
 
 function marcarStatus(ubicacion) {
-    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;
+    const apiurl = `/rutas/rutabd/marcarStatus?ubicacion=${ubicacion}&status=enruta`;//{{{
     return fetch(apiurl, {
             "method":"post"
         })
@@ -55,11 +56,11 @@ function marcarStatus(ubicacion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
 function devolverStock(ubicacion) {
-    const apiurl = `/rutas/rutabd/devstock/${ubicacion}`;
+    const apiurl = `/rutas/rutabd/devstock/${ubicacion}`;//{{{
     return fetch(apiurl, {
         "method":"put"
         })
@@ -70,14 +71,12 @@ function devolverStock(ubicacion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
 function obtenerTotales(fecharuta) {
-    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;
-    fetch(apiurl, {
-        "method":"post"
-    })
+    const apiurl = `/rutas/rutabd/getTotales/${fecharuta}`;//{{{
+    return fetch(apiurl)
         .then(response => response.json())
         .then(data => {
             const resultados = document.getElementById("totales");
@@ -96,18 +95,17 @@ function obtenerTotales(fecharuta) {
                 comentario.textContent = "Sin registros";
                 resultados.appendChild(comentario);
             }
+            return data;
         })
         .catch(error => {
             alert("Error: "+error);
             console.error(error);
-        });
+        });//}}}
 }
 
 function muestraRuta(fecharuta) {
-    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;
-    fetch(apiurl, {
-        "method":"post"
-    })
+    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;//{{{
+    return fetch(apiurl)
         .then(response => response.json())
         .then(data => {
             const areaResultado = document.getElementById("tablaResultados");
@@ -115,15 +113,12 @@ function muestraRuta(fecharuta) {
             const tabla = document.createElement('table');
             const encabezado = document.createElement('thead');
             const filaEncabezado = document.createElement('tr');
-            
             data.encabezados.forEach(encabezado => {
                 const th = document.createElement('th');
                 th.textContent = encabezado;
                 filaEncabezado.appendChild(th);
             });
-
             encabezado.appendChild(filaEncabezado);
-
             const cuerpo = document.createElement('tbody');
             data.datos.forEach(fila => {
                 const tr = document.createElement('tr');
@@ -191,15 +186,16 @@ function muestraRuta(fecharuta) {
                 }
             });
             areaResultado.appendChild(tabla)
+            return data
         })
         .catch(error => {
             alert("Error: "+error);
             console.error(error);
-        });
+        });//}}}
 }
 
 function eliminaRegistro(ubicacion) {
-    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;
+    const apiurl = `/rutas/rutaactual/eliminarcliente/${ubicacion}`;//{{{
     return fetch(apiurl, {
             "method":"post"
         })
@@ -212,89 +208,93 @@ function eliminaRegistro(ubicacion) {
                 alert("Error: "+error);
                 console.error(error);
                 return false;
-            });
+            });//}}}
 }
 
-document.getElementById('buscacliente').addEventListener('input', (e) => {
-    let temporizador;
-    if (e.target.value != "") {
-        const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;
-        clearTimeout(temporizador); // Limpia el temporizador anterior
-        
-        temporizador = setTimeout(() => {
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const contenedor = document.getElementById('tablaResultados')
-                    contenedor.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
-                    const contenedorTotales = document.getElementById('totales');
-                    contenedorTotales.innerHTML = ''; // Limpiar el contenedor de totales
-                    if (data.encabezados) {
-                        const tabla = document.createElement('table');
-                        tabla.className = 'table table-striped table-hover table-bordered';
-                        const encabezado = document.createElement('thead');
-                        const filaEncabezado = document.createElement('tr');
-                        
-                        const th = document.createElement('th');
-                        th.textContent = "Accion";
-                        filaEncabezado.appendChild(th);
-                        data.encabezados.forEach(encabezado => {
-                            const th = document.createElement('th');
-                            th.textContent = encabezado;
-                            filaEncabezado.appendChild(th);
-                        });
-                        encabezado.appendChild(filaEncabezado);
-                        
-                        const cuerpo = document.createElement('tbody');
-                        data.datos.forEach(fila => {
-                            const tr = document.createElement('tr');
-                            const tdelim = document.createElement('td');
-                            tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
-                            tr.appendChild(tdelim);
-                            fila.forEach(celda => {
-                                const td = document.createElement('td');
-                                if (celda != "None") {
-                                    td.textContent = celda;
-                                } else {
-                                    td.textContent = "-";
-                                }
-                                if (/pospuesto/i.test(celda)) {
-                                    tr.style.backgroundColor = "rgba(255,0,0,0.5)";
-                                }
-                                if (/enruta/i.test(celda)) {
-                                    tr.style.backgroundColor = "rgba(0,255,0,0.5)";
-                                }
-                                tr.appendChild(td);
-                            });
-                            cuerpo.appendChild(tr);
-                        });
-                        tabla.appendChild(encabezado);
-                        tabla.appendChild(cuerpo);
-                        tabla.addEventListener('click' , (e) => {
-                            const fila = e.target.closest('tr');
-                            const ubicacion = e.target.dataset.idy;
-                            if (e.target.classList.contains('btn-eliminar')) {
-                                if (fila) {
-                                    fila.style.backgroundColor = "gray";
-                                }
-                                const res = eliminaRegistro(ubicacion);
-                                if (res) {
-                                    fila.remove();
-                                }
-                            }
-                        });
-                        contenedor.appendChild(tabla);
-                    } else {
-                        contenedor.innerHTML = data.sindatos;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert(error)
-                    document.getElementById('tablaResultados').innerHTML = "Error al cargar datos";
+function ejecutarBusqueda(input) {
+    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(input.value)}&filtro=${document.getElementById('filtro').value}`;//{{{
+    const contenedor = document.getElementById('tablaResultados')
+    const contenedorTotales = document.getElementById('totales');
+    contenedor.innerHTML = msjGetDatos;
+    contenedorTotales.innerHTML = ''; // Limpiar el contenedor de totales
+    return fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            contenedor.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos{{{
+            if (data.encabezados) {
+                const tabla = document.createElement('table');
+                tabla.className = 'table table-striped table-hover table-bordered';
+                const encabezado = document.createElement('thead');
+                const filaEncabezado = document.createElement('tr');
+                const th = document.createElement('th');
+                th.textContent = "Accion";
+                filaEncabezado.appendChild(th);
+                data.encabezados.forEach(encabezado => {
+                    const th = document.createElement('th');
+                    th.textContent = encabezado;
+                    filaEncabezado.appendChild(th);
                 });
-        }, 300);
+                encabezado.appendChild(filaEncabezado);
+                const cuerpo = document.createElement('tbody');
+                data.datos.forEach(fila => {
+                    const tr = document.createElement('tr');
+                    const tdelim = document.createElement('td');
+                    tdelim.innerHTML = `<button class="btn-eliminar" data-idy=${fila[fila.length - 1]}>ELIM</button>`;
+                    tr.appendChild(tdelim);
+                    fila.forEach(celda => {
+                        const td = document.createElement('td');
+                        if (celda != "None") {
+                            td.textContent = celda;
+                        } else {
+                            td.textContent = "-";
+                        }
+                        if (/pospuesto/i.test(celda)) {
+                            tr.style.backgroundColor = "rgba(255,0,0,0.5)";
+                        }
+                        if (/enruta/i.test(celda)) {
+                            tr.style.backgroundColor = "rgba(0,255,0,0.5)";
+                        }
+                        tr.appendChild(td);
+                    });
+                    cuerpo.appendChild(tr);
+                });
+                tabla.appendChild(encabezado);
+                tabla.appendChild(cuerpo);
+                tabla.addEventListener('click' , (e) => {
+                    const fila = e.target.closest('tr');
+                    const ubicacion = e.target.dataset.idy;
+                    if (e.target.classList.contains('btn-eliminar')) {
+                        if (fila) {
+                            fila.style.backgroundColor = "gray";
+                        }
+                        const res = eliminaRegistro(ubicacion);
+                        if (res) {
+                            fila.remove();
+                        }
+                    }
+                });
+                contenedor.appendChild(tabla);
+            } else {
+                contenedor.innerHTML = data.sindatos;
+            }
+            return data;//}}}
+        })
+        .catch(error => {
+            alert(error)
+            contenedor.innerHTML = msjErrorServidor;
+        });//}}}
+}
+
+const buscaCliente = document.getElementById('buscacliente');
+buscaCliente.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        ejecutarBusqueda(buscaCliente);
     }
+});
+
+const botonBuscar = document.getElementById('botonBuscar');
+botonBuscar.addEventListener('click', (e) => {
+    ejecutarBusqueda(buscaCliente);
 });
 
 getDatosRutabd();

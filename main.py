@@ -215,25 +215,22 @@ def rutaactual_movpos(pos_pos):# {{{
 
 # ============== RUTAS BD ===================
 # {{{
-@app.route('/rutas/rutabd')
+@app.route('/rutas/rutabd') # Render
 @login_required
 def rutabd():# {{{
     datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))
     datos["tituloPagina"] = "Registros de ruta"
     return render_template('rutas_bd.html', datos=datos)# }}}
 
-@app.route('/rutas/rutabd/getData', methods=["POST"])
-@login_required
+@app.route('/rutas/rutabd/getData')
 def rutabd_getlista():# {{{
     return jsonify(conector.get_rutas())# }}}
 
-@app.route('/rutas/rutabd/getRuta/<fecharuta>', methods=["POST"])
-@login_required
+@app.route('/rutas/rutabd/getRuta/<fecharuta>')
 def rutabd_getruta(fecharuta):# {{{
     return jsonify(conector.get_ruta(fecharuta))# }}}
 
-@app.route('/rutas/rutabd/getTotales/<fecharuta>', methods=["POST"])
-@login_required
+@app.route('/rutas/rutabd/getTotales/<fecharuta>')
 def rutabd_gettotales(fecharuta):# {{{
     return jsonify({"totales":conector.get_totales_ruta(fecharuta)})# }}}
 
@@ -246,7 +243,6 @@ def rutabd_marcarstatus():# {{{
     return jsonify({"message":"ok"}), 200# }}}
 
 @app.route('/rutas/rutabd/buscar')
-@login_required
 def rutabd_busqueda():# {{{
     busqueda = request.args.get("search")
     filtro = request.args.get("filtro")
@@ -286,7 +282,7 @@ def rutabd_devstock(idy):# {{{
 
 # ------------ INVENTARIO -------------------
 # {{{
-@app.route('/inventario')
+@app.route('/inventario') # Render
 @login_required
 def inventario():# {{{
     datos = privilegios(sesion.get_usuario(request.cookies.get("aut")))
@@ -447,13 +443,22 @@ def gastos_eliminar(idy) -> jsonify:
 # }}}
 
 # =========== RUTAS VISITANTE ===========
+#{{{
 @app.route('/rutaviewer')
 def rutaviewer() -> render_template:
     datos = {"tituloPagina":"Vista estado de la ruta actual"}
     return render_template('rutas_rutaactual_spectator.html', datos=datos)
 
+@app.route('/rutabdviewer')
+def rutabdviewer() -> render_template:
+    datos = {"tituloPagina":"Vista estados rutas almacenadas"}
+    return render_template('rutas_bd_spectator.html', datos=datos)
 
-
+@app.route('/inventarioviewer')
+def inventarioviewer() -> render_template:
+    datos = {"tituloPagina":"Vista del inventario actual general y en furgon"}
+    return render_template('inventario_spectator.html', datos=datos)
+#}}}
 if __name__ == '__main__':
     app.run(debug=True)
 
