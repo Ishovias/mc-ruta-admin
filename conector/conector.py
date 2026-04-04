@@ -169,9 +169,9 @@ def get_rutas() -> dict:
     with handlers.RutaBD() as rbd:# {{{
         return rbd.obtener_rutas()# }}}
 
-def get_ruta(fecharuta: str) -> dict:
+def get_ruta(**kwargs) -> dict:
     with handlers.RutaBD() as r:# {{{
-        return r.obtener_ruta(fecharuta)# }}}
+        return r.obtener_ruta(**kwargs)# }}}
 
 def get_totales_ruta(fecharuta: str) -> dict:
     with handlers.RutaBD() as rbd:# {{{
@@ -186,12 +186,11 @@ def marcar_status(ubicacion: str, status: str) -> None:
         with handlers.Inventario() as inv:
             inv.reversa_stock(fecha, id_cliente)# }}}
 
-def rutas_buscar_dato(busqueda: str, filtro: str) -> dict:
+def rutas_buscar_dato(**kwargs) -> dict:
     with handlers.RutaBD() as rbd:# {{{
-        return rbd.buscar_datos(
-            busqueda=busqueda,
-            filtro=filtro
-            )# }}}
+        if kwargs.get("columnas"):
+            kwargs["columnas"] = rbd.hoja_actual.get(kwargs.get("columnas"))
+        return rbd.buscar_datos(**kwargs)# }}}
 
 def rutabd_modregistro(request: object, idy: int) -> dict:
     if request.method == "GET":#{{{

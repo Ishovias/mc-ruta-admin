@@ -7,13 +7,12 @@ const mensajeCargaLista = '<h3>Cargando lista rutas...</h3>';
 // Carga lista desplegable de rutas almacenadas
 function getDatosRutabd() {
     const apiUrl = `/rutas/rutabd/getData`;//{{{
-    const selectorRutas = document.getElementById('listaRutas');
-    selectorRutas.innerHTML = mensajeCargaLista;
+    const selector = document.getElementById('select-ruta');
+    selector.innerHTML = `<option value=null selected>${mensajeCargaServidor}</option>`;
     return fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
-        selectorRutas.innerHTML = "";
-        const selector = document.createElement('select');
+        selector.innerHTML = "";
         const defaultOption = document.createElement('option');
         defaultOption.selected = true;
         defaultOption.textContent = "--Selecciona ruta--";
@@ -30,7 +29,6 @@ function getDatosRutabd() {
                 muestraRuta(fecharuta).then(obtenerTotales(fecharuta));
             }
         });
-        selectorRutas.appendChild(selector);
         return data
     })
     .catch(error => {
@@ -70,7 +68,7 @@ function obtenerTotales(fecharuta) {
 
 // Carga Datos de ruta seleccionada
 function muestraRuta(fecharuta) {
-    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}`;//{{{
+    const apiurl = `/rutas/rutabd/getRuta/${fecharuta}?c=rutabd_busquedas_viewer`;//{{{
     const areaResultado = document.getElementById("tablaResultados");
     areaResultado.innerHTML = mensajeCargaServidor;
     return fetch(apiurl)
@@ -173,7 +171,7 @@ function muestraResultadoBusqueda(apiUrl, contenedor) {
 }
 
 function ejecutarBusqueda(input) {
-    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(input.value)}&filtro=${document.getElementById('filtro').value}`;//{{{
+    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(input.value)}&filtro=${document.getElementById('filtro').value}&c=rutabd_busquedas_viewer`;//{{{
     const contenedor = document.getElementById('tablaResultados')
     const totales = document.getElementById('totales');
     contenedor.innerHTML = mensajeCargaServidor; // Limpiar el contenedor antes de agregar nuevos elementos

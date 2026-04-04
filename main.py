@@ -13,6 +13,19 @@ import params
 import os
 
 app = Flask(__name__)
+
+if not params.RUTAS_PRODUCCION:
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Desactiva cache{{{
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    if app.debug:
+        @app.after_request
+        def after_request(response):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Expires"] = "0"
+            response.headers["Pragma"] = "no-cache"
+            return response
+# }}}
+
 app.config['UPLOAD_FOLDER'] = params.RUTA_IMPORTACION
 sesion = conector.SessionSingleton()
 
@@ -228,7 +241,8 @@ def rutabd_getlista():# {{{
 
 @app.route('/rutas/rutabd/getRuta/<fecharuta>')
 def rutabd_getruta(fecharuta):# {{{
-    return jsonify(conector.get_ruta(fecharuta))# }}}
+    columnas = request.args.get("c")
+    return jsonify(conector.get_ruta(fecharuta=fecharuta,columnas=columnas))# }}}
 
 @app.route('/rutas/rutabd/getTotales/<fecharuta>')
 def rutabd_gettotales(fecharuta):# {{{
@@ -246,9 +260,10 @@ def rutabd_marcarstatus():# {{{
 def rutabd_busqueda():# {{{
     busqueda = request.args.get("search")
     filtro = request.args.get("filtro")
+    columnas = request.args.get("c")
     resultados = conector.sindatos
     if len(busqueda) > 1:
-        resultados = conector.rutas_buscar_dato(busqueda,filtro)
+        resultados = conector.rutas_buscar_dato(busqueda=busqueda,filtro=filtro,columnas=columnas)
         resultados = resultados if resultados else conector.sindatos
     return jsonify(resultados)# }}}
 

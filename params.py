@@ -128,7 +128,7 @@ RUTAS_BD = {
      "nombrehoja": "rutas_bd",# {{{
      "filainicial": 2,
      "columnas": {
-          "fecha": {"num": 1, "encabezado": "FECHA"},
+          "fecha": {"num": 1, "encabezado": "FECHA"},# {{{
           "id_ruta": {"num": 2, "encabezado": "ID"},
           "contrato": {"num": 3, "encabezado": "CONT"},
           "rut": {"num": 4, "encabezado": "RUT"},
@@ -162,17 +162,18 @@ RUTAS_BD = {
           "bolsaamarilla": {"num": 32, "encabezado": "BOLSA AMARILLA"},
           "bidon_5": {"num": 33, "encabezado": "BIDON 5 lts"},
           "frascoamalgama": {"num": 34, "encabezado": "FRASCO AMALGAMAS"},
-          "ruta":{"num":35,"encabezado":"RUTA"}
+          "ruta":{"num":35,"encabezado":"RUTA"}# }}}
      },
      "rutaactual":["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id"],
      "rutabd_busquedas":["fecha","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","id","detalleretiro","status"],
+     "rutabd_busquedas_viewer":["fecha","status","id_ruta","contrato","rut","cliente","direccion","comuna","telefono","otro","detalleretiro"],
      "kgcols":["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"],
      "itemscols":["cajaroja_0.5","cajaroja_1","cajaroja_1.3","cajaroja_1.65","cajaroja_3","cajaroja_5","cajaamarilla_1","cajaamarilla_3","cajaamarilla_5","cajaamarilla_15","basureroamarillo_120","bolsaroja","bolsaroja_farmaco","bolsaamarilla","bidon_5","frascoamalgama"],
      "columnas_todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
      "retirokgs":["farmaco","patologico","contaminado","cortopunzante","otropeligroso","liquidorx"],
      "encabezados": 1,
      "obsdecoder":{
-          "far":{"columna":"farmaco", "nombre": "FARMACO"},
+          "far":{"columna":"farmaco", "nombre": "FARMACO"},# {{{
           "pat":{"columna":"patologico", "nombre": "PATOLOGICO"},
           "con":{"columna":"contaminado", "nombre": "CONTAMINADO"},
           "cor":{"columna":"cortopunzante", "nombre": "CORTOPUNZANTE"},
@@ -193,7 +194,7 @@ RUTAS_BD = {
           "brfar":{"columna":"bolsaroja_farmaco", "nombre": "BOLSA ROJA FARAMCO"},
           "ba":{"columna":"bolsaamarilla", "nombre": "BOLSA AMARILLA"},
           "bid":{"columna":"bidon_5", "nombre": "BIDON 5 lts"},
-          "fram":{"columna":"frascoamalgama", "nombre": "FRASCO AMALGAMAS"}
+          "fram":{"columna":"frascoamalgama", "nombre": "FRASCO AMALGAMAS"}# }}}
          }# }}}
 }
 
@@ -219,7 +220,7 @@ RUTAS_REGISTROS = {
     }
 
 GASTOS_BD = {
-     "nombrehoja": "gastos_bd",
+     "nombrehoja": "gastos_bd",# {{{
      "filainicial": 2,
      "columnas": {
           "fecha": {"num": 1, "encabezado": "Fecha", "type":"date"},
@@ -231,11 +232,11 @@ GASTOS_BD = {
      "columnas_todas": [1, 2, 3, 4, 5],
      "ncolumnas_todas": ["fecha","monto","descripcion","vigencia"],
      "ncolumnas_mostrar":["fecha","monto","descripcion"],
-     "encabezados": 1
+     "encabezados": 1# }}}
 }
 
 INVENTARIOS = {
-     "nombrehoja": "inventarios",
+     "nombrehoja": "inventarios",# {{{
      "filaStockActual": 2,
      "filaStockFurgon": 3,
      "filainicial": 4,
@@ -310,11 +311,11 @@ RETIROS_ELIMINADOS = {
           "otropeligroso": 17,
           "liquidorx": 18,
           "todas": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
-     }
+     }# }}}
 }
 
 REGISTRO_ELIMINACIONES = {
-     "nombrehoja": "registro_eliminaciones",
+     "nombrehoja": "registro_eliminaciones",# {{{
      "encabezados": 1,
      "filainicial": 2,
      "columnas": {
@@ -326,14 +327,14 @@ REGISTRO_ELIMINACIONES = {
           "cortopunzante": 6,
           "otropeligroso": 7,
           "liquidorx": 8,
-          "todas": [1, 2, 3, 4, 5, 6, 7, 8]
+          "todas": [1, 2, 3, 4, 5, 6, 7, 8]# }}}
      }
 }
 
 # ----------- APP SUBLITOTE --------------
 
 TODO = {
-     "nombrehoja": "todo_list",
+     "nombrehoja": "todo_list",# {{{
      "filainicial": 2,
      "columnas": {
           "fecha": 1,
@@ -342,11 +343,11 @@ TODO = {
           "fechacompletado": 4,
           "todas": [1, 2, 3, 4]
      },
-     "encabezados": 1
+     "encabezados": 1# }}}
 }
 
 ST_PRODUCTOS = {
-     "nombrehoja": "st_productos",
+     "nombrehoja": "st_productos",# {{{
      "filainicial": 3,
      "columnas": {
           "codigo": 1,
@@ -357,11 +358,11 @@ ST_PRODUCTOS = {
           "observaciones": 6,
           "todas": [1, 2, 3, 4, 5, 6]
      },
-     "encabezados": 2
+     "encabezados": 2# }}}
 }
 
 ST_COTIZACION = {
-     "nombrehoja": "st_cotizacion",
+     "nombrehoja": "st_cotizacion",# {{{
      "filainicial": 3,
      "numcotizacion": {"fila": 1, "columna": 2},
      "columnas": {
@@ -373,11 +374,11 @@ ST_COTIZACION = {
           "precio": 6,
           "todas": [1, 2, 3, 4, 5, 6]
      },
-     "encabezados": 2
+     "encabezados": 2# }}}
 }
 
 ST_BD_COTIZACIONES = {
-     "nombrehoja": "st_bd_cotizaciones",
+     "nombrehoja": "st_bd_cotizaciones",# {{{
      "filainicial": 3,
      "columnas": {
           "idcotizacion": 1,
@@ -389,11 +390,11 @@ ST_BD_COTIZACIONES = {
           "precio": 7,
           "todas": [1, 2, 3, 4, 5, 6, 7]
      },
-     "encabezados": 2
+     "encabezados": 2# }}}
 }
 
 ST_REGISTRO_COTIZACIONES = {
-     "nombrehoja": "st_registro_cotizaciones",
+     "nombrehoja": "st_registro_cotizaciones",# {{{
      "filainicial": 3,
      "columnas": {
           "idcotizacion": 1,
@@ -401,5 +402,5 @@ ST_REGISTRO_COTIZACIONES = {
           "precio": 3,
           "todas": [1, 2, 3]
      },
-     "encabezados": 2
+     "encabezados": 2# }}}
 }

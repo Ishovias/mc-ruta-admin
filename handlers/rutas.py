@@ -371,15 +371,18 @@ class RutaBD(bdmediclean):
          rutas.reverse()
          return rutas
 
-     def obtener_ruta(self, fecharuta: str) -> dict:
+     def obtener_ruta(self, fecharuta: str, columnas: str=None) -> dict:
          filas = super().buscadato(
                  dato=fecharuta,
                  columna="fecha",
                  buscartodo=True
                  )
-         columnas_mostrar = self.hoja_actual["rutaactual"].copy()
-         columnas_mostrar.append("status")
-         columnas_mostrar.append("detalleretiro")
+         if columnas:
+             columnas_mostrar = self.hoja_actual.get(columnas)
+         else:
+             columnas_mostrar = self.hoja_actual["rutaactual"].copy()
+             columnas_mostrar.append("status")
+             columnas_mostrar.append("detalleretiro")
          return super().listar(
                  filas=filas,
                  columnas=columnas_mostrar,
