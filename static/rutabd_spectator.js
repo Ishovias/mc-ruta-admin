@@ -172,8 +172,8 @@ function muestraResultadoBusqueda(apiUrl, contenedor) {
         });//}}}
 }
 
-function ejecutarBusqueda(e) {
-    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(e.target.value)}&filtro=${document.getElementById('filtro').value}`;//{{{
+function ejecutarBusqueda(input) {
+    const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(input.value)}&filtro=${document.getElementById('filtro').value}`;//{{{
     const contenedor = document.getElementById('tablaResultados')
     const totales = document.getElementById('totales');
     contenedor.innerHTML = mensajeCargaServidor; // Limpiar el contenedor antes de agregar nuevos elementos
@@ -185,13 +185,13 @@ function ejecutarBusqueda(e) {
 const buscacliente = document.getElementById('buscacliente');
 buscacliente.addEventListener('keypress', (e) => {
     if (e.target.value != "" && e.key == 'Enter') {
-        ejecutarBusqueda(e);
+        ejecutarBusqueda(buscacliente);
     }
 });
 
 const botonbuscar = document.getElementById('botonBuscar');
 botonbuscar.addEventListener('click', (e) => {
-    ejecutarBusqueda(e);
+    ejecutarBusqueda(buscacliente);
 });
 
 getDatosRutabd();

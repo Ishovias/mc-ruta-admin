@@ -1,7 +1,7 @@
 
 let fecharuta;
-const msjGetDatos = '<h3>Solicitando datos al servidor...</h3>'
-const msjErrorServidor = '<h3>Error en respuesta del servidor, reintente.</h3>'
+const msgGetDatos = '<h3>Solicitando datos al servidor...</h3>'
+const msgErrorServidor = '<h3>Error en respuesta del servidor, reintente.</h3>'
 
 function getDatosRutabd() {
     const apiUrl = `/rutas/rutabd/getData`;//{{{
@@ -37,7 +37,7 @@ function getDatosRutabd() {
             return data;
         })
         .catch(error => {
-            selectorRutas.innerHTML = msjErrorServidor;
+            selectorRutas.innerHTML = msgErrorServidor;
             console.log(error);
         });//}}}
 }
@@ -215,7 +215,7 @@ function ejecutarBusqueda(input) {
     const apiUrl = `/rutas/rutabd/buscar?search=${encodeURIComponent(input.value)}&filtro=${document.getElementById('filtro').value}`;//{{{
     const contenedor = document.getElementById('tablaResultados')
     const contenedorTotales = document.getElementById('totales');
-    contenedor.innerHTML = msjGetDatos;
+    contenedor.innerHTML = msgGetDatos;
     contenedorTotales.innerHTML = ''; // Limpiar el contenedor de totales
     return fetch(apiUrl)
         .then(response => response.json())
@@ -281,7 +281,7 @@ function ejecutarBusqueda(input) {
         })
         .catch(error => {
             alert(error)
-            contenedor.innerHTML = msjErrorServidor;
+            contenedor.innerHTML = msgErrorServidor;
         });//}}}
 }
 
