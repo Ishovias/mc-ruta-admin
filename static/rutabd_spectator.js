@@ -2,13 +2,14 @@
 let fecharuta;
 const mensajeCargaServidor = '<h3>Solicitando datos al servidor...</h3>';
 const mensajeErrorServidor = '<h3 style="background: red;">Error en respuesta del servidor, reintente</h3>';
-const mensajeCargaLista = '<h3>Cargando lista rutas...</h3>';
+const mensajeCargaLista = '** Cargando lista rutas **';
+const mensajeCargaListaError = 'X ERROR EN SERVER X';
 
 // Carga lista desplegable de rutas almacenadas
 function getDatosRutabd() {
     const apiUrl = `/rutas/rutabd/getData`;//{{{
     const selector = document.getElementById('select-ruta');
-    selector.innerHTML = `<option value=null selected>${mensajeCargaServidor}</option>`;
+    selector.innerHTML = `<option value=null selected>${mensajeCargaLista}</option>`;
     return fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
@@ -32,6 +33,7 @@ function getDatosRutabd() {
         return data
     })
     .catch(error => {
+        selector.innerHTML = `<option value=null selected>${mensajeCargaListaError}</option>`;
         console.log(error);
     });
 }//}}}

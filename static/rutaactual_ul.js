@@ -33,7 +33,7 @@ function getDatos() {
                 });
                 datosCliente.innerHTML = item;
                 const botonera = document.createElement('div');
-                botonera.innerHTML = `<br><input class="observaciones" type="text", placeholder="Observaciones"><br><br>
+                botonera.innerHTML = `<br><input class="observaciones" type="text", placeholder="Observaciones" style="width: 300px"><br><br>
                     <button class="btn-marcar-realizado" data-idy=${fila[10]}>&#x1F44D</button>
                     <button class="btn-marcar-pospuesto" data-idy=${fila[10]}>&#x1F44E</button>
                     <button class="btn-eliminar" data-idy=${fila[10]}>&#x26D4</button>

@@ -2,17 +2,18 @@
 let fecharuta;
 const msgGetDatos = '<h3>Solicitando datos al servidor...</h3>'
 const msgErrorServidor = '<h3>Error en respuesta del servidor, reintente.</h3>'
+const mensajeCargaLista = '** Cargando lista rutas **';
+const mensajeCargaListaError = 'X ERROR EN SERVER X';
+
 
 function getDatosRutabd() {
     const apiUrl = `/rutas/rutabd/getData`;//{{{
-    const selectorRutas = document.getElementById('listaRutas');
-    selectorRutas.innerHTML = msgGetDatos;
+    const selector = document.getElementById('select-ruta');
+    selector.innerHTML = `<option value=null selected>${mensajeCargaLista}</option>`;
     return fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            selectorRutas.innerHTML = "";
-            const selector = document.createElement('select');
-            selector.style.maxWidth = "300px";
+            selector.innerHTML = "";
             const defaultOption = document.createElement('option');
             defaultOption.selected = true;
             defaultOption.textContent = "--Selecciona ruta--";
@@ -33,11 +34,10 @@ function getDatosRutabd() {
                     muestraRuta(fecharuta).then(obtenerTotales(fecharuta));
                 }
             });
-            selectorRutas.appendChild(selector);
             return data;
         })
         .catch(error => {
-            selectorRutas.innerHTML = msgErrorServidor;
+            selector.innerHTML = `<option value=null selected>${mensajeCargaListaError}</option>`;
             console.log(error);
         });//}}}
 }
