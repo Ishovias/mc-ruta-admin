@@ -459,6 +459,11 @@ def gastos_eliminar(idy) -> jsonify:
 
 # =========== RUTAS VISITANTE ===========
 #{{{
+@app.route('/viewer')
+def viewer() -> render_template:
+    datos = {"tituloPagina":"Portal de vista de datos de ruta IB"}
+    return render_template('bienvenida_spectator.html', datos=datos)
+
 @app.route('/rutaviewer')
 def rutaviewer() -> render_template:
     datos = {"tituloPagina":"Vista estado de la ruta actual"}

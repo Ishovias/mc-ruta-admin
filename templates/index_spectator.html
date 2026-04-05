@@ -13,6 +13,27 @@
         <h1>MedicleanRuta</h1>
         <h2>{{ datos.tituloPagina }}</h2>
         <hr>
+        <nav class="botonera">
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('rutaviewer') }}" method="get">
+                <button id="rutaactual" name="rutaactual">
+                    Ruta Actual 
+                    <span class="icon">&#x1F690</span>
+                </button>
+            </form>
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('rutabdviewer') }}" method="get">
+                <button id="rutas" name="rutas">
+                    Rutas
+                    <span class="icon">&#x1F4DC</span>
+                </button>
+            </form>
+            <form class="botonera-menu" id="botonera-menu" name="botonera-menu" action="{{ url_for('inventarioviewer') }}" method="get">
+                <button id="inventario" name="inventario">
+                    Inventario
+                    <span class="icon">&#x1F4DD</span>
+                </button>
+            </form>
+        </nav>
+        <hr>
     </header>
     {% block body %}
     {% endblock %}

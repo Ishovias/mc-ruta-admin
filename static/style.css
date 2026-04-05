@@ -33,6 +33,13 @@ header h2 {
     opacity: 0.9;
 }
 
+.titulos-centrados {
+    display: flex;
+    justify-content: center; /* centra horizontal */
+    align-items: center;     /* centra vertical */
+    height: 100vh;           /* altura mínima para ver el efecto vertical */
+}
+
 /* ==== NAV MENU ==== */
 /* ==== BOTONERA PRINCIPAL ==== */
 nav.botonera {

@@ -13,11 +13,7 @@ function getDatosRutabd() {
     return fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
-        selector.innerHTML = "";
-        const defaultOption = document.createElement('option');
-        defaultOption.selected = true;
-        defaultOption.textContent = "--Selecciona ruta--";
-        selector.appendChild(defaultOption);
+        selector.innerHTML = "<option selected hidden>--Selecciona ruta--</option>";
         data.forEach(item => {
             const option = document.createElement('option');
             option.value = item[0];
@@ -26,7 +22,7 @@ function getDatosRutabd() {
         });
         selector.addEventListener('change' , function() {
             fecharuta = this.value;
-            if (fecharuta) {
+            if (fecharuta && fecharuta != "--Selecciona ruta--") {
                 muestraRuta(fecharuta).then(obtenerTotales(fecharuta));
             }
         });
